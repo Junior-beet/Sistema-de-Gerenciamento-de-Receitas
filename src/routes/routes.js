@@ -1,9 +1,10 @@
-import { Router } from 'express';
-import usuarioController from '../controllers/usuarioController.js';
+import { Router } from "express";
+import usuarioRoutes from "./usuarioRoutes.js";
+import saldoRoutes from "./saldoRoutes.js";
 
-const usuarioRoutes = Router();
+const routes = Router();
 
-usuarioRoutes.post('/', usuarioController.criar);
-usuarioRoutes.get('/', usuarioController.selecionar);
+routes.use('/usuarios', usuarioRoutes);
+routes.use('/saldo', saldoRoutes);
 
-export default usuarioRoutes;
+export default routes;
