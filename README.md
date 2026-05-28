@@ -130,3 +130,38 @@ Com isso, o sistema consegue identificar:
 * análises detalhadas de movimentações.
 * Controle de Acesso (RBAC)
 
+# Implementação no Backend
+
+O backend será responsável por toda a lógica de negócio do sistema financeiro, incluindo autenticação, controle de acesso, cálculos automáticos e gerenciamento das movimentações.
+
+A aplicação será organizada em camadas para facilitar manutenção e escalabilidade:
+
+```txt id="4mw1py"
+controllers/
+services/
+repositories/
+models/
+routes/
+middlewares/
+```
+
+* **Controllers:** recebem as requisições e retornam as respostas da API;
+* **Services:** concentram as regras de negócio e cálculos financeiros;
+* **Repositories:** realizam a comunicação com o banco de dados;
+* **Models:** representam as entidades do sistema;
+* **Routes:** definem os endpoints da API;
+* **Middlewares:** realizam autenticação, validações e controle de acesso.
+
+O sistema utilizará autenticação com JWT e criptografia de senhas com bcrypt.
+
+Os cálculos financeiros serão feitos dinamicamente utilizando a tabela `movimentacoes` como base principal, permitindo gerar:
+
+* saldo total;
+* receitas;
+* despesas;
+* relatórios;
+* dashboards financeiros.
+
+O backend também será responsável pelo gerenciamento de parcelamentos, filtros e geração de relatórios financeiros em formato JSON para o frontend.
+
+
