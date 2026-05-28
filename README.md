@@ -59,3 +59,74 @@ Informações sobre gerenciamento e operação do sistema:
 ## 📌 Observações
 
 Este projeto tem fins educacionais e busca simular um ambiente real de desenvolvimento, incluindo documentação técnica e organização profissional.
+
+## 💰 Lógica inicial de saldo e estrutura de contas
+
+O sistema foi desenvolvido utilizando uma estrutura centralizada de movimentações financeiras, permitindo que todos os cálculos sejam realizados de forma automática, organizada e escalável.
+
+A base principal da lógica financeira está na tabela movimentacoes, responsável por armazenar todas as entradas e saídas do sistema.
+
+Cada movimentação contém informações essenciais como:
+
+* tipo da movimentação (RECEITA ou DESPESA);
+* valor;
+* conta vinculada;
+* categoria e subcategoria;
+* data do lançamento;
+* descrição;
+* forma de pagamento.
+
+A partir dessa estrutura, o sistema consegue calcular automaticamente:
+
+* saldo total;
+* total de receitas;
+* total de despesas;
+* gastos por categoria;
+* relatórios mensais;
+* movimentações por período;
+* dashboards financeiros.
+
+# Centralização das Regras Financeiras
+
+Toda a lógica de cálculo do sistema é baseada na tabela movimentacoes.
+Dessa forma, evita-se duplicação de informações e inconsistências nos valores armazenados.
+
+As tabelas receitas e despesas funcionam como complementos especializados, armazenando informações específicas de cada tipo de movimentação.
+
+# Receitas
+
+A tabela receitas armazena dados complementares como:
+
+* origem da receita;
+* data prevista de recebimento.
+* Despesas
+
+A tabela despesas armazena informações como:
+
+* data de vencimento;
+* data de pagamento;
+* status da despesa.
+
+# Sistema de Parcelamento
+
+O sistema também possui suporte para movimentações parceladas através da tabela parcelado.
+
+Essa estrutura permite:
+
+* geração automática de parcelas;
+* controle de quantidade total de parcelas;
+* acompanhamento de status de pagamento;
+* organização financeira mensal.
+
+# Organização por Categorias
+
+As tabelas categorias e subcategorias foram implementadas para melhorar a organização financeira e geração de relatórios.
+
+Com isso, o sistema consegue identificar:
+
+* categorias com maiores gastos;
+* principais fontes de receita;
+* distribuição financeira por área;
+* análises detalhadas de movimentações.
+* Controle de Acesso (RBAC)
+
