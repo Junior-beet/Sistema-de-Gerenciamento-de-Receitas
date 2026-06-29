@@ -26,6 +26,12 @@ const usuarioRepository = {
         return rows[0] || null;
     },
 
+    selecionarPorEmailComSenha: async (email) => {
+    const sql = `SELECT * FROM usuarios WHERE email = ?`;
+    const [rows] = await connection.execute(sql, [email]);
+    return rows[0] || null;
+},
+
     buscarPorCargo: async (cargo) => {
         const sql = `SELECT id_usuario FROM usuarios WHERE cargo = ?`;
         const [rows] = await connection.execute(sql, [cargo]);
