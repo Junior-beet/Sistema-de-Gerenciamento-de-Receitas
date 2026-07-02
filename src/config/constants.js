@@ -16,4 +16,4 @@ export const JWT_SECRET = 'sua_chave_secreta_aqui'
 
 export const API_URL = 'http://localhost:3000/api'
 
-export const ROTAS_PUBLICAS = ['/login', '/cadastro', '/esqueci-senha', '/redefinir-senha']
+export const ROTAS_PUBLICAS = ['/login', '/cadastro', '/saiba-mais', '/esqueci-senha', '/redefinir-senha']
