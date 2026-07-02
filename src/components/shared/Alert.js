@@ -1,12 +1,14 @@
 export function Alert({ tipo, mensagem }) {
   const wrapper = document.createElement('div')
-  wrapper.className = `alert alert-${tipo === 'erro' ? 'danger' : 'success'} d-none`
+  const alertClass = tipo === 'erro' ? 'alert-danger' : tipo === 'sucesso' ? 'alert-success' : 'alert-info'
+  wrapper.className = `alert ${alertClass} d-none`
   wrapper.textContent = mensagem || ''
   return wrapper
 }
 
 export function mostrarAlerta(el, tipo, mensagem) {
-  el.className = `alert alert-${tipo === 'erro' ? 'danger' : 'success'}`
+  const alertClass = tipo === 'erro' ? 'alert-danger' : tipo === 'sucesso' ? 'alert-success' : 'alert-info'
+  el.className = `alert ${alertClass}`
   el.textContent = mensagem
 }
 

@@ -10,7 +10,7 @@ export function LoginPage() {
 
   const main = document.createElement('main')
   main.className = 'd-flex align-items-center'
-  main.style.cssText = 'min-height:calc(100vh - 76px);background:linear-gradient(135deg,#0a1628,#0d1e3a,#0a1628)'
+  main.style.cssText = 'min-height:calc(100vh - 76px);background:var(--color-bg)'
 
   const container = document.createElement('div')
   container.className = 'container py-5'
@@ -22,8 +22,7 @@ export function LoginPage() {
   col.className = 'col-12 col-md-6 col-lg-5'
 
   const card = document.createElement('div')
-  card.className = 'card border-secondary border-opacity-25 shadow-lg'
-  card.style.backgroundColor = '#0f1b33'
+  card.className = 'card shadow-sm'
 
   const cardBody = document.createElement('div')
   cardBody.className = 'card-body p-4 p-md-5'
@@ -31,20 +30,22 @@ export function LoginPage() {
   const iconDiv = document.createElement('div')
   iconDiv.className = 'text-center mb-3'
   const iconCircle = document.createElement('span')
-  iconCircle.className = 'icon-circle'
+  iconCircle.className = 'd-inline-flex align-items-center justify-content-center'
+  iconCircle.style.cssText = 'width:48px;height:48px;border-radius:50%;background:var(--color-primary-light);color:var(--color-primary);font-size:1.3rem;font-weight:700'
   iconCircle.textContent = 'A'
   iconDiv.appendChild(iconCircle)
 
   const title = document.createElement('h1')
   title.className = 'text-center fw-bold mb-1'
-  title.style.cssText = "font-family:'Playfair Display',serif;color:#ffffff;font-size:1.75rem"
+  title.style.color = 'var(--color-text-title)'
   title.textContent = 'Acessar Sistema'
 
-  const divider = document.createElement('div')
-  divider.className = 'divider-gold my-3'
+  const divider = document.createElement('hr')
+  divider.className = 'divider divider-center'
 
   const subtitle = document.createElement('p')
-  subtitle.className = 'text-center text-secondary mb-4'
+  subtitle.className = 'text-center mb-4'
+  subtitle.style.color = 'var(--color-text-secondary)'
   subtitle.textContent = 'Insira suas credenciais para continuar'
 
   const alert = document.createElement('div')
@@ -58,28 +59,28 @@ export function LoginPage() {
   const emailGroup = document.createElement('div')
   emailGroup.className = 'mb-3'
   emailGroup.innerHTML = `
-    <label for="loginEmail" class="form-label text-uppercase small fw-semibold text-secondary">E-mail</label>
-    <input type="email" class="form-control form-control-lg bg-dark border-secondary text-light" id="loginEmail" placeholder="seu@email.com" required>
+    <label for="loginEmail" class="form-label">E-mail</label>
+    <input type="email" class="form-control" id="loginEmail" placeholder="seu@email.com" required>
   `
 
   const passGroup = document.createElement('div')
   passGroup.className = 'mb-4'
   passGroup.innerHTML = `
-    <label for="loginSenha" class="form-label text-uppercase small fw-semibold text-secondary">Senha</label>
-    <input type="password" class="form-control form-control-lg bg-dark border-secondary text-light" id="loginSenha" placeholder="senha" required minlength="6">
+    <label for="loginSenha" class="form-label">Senha</label>
+    <input type="password" class="form-control" id="loginSenha" placeholder="Sua senha" required minlength="6">
   `
 
   const btn = document.createElement('button')
   btn.type = 'submit'
-  btn.className = 'btn btn-lg w-100 border-0 fw-semibold text-uppercase'
-  btn.style.cssText = 'background:linear-gradient(135deg,#c9a84c,#a8882e);color:#0a1628;letter-spacing:0.5px'
+  btn.className = 'btn btn-primary btn-lg w-100'
   btn.textContent = 'Entrar'
 
   const footer = document.createElement('div')
-  footer.className = 'text-center mt-4 pt-4 border-top border-secondary border-opacity-25'
+  footer.className = 'text-center mt-4 pt-4'
+  footer.style.borderTop = '1px solid var(--color-border)'
   footer.innerHTML = `
-    <p class="text-secondary small mb-2">Ainda não tem conta? <a href="/cadastro" class="fw-semibold text-decoration-none" style="color:#c9a84c">Cadastre-se</a></p>
-    <p class="text-secondary small mb-0"><a href="/esqueci-senha" class="fw-semibold text-decoration-none" style="color:#c9a84c">Esqueci minha senha</a></p>
+    <p class="small mb-2" style="color:var(--color-text-secondary)">Ainda não tem conta? <a href="/cadastro" class="fw-semibold">Cadastre-se</a></p>
+    <p class="small mb-0" style="color:var(--color-text-secondary)"><a href="/esqueci-senha" class="fw-semibold">Esqueci minha senha</a></p>
   `
 
   form.appendChild(emailGroup)

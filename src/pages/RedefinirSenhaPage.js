@@ -13,7 +13,7 @@ export function RedefinirSenhaPage() {
 
   const main = document.createElement('main')
   main.className = 'd-flex align-items-center'
-  main.style.cssText = 'min-height:calc(100vh - 76px);background:linear-gradient(135deg,#0a1628,#0d1e3a,#0a1628)'
+  main.style.cssText = 'min-height:calc(100vh - 76px);background:var(--color-bg)'
 
   const container = document.createElement('div')
   container.className = 'container py-5'
@@ -25,8 +25,7 @@ export function RedefinirSenhaPage() {
   col.className = 'col-12 col-md-6 col-lg-5'
 
   const card = document.createElement('div')
-  card.className = 'card border-secondary border-opacity-25 shadow-lg'
-  card.style.backgroundColor = '#0f1b33'
+  card.className = 'card shadow-sm'
 
   const cardBody = document.createElement('div')
   cardBody.className = 'card-body p-4 p-md-5'
@@ -34,17 +33,18 @@ export function RedefinirSenhaPage() {
   const iconDiv = document.createElement('div')
   iconDiv.className = 'text-center mb-3'
   const iconCircle = document.createElement('span')
-  iconCircle.className = 'icon-circle'
+  iconCircle.className = 'd-inline-flex align-items-center justify-content-center'
+  iconCircle.style.cssText = 'width:48px;height:48px;border-radius:50%;background:var(--color-primary-light);color:var(--color-primary);font-size:1.3rem;font-weight:700'
   iconCircle.textContent = '!'
   iconDiv.appendChild(iconCircle)
 
   const title = document.createElement('h1')
   title.className = 'text-center fw-bold mb-1'
-  title.style.cssText = "font-family:'Playfair Display',serif;color:#ffffff;font-size:1.75rem"
+  title.style.color = 'var(--color-text-title)'
   title.textContent = 'Redefinir Senha'
 
-  const divider = document.createElement('div')
-  divider.className = 'divider-gold my-3'
+  const divider = document.createElement('hr')
+  divider.className = 'divider divider-center'
 
   const alert = document.createElement('div')
   alert.className = 'alert d-none'
@@ -52,12 +52,14 @@ export function RedefinirSenhaPage() {
 
   if (!token) {
     const msg = document.createElement('p')
-    msg.className = 'text-center text-danger mb-4'
+    msg.className = 'text-center mb-4'
+    msg.style.color = 'var(--color-text-secondary)'
     msg.textContent = 'Token de redefinição não encontrado.'
 
     const footer = document.createElement('div')
-    footer.className = 'text-center mt-4 pt-4 border-top border-secondary border-opacity-25'
-    footer.innerHTML = '<p class="text-secondary small mb-0"><a href="/esqueci-senha" class="fw-semibold text-decoration-none" style="color:#c9a84c">Solicitar novo link</a></p>'
+    footer.className = 'text-center mt-4 pt-4'
+    footer.style.borderTop = '1px solid var(--color-border)'
+    footer.innerHTML = '<p class="small mb-0" style="color:var(--color-text-secondary)"><a href="/esqueci-senha" class="fw-semibold">Solicitar novo link</a></p>'
 
     cardBody.appendChild(iconDiv)
     cardBody.appendChild(title)
@@ -82,7 +84,8 @@ export function RedefinirSenhaPage() {
   }
 
   const subtitle = document.createElement('p')
-  subtitle.className = 'text-center text-secondary mb-4'
+  subtitle.className = 'text-center mb-4'
+  subtitle.style.color = 'var(--color-text-secondary)'
   subtitle.textContent = 'Escolha sua nova senha'
 
   const form = document.createElement('form')
@@ -92,26 +95,26 @@ export function RedefinirSenhaPage() {
   const passGroup = document.createElement('div')
   passGroup.className = 'mb-3'
   passGroup.innerHTML = `
-    <label for="novaSenha" class="form-label text-uppercase small fw-semibold text-secondary">Nova Senha</label>
-    <input type="password" class="form-control form-control-lg bg-dark border-secondary text-light" id="novaSenha" placeholder="Mínimo 6 caracteres" required minlength="6">
+    <label for="novaSenha" class="form-label">Nova Senha</label>
+    <input type="password" class="form-control" id="novaSenha" placeholder="Mínimo 6 caracteres" required minlength="6">
   `
 
   const confirmGroup = document.createElement('div')
   confirmGroup.className = 'mb-4'
   confirmGroup.innerHTML = `
-    <label for="confirmSenha" class="form-label text-uppercase small fw-semibold text-secondary">Confirmar Senha</label>
-    <input type="password" class="form-control form-control-lg bg-dark border-secondary text-light" id="confirmSenha" placeholder="Repita a senha" required minlength="6">
+    <label for="confirmSenha" class="form-label">Confirmar Senha</label>
+    <input type="password" class="form-control" id="confirmSenha" placeholder="Repita a senha" required minlength="6">
   `
 
   const btn = document.createElement('button')
   btn.type = 'submit'
-  btn.className = 'btn btn-lg w-100 border-0 fw-semibold text-uppercase'
-  btn.style.cssText = 'background:linear-gradient(135deg,#c9a84c,#a8882e);color:#0a1628;letter-spacing:0.5px'
+  btn.className = 'btn btn-primary btn-lg w-100'
   btn.textContent = 'Redefinir Senha'
 
   const footer = document.createElement('div')
-  footer.className = 'text-center mt-4 pt-4 border-top border-secondary border-opacity-25'
-  footer.innerHTML = '<p class="text-secondary small mb-0"><a href="/login" class="fw-semibold text-decoration-none" style="color:#c9a84c">Voltar ao login</a></p>'
+  footer.className = 'text-center mt-4 pt-4'
+  footer.style.borderTop = '1px solid var(--color-border)'
+  footer.innerHTML = '<p class="small mb-0" style="color:var(--color-text-secondary)"><a href="/login" class="fw-semibold">Voltar ao login</a></p>'
 
   form.appendChild(passGroup)
   form.appendChild(confirmGroup)

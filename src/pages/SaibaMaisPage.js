@@ -8,7 +8,7 @@ export function SaibaMaisPage() {
   page.appendChild(header)
 
   const main = document.createElement('main')
-  main.style.cssText = 'background:linear-gradient(135deg,#0a1628,#0d1e3a,#0a1628);min-height:calc(100vh - 76px)'
+  main.style.cssText = 'min-height:calc(100vh - 76px);background:var(--color-bg)'
 
   const container = document.createElement('div')
   container.className = 'container py-5'
@@ -20,8 +20,7 @@ export function SaibaMaisPage() {
   col.className = 'col-12 col-lg-8'
 
   const card = document.createElement('div')
-  card.className = 'card border-secondary border-opacity-25 shadow-lg'
-  card.style.backgroundColor = '#0f1b33'
+  card.className = 'card shadow-sm'
 
   const cardBody = document.createElement('div')
   cardBody.className = 'card-body p-4 p-md-5'
@@ -29,39 +28,40 @@ export function SaibaMaisPage() {
   const iconDiv = document.createElement('div')
   iconDiv.className = 'text-center mb-3'
   const iconCircle = document.createElement('span')
-  iconCircle.className = 'icon-circle'
-  iconCircle.style.cssText = 'width:52px;height:52px;font-size:1.4rem'
+  iconCircle.className = 'd-inline-flex align-items-center justify-content-center'
+  iconCircle.style.cssText = 'width:52px;height:52px;border-radius:50%;background:var(--color-primary-light);color:var(--color-primary);font-size:1.4rem;font-weight:700'
   iconCircle.textContent = 'S'
   iconDiv.appendChild(iconCircle)
 
   const title = document.createElement('h1')
   title.className = 'text-center fw-bold mb-1'
-  title.style.cssText = "font-family:'Playfair Display',serif;color:#ffffff;font-size:2rem"
+  title.style.color = 'var(--color-text-title)'
   title.textContent = 'Nossa Hist\u00f3ria'
 
-  const divider = document.createElement('div')
-  divider.className = 'divider-gold my-3'
+  const divider = document.createElement('hr')
+  divider.className = 'divider divider-center'
 
   const subtitle = document.createElement('p')
-  subtitle.className = 'text-center text-secondary mb-5'
+  subtitle.className = 'text-center mb-5'
+  subtitle.style.color = 'var(--color-text-secondary)'
   subtitle.textContent = 'Como transformamos desafios em oportunidades'
 
   const story = document.createElement('div')
-  story.style.cssText = 'color:#c5ccd6;line-height:1.9'
+  story.style.cssText = 'color:var(--color-text);line-height:1.9'
 
   const textos = [
     {
       type: 'p',
-      content: `Tudo começou em uma pequena sala comercial, com seis profissionais que compartilhavam a mesma inquieta\u00e7\u00e3o: <strong style="color:#e8c96a">por que gerenciar as finan\u00e7as de uma empresa ainda era t\u00e3o arcaico e fragmentado?</strong> Relat\u00f3rios espalhados em planilhas, informa\u00e7\u00f5es defasadas, decis\u00f5es tomadas no escuro.`
+      content: `Tudo começou em uma pequena sala comercial, com seis profissionais que compartilhavam a mesma inquieta\u00e7\u00e3o: <strong style="color:var(--color-primary)">por que gerenciar as finan\u00e7as de uma empresa ainda era t\u00e3o arcaico e fragmentado?</strong> Relat\u00f3rios espalhados em planilhas, informa\u00e7\u00f5es defasadas, decis\u00f5es tomadas no escuro.`
     },
     {
       type: 'p',
-      content: `Foi dessa insatisfa\u00e7\u00e3o que nasceu o <strong style="color:#e8c96a">${APP_NAME}</strong>. N\u00e3o como uma empresa de tecnologia qualquer, mas como uma resposta direta \u00e0 pergunta que ecoava nas salas de reuni\u00e3o: <em>"Onde est\u00e1 o dinheiro da empresa e para onde ele est\u00e1 indo?"</em>`
+      content: `Foi dessa insatisfa\u00e7\u00e3o que nasceu o <strong style="color:var(--color-primary)">${APP_NAME}</strong>. N\u00e3o como uma empresa de tecnologia qualquer, mas como uma resposta direta \u00e0 pergunta que ecoava nas salas de reuni\u00e3o: <em>"Onde est\u00e1 o dinheiro da empresa e para onde ele est\u00e1 indo?"</em>`
     },
     { type: 'h2', content: 'O Primeiro Passo' },
     {
       type: 'p',
-      content: `Em 2026, depois de meses de desenvolvimento silencioso, a primeira vers\u00e3o da plataforma foi implantada em uma rede de pequenos restaurantes. Os resultados vieram r\u00e1pido: redu\u00e7\u00e3o de <strong style="color:#e8c96a">37% no tempo gasto com fechamento financeiro</strong> e um aumento de 22% na precis\u00e3o das proje\u00e7\u00f5es de receita. O boca a boca fez o resto.`
+      content: `Em 2026, depois de meses de desenvolvimento silencioso, a primeira vers\u00e3o da plataforma foi implantada em uma rede de pequenos restaurantes. Os resultados vieram r\u00e1pido: redu\u00e7\u00e3o de <strong style="color:var(--color-primary)">37% no tempo gasto com fechamento financeiro</strong> e um aumento de 22% na precis\u00e3o das proje\u00e7\u00f5es de receita. O boca a boca fez o resto.`
     },
     {
       type: 'p',
@@ -74,11 +74,11 @@ export function SaibaMaisPage() {
     if (t.type === 'h2') {
       const h2 = document.createElement('h2')
       h2.className = 'fw-bold mt-5 mb-3'
-      h2.style.cssText = "font-family:'Playfair Display',serif;color:#c9a84c;font-size:1.5rem"
+      h2.style.color = 'var(--color-text-title)'
       h2.textContent = t.content
 
-      const hDivider = document.createElement('div')
-      hDivider.className = 'divider-gold-sm'
+      const hDivider = document.createElement('hr')
+      hDivider.className = 'divider'
 
       const wrapper = document.createElement('div')
       wrapper.appendChild(h2)
@@ -107,11 +107,11 @@ export function SaibaMaisPage() {
     div.className = 'col-6 col-lg-3'
 
     div.innerHTML = `
-      <div class="card value-card h-100 border-secondary border-opacity-25 text-center p-3" style="background:rgba(255,255,255,0.02)">
+      <div class="card h-100 text-center p-3">
         <div class="card-body">
-          <div class="d-inline-flex align-items-center justify-content-center fw-bold mb-3" style="width:40px;height:40px;border-radius:50%;border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-family:'Playfair Display',serif;font-size:1.1rem">${v.letter}</div>
-          <h5 class="fw-semibold mb-2" style="color:#c9a84c;font-size:0.9rem">${v.title}</h5>
-          <p class="small text-secondary mb-0">${v.desc}</p>
+          <div class="d-inline-flex align-items-center justify-content-center fw-bold mb-3" style="width:40px;height:40px;border-radius:50%;background:var(--color-primary-light);color:var(--color-primary);font-size:1.1rem">${v.letter}</div>
+          <h5 class="fw-semibold mb-2" style="color:var(--color-text);font-size:0.9rem">${v.title}</h5>
+          <p class="small mb-0" style="color:var(--color-text-secondary)">${v.desc}</p>
         </div>
       </div>
     `
@@ -124,7 +124,7 @@ export function SaibaMaisPage() {
     { type: 'h2', content: 'Onde Estamos Hoje' },
     {
       type: 'p',
-      content: `Atualmente, o ${APP_NAME} est\u00e1 presente em <strong style="color:#e8c96a">mais de 200 empresas</strong> em todo o Brasil, processando mais de R$ 2,5 bilh\u00f5es em receita anualmente. Nossa equipe cresceu e hoje conta com profissionais dedicados a transformar a gest\u00e3o financeira em uma vantagem competitiva real para nossos clientes.`
+      content: `Atualmente, o ${APP_NAME} est\u00e1 presente em <strong style="color:var(--color-primary)">mais de 200 empresas</strong> em todo o Brasil, processando mais de R$ 2,5 bilh\u00f5es em receita anualmente. Nossa equipe cresceu e hoje conta com profissionais dedicados a transformar a gest\u00e3o financeira em uma vantagem competitiva real para nossos clientes.`
     },
     {
       type: 'p',
@@ -133,7 +133,7 @@ export function SaibaMaisPage() {
     { type: 'h2', content: 'O Pr\u00f3ximo Cap\u00edtulo' },
     {
       type: 'p',
-      content: `Estamos apenas no come\u00e7o. A cada dia, novas funcionalidades nascem da escuta atenta aos nossos clientes. Acreditamos que a gest\u00e3o de receitas n\u00e3o \u00e9 apenas sobre n\u00fameros \u2014 \u00e9 sobre <strong style="color:#e8c96a">potencial humano, estrat\u00e9gia e crescimento sustent\u00e1vel</strong>.`
+      content: `Estamos apenas no come\u00e7o. A cada dia, novas funcionalidades nascem da escuta atenta aos nossos clientes. Acreditamos que a gest\u00e3o de receitas n\u00e3o \u00e9 apenas sobre n\u00fameros \u2014 \u00e9 sobre <strong style="color:var(--color-primary)">potencial humano, estrat\u00e9gia e crescimento sustent\u00e1vel</strong>.`
     },
   ]
 
@@ -141,11 +141,11 @@ export function SaibaMaisPage() {
     if (t.type === 'h2') {
       const h2 = document.createElement('h2')
       h2.className = 'fw-bold mt-5 mb-3'
-      h2.style.cssText = "font-family:'Playfair Display',serif;color:#c9a84c;font-size:1.5rem"
+      h2.style.color = 'var(--color-text-title)'
       h2.textContent = t.content
 
-      const hDivider = document.createElement('div')
-      hDivider.className = 'divider-gold-sm'
+      const hDivider = document.createElement('hr')
+      hDivider.className = 'divider'
 
       const wrapper = document.createElement('div')
       wrapper.appendChild(h2)
@@ -161,13 +161,14 @@ export function SaibaMaisPage() {
 
   const quoteWrapper = document.createElement('div')
   quoteWrapper.className = 'text-center mt-5 pt-4'
-  quoteWrapper.style.cssText = 'border-top:1px solid rgba(201,168,76,0.1)'
+  quoteWrapper.style.borderTop = '1px solid var(--color-border)'
 
-  const quoteDash = document.createElement('div')
-  quoteDash.className = 'divider-gold mb-4'
+  const quoteDash = document.createElement('hr')
+  quoteDash.className = 'divider-center'
+  quoteDash.style.cssText = 'width:60px;height:3px;background:var(--color-primary);border-radius:2px;border:0;margin:0 auto 1.5rem'
 
   const quote = document.createElement('p')
-  quote.style.cssText = "color:#c9a84c;font-style:italic;font-size:1.1rem;font-family:'Playfair Display',serif;max-width:500px;margin:0 auto"
+  quote.style.cssText = 'color:var(--color-primary);font-style:italic;font-size:1.1rem;max-width:500px;margin:0 auto'
   quote.textContent = 'O melhor momento para come\u00e7ar foi ontem. O segundo melhor \u00e9 agora.'
 
   quoteWrapper.appendChild(quoteDash)
@@ -179,8 +180,8 @@ export function SaibaMaisPage() {
 
   const ctaBtn = document.createElement('a')
   ctaBtn.href = '/cadastro'
-  ctaBtn.className = 'btn btn-lg border-0 fw-semibold px-5'
-  ctaBtn.style.cssText = 'background:linear-gradient(135deg,#c9a84c,#a8882e);color:#0a1628'
+  ctaBtn.className = 'btn btn-primary btn-lg px-5'
+
   ctaBtn.textContent = 'Fazer Parte'
 
   ctaBtn.addEventListener('click', e => {
