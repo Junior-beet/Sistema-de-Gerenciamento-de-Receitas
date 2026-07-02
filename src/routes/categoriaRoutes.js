@@ -1,16 +1,15 @@
 import { Router } from 'express';
 import categoriaController from '../controllers/categoriaController.js';
+import authMiddleware from '../middlewares/auth.middleware.js';
 import cargoMiddleware from '../middlewares/cargo.middleware.js';
 
 const categoriaRoutes = Router();
 
+categoriaRoutes.get('/usuario/:id_usuario', authMiddleware, categoriaController.selecionar);
+categoriaRoutes.get('/:id', authMiddleware, categoriaController.selecionarPorId);
 
-categoriaRoutes.get('/usuario/:id_usuario', categoriaController.selecionar);
-categoriaRoutes.get('/:id', categoriaController.selecionarPorId);
-
-
-categoriaRoutes.post('/', cargoMiddleware('DIRETOR_FINANCEIRO'), categoriaController.criar);
-categoriaRoutes.put('/:id', cargoMiddleware('DIRETOR_FINANCEIRO'), categoriaController.atualizar);
-categoriaRoutes.delete('/:id', cargoMiddleware('DIRETOR_FINANCEIRO'), categoriaController.deletar);
+categoriaRoutes.post('/', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), categoriaController.criar);
+categoriaRoutes.put('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), categoriaController.atualizar);
+categoriaRoutes.delete('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), categoriaController.deletar);
 
 export default categoriaRoutes;

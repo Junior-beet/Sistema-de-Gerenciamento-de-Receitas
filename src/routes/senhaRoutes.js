@@ -4,8 +4,9 @@ import authMiddleware from '../middlewares/auth.middleware.js';
 
 const senhaRoutes = Router();
 
-senhaRoutes.put('/trocar', authMiddleware, senhaController.trocarSenha);
 senhaRoutes.post('/recuperar', senhaController.solicitarRecuperacao);
 senhaRoutes.post('/redefinir', senhaController.redefinirSenha);
+
+senhaRoutes.put('/trocar', authMiddleware, senhaController.trocarSenha);
 
 export default senhaRoutes;
