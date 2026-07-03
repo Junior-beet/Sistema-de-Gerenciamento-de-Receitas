@@ -27,10 +27,10 @@ const usuarioRepository = {
     },
 
     selecionarPorEmailComSenha: async (email) => {
-    const sql = `SELECT * FROM usuarios WHERE email = ?`;
-    const [rows] = await connection.execute(sql, [email]);
-    return rows[0] || null;
-},
+        const sql = `SELECT * FROM usuarios WHERE email = ?`;
+        const [rows] = await connection.execute(sql, [email]);
+        return rows[0] || null;
+    },
 
     buscarPorCargo: async (cargo) => {
         const sql = `SELECT id_usuario FROM usuarios WHERE cargo = ?`;
@@ -45,23 +45,23 @@ const usuarioRepository = {
         return rows;
     },
 
-    deletar: async (id_usuario) => {
-        const sql = `DELETE FROM usuarios WHERE id_usuario = ?`;
+    atualizarSenha: async (id_usuario, novaSenhaHash) => {
+        const sql = `UPDATE usuarios SET senha_usuario = ? WHERE id_usuario = ?`;
+        const [rows] = await connection.execute(sql, [novaSenhaHash, id_usuario]);
+        return rows;
+    },
+
+    deletarTokens: async (id_usuario) => {
+        const sql = `DELETE FROM tokens_recuperacao WHERE id_usuario = ?`;
         const [rows] = await connection.execute(sql, [id_usuario]);
         return rows;
     },
 
-    selecionarPorEmailComSenha: async (email) => {
-    const sql = `SELECT * FROM usuarios WHERE email = ?`;
-    const [rows] = await connection.execute(sql, [email]);
-    return rows[0] || null;
-    },
-
-atualizarSenha: async (id_usuario, novaSenhaHash) => {
-    const sql = `UPDATE usuarios SET senha_usuario = ? WHERE id_usuario = ?`;
-    const [rows] = await connection.execute(sql, [novaSenhaHash, id_usuario]);
-    return rows;
-}
+    deletar: async (id_usuario) => {
+        const sql = `DELETE FROM usuarios WHERE id_usuario = ?`;
+        const [rows] = await connection.execute(sql, [id_usuario]);
+        return rows;
+    }
 };
 
 export default usuarioRepository;

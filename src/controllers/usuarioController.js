@@ -123,6 +123,10 @@ const usuarioController = {
                 return res.status(404).json({ sucesso: false, mensagem: 'Usuário não encontrado' });
             }
 
+            // Deleta tokens de recuperação vinculados primeiro
+            await usuarioRepository.deletarTokens(id_usuario);
+
+            // Depois deleta o usuário
             const result = await usuarioRepository.deletar(id_usuario);
             res.status(200).json({ sucesso: true, mensagem: 'Usuário deletado com sucesso', dados: result });
         } catch (error) {
