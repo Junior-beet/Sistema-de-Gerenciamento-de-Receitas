@@ -65,6 +65,11 @@ const categoriaController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'Preencha todos os campos obrigatórios: id_usuario, nome e tipo' });
             }
 
+            const existe = await categoriaRepository.selecionarPorId(id_categoria);
+            if (!existe) {
+                return res.status(404).json({ sucesso: false, mensagem: 'Categoria não encontrada' });
+            }
+
             const categoria = Categoria.editar({ id_usuario, nome, tipo, cor, ordem }, id_categoria);
             const result = await categoriaRepository.atualizar(categoria);
 
@@ -87,9 +92,13 @@ const categoriaController = {
             if (!existe) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Categoria não encontrada' });
             }
+            
+            await categoriaRepository.deletarSubcategorias(id_categoria);
 
+          
             const result = await categoriaRepository.deletar(id_categoria);
-            res.status(200).json({ sucesso: true, mensagem: 'Categoria deletada com sucesso', dados: result });
+
+            res.status(200).json({ sucesso: true, mensagem: 'Categoria e subcategorias vinculadas deletadas com sucesso', dados: result });
         } catch (error) {
             console.log(error);
             res.status(500).json({ sucesso: false, mensagem: 'Erro ao deletar categoria', errorMessage: error.message });

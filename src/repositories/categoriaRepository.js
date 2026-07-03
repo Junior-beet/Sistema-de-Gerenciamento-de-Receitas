@@ -27,6 +27,12 @@ const categoriaRepository = {
         return rows;
     },
 
+    deletarSubcategorias: async (id_categoria) => {
+        const sql = `DELETE FROM subcategorias WHERE id_categoria = ?`;
+        const [rows] = await connection.execute(sql, [id_categoria]);
+        return rows;
+    },
+
     deletar: async (id_categoria) => {
         const sql = `DELETE FROM categorias WHERE id_categoria = ?`;
         const [rows] = await connection.execute(sql, [id_categoria]);
