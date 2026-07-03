@@ -10,7 +10,7 @@ export const auth = {
 
   async cadastrar({ nome, email, senha, cargo }) {
     try {
-      const data = await api.post('/cadastro', { nome, email, senha, cargo })
+      const data = await api.post('/usuarios', { nome, email, senha_usuario: senha, cargo })
       return { sucesso: true, usuario: data.usuario }
     } catch (err) {
       return { erro: err.message }
@@ -19,11 +19,11 @@ export const auth = {
 
   async login(email, senha) {
     try {
-      const data = await api.post('/login', { email, senha })
+      const data = await api.post('/auth/login', { email, senha_usuario: senha })
       storage.set(STORAGE_KEYS.TOKEN, data.token)
       return { sucesso: true, token: data.token, usuario: data.usuario }
     } catch (err) {
-      return { erro: 'E-mail ou senha inválidos.' }
+      return { erro: err.message }
     }
   },
 
@@ -57,7 +57,7 @@ export const auth = {
 
   async gerarTokenReset(email) {
     try {
-      await api.post('/esqueci-senha', { email })
+      await api.post('/senha/recuperar', { email })
       return true
     } catch {
       return false
@@ -66,7 +66,7 @@ export const auth = {
 
   async redefinirSenha(token, novaSenha) {
     try {
-      await api.post('/redefinir-senha', { token, novaSenha })
+      await api.post('/senha/redefinir', { token, nova_senha: novaSenha, confirmar_senha: novaSenha })
       return { sucesso: true }
     } catch (err) {
       return { erro: err.message }

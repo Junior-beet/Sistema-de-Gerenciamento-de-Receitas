@@ -1,7 +1,7 @@
-export const CARGOS = [
+ export const CARGOS = [
   { value: 'CEO', label: 'CEO' },
-  { value: 'Departamento Financeiro', label: 'Departamento Financeiro' },
-  { value: 'Gerente', label: 'Gerente' },
+  { value: 'DIRETOR_FINANCEIRO', label: 'Departamento Financeiro' },
+  { value: 'GERENTE', label: 'Gerente' },
 ]
 
 export const STORAGE_KEYS = {
@@ -12,8 +12,8 @@ export const STORAGE_KEYS = {
 
 export const APP_NAME = 'SGR'
 
-export const JWT_SECRET = 'sua_chave_secreta_aqui'
+export const JWT_SECRET = 'sistema_financeiro_tcc_senai_2026_chave_ultra_secreta'
 
-export const API_URL = 'http://localhost:3000/api'
+export const API_URL = 'http://localhost:8080'
 
-export const ROTAS_PUBLICAS = ['/login', '/cadastro', '/saiba-mais', '/esqueci-senha', '/redefinir-senha']
+export const ROTAS_PUBLICAS = ['/login', '/cadastro', '/saiba-mais', '/esqueci-senha', '/redefinir-senha'];

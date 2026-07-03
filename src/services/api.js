@@ -24,7 +24,7 @@ async function request(endpoint, options = {}) {
   const data = await res.json()
 
   if (!res.ok) {
-    throw new Error(data.erro || `Erro ${res.status}`)
+    throw new Error(data.mensagem || `Erro ${res.status}`)
   }
 
   return data
