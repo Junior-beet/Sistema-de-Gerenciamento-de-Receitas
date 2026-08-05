@@ -1,6 +1,7 @@
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import './style.css'
 
+import { HomePage } from './pages/HomePage.js'
 import { LoginPage } from './pages/LoginPage.js'
 import { CadastroPage } from './pages/CadastroPage.js'
 import { SaibaMaisPage } from './pages/SaibaMaisPage.js'
@@ -10,6 +11,7 @@ import { auth } from './services/auth.js'
 import { ROTAS_PUBLICAS } from './config/constants.js'
 
 const rotas = {
+  '/': HomePage,
   '/login': LoginPage,
   '/cadastro': CadastroPage,
   '/saiba-mais': SaibaMaisPage,
@@ -28,14 +30,19 @@ function rotear(caminho) {
 
   const caminhoBase = extrairCaminhoBase(caminho)
 
+  if (caminhoBase === '/' && auth.estaLogado()) {
+    window.dispatchEvent(new CustomEvent('navegar', { detail: '/saiba-mais' }))
+    return
+  }
+
   if (!ROTAS_PUBLICAS.includes(caminhoBase) && !auth.estaLogado()) {
-    window.dispatchEvent(new CustomEvent('navegar', { detail: '/login' }))
+    window.dispatchEvent(new CustomEvent('navegar', { detail: '/' }))
     return
   }
 
   const pagina = rotas[caminhoBase]
   if (!pagina) {
-    window.dispatchEvent(new CustomEvent('navegar', { detail: '/login' }))
+    window.dispatchEvent(new CustomEvent('navegar', { detail: '/' }))
     return
   }
 
@@ -57,4 +64,4 @@ window.addEventListener('popstate', () => {
   rotear(location.pathname + location.search)
 })
 
-rotear(location.pathname + location.search || '/login')
+rotear(location.pathname + location.search || '/')

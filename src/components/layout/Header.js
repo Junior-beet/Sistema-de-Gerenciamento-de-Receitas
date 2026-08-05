@@ -28,7 +28,7 @@ export function Header(rotaAtiva) {
 
   const brand = document.createElement('a')
   brand.className = 'navbar-brand'
-  brand.href = '/login'
+  brand.href = '/'
   brand.style.cursor = 'pointer'
 
   const logo = document.createElement('span')

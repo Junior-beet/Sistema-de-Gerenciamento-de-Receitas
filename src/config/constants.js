@@ -16,4 +16,4 @@ export const JWT_SECRET = 'sistema_financeiro_tcc_senai_2026_chave_ultra_secreta
 
 export const API_URL = 'http://localhost:8080'
 
-export const ROTAS_PUBLICAS = ['/login', '/cadastro', '/saiba-mais', '/esqueci-senha', '/redefinir-senha'];
+export const ROTAS_PUBLICAS = ['/', '/login', '/cadastro', '/saiba-mais', '/esqueci-senha', '/redefinir-senha'];

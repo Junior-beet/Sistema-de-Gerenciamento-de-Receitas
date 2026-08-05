@@ -156,6 +156,12 @@ body, .body {
   background: var(--color-primary-light);
 }
 
+.app-header .nav-link,
+.app-header .nav-link:hover,
+.app-header .nav-link.active {
+  text-decoration: none;
+}
+
 .app-header .navbar-toggler {
   border: none;
   color: var(--color-text);
