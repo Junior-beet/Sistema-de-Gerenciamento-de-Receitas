@@ -1,5 +1,6 @@
 import { Header } from '../components/layout/Header.jsx'
 import { mostrarAlerta } from '../components/shared/Alert.jsx'
+import { mostrarToast } from '../components/shared/Toast.jsx'
 import { auth } from '../services/auth.jsx'
 
 export function RedefinirSenhaPage() {
@@ -12,39 +13,19 @@ export function RedefinirSenhaPage() {
   page.appendChild(header)
 
   const main = document.createElement('main')
-  main.className = 'd-flex align-items-center'
-  main.style.cssText = 'min-height:calc(100vh - 76px);background:var(--color-bg)'
-
-  const container = document.createElement('div')
-  container.className = 'container py-5'
-
-  const row = document.createElement('div')
-  row.className = 'row justify-content-center'
-
-  const col = document.createElement('div')
-  col.className = 'col-12 col-md-6 col-lg-5'
+  main.className = 'auth-page'
 
   const card = document.createElement('div')
-  card.className = 'card shadow-sm'
+  card.className = 'auth-card'
 
-  const cardBody = document.createElement('div')
-  cardBody.className = 'card-body p-4 p-md-5'
-
-  const iconDiv = document.createElement('div')
-  iconDiv.className = 'text-center mb-3'
-  const iconCircle = document.createElement('span')
-  iconCircle.className = 'd-inline-flex align-items-center justify-content-center'
-  iconCircle.style.cssText = 'width:48px;height:48px;border-radius:50%;background:var(--color-primary-light);color:var(--color-primary);font-size:1.3rem;font-weight:700'
-  iconCircle.textContent = '!'
-  iconDiv.appendChild(iconCircle)
+  const logo = document.createElement('img')
+  logo.src = '/assets/logo-sgr.svg'
+  logo.alt = 'Logo do SGR'
+  logo.className = 'auth-logo'
 
   const title = document.createElement('h1')
-  title.className = 'text-center fw-bold mb-1'
-  title.style.color = 'var(--color-text-title)'
+  title.className = 'auth-title'
   title.textContent = 'Redefinir Senha'
-
-  const divider = document.createElement('hr')
-  divider.className = 'divider divider-center'
 
   const alert = document.createElement('div')
   alert.className = 'alert d-none'
@@ -58,22 +39,17 @@ export function RedefinirSenhaPage() {
 
     const footer = document.createElement('div')
     footer.className = 'text-center mt-4 pt-4'
-    footer.style.borderTop = '1px solid var(--color-border)'
+    footer.style.borderTop = '1px solid var(--color-border-light)'
     footer.innerHTML = '<p class="small mb-0" style="color:var(--color-text-secondary)"><a href="/esqueci-senha" class="fw-semibold">Solicitar novo link</a></p>'
 
-    cardBody.appendChild(iconDiv)
-    cardBody.appendChild(title)
-    cardBody.appendChild(divider)
-    cardBody.appendChild(msg)
-    cardBody.appendChild(footer)
-    card.appendChild(cardBody)
-    col.appendChild(card)
-    row.appendChild(col)
-    container.appendChild(row)
-    main.appendChild(container)
+    card.appendChild(logo)
+    card.appendChild(title)
+    card.appendChild(msg)
+    card.appendChild(footer)
+    main.appendChild(card)
     page.appendChild(main)
 
-    cardBody.querySelectorAll('a[href]').forEach(a => {
+    card.querySelectorAll('a[href]').forEach(a => {
       a.addEventListener('click', e => {
         e.preventDefault()
         window.dispatchEvent(new CustomEvent('navegar', { detail: a.getAttribute('href') }))
@@ -84,8 +60,7 @@ export function RedefinirSenhaPage() {
   }
 
   const subtitle = document.createElement('p')
-  subtitle.className = 'text-center mb-4'
-  subtitle.style.color = 'var(--color-text-secondary)'
+  subtitle.className = 'auth-subtitle'
   subtitle.textContent = 'Escolha sua nova senha'
 
   const form = document.createElement('form')
@@ -133,25 +108,21 @@ export function RedefinirSenhaPage() {
 
   const footer = document.createElement('div')
   footer.className = 'text-center mt-4 pt-4'
-  footer.style.borderTop = '1px solid var(--color-border)'
+  footer.style.borderTop = '1px solid var(--color-border-light)'
   footer.innerHTML = '<p class="small mb-0" style="color:var(--color-text-secondary)"><a href="/login" class="fw-semibold">Voltar ao login</a></p>'
 
   form.appendChild(passGroup)
   form.appendChild(confirmGroup)
   form.appendChild(btn)
 
-  cardBody.appendChild(iconDiv)
-  cardBody.appendChild(title)
-  cardBody.appendChild(divider)
-  cardBody.appendChild(subtitle)
-  cardBody.appendChild(alert)
-  cardBody.appendChild(form)
-  cardBody.appendChild(footer)
-  card.appendChild(cardBody)
-  col.appendChild(card)
-  row.appendChild(col)
-  container.appendChild(row)
-  main.appendChild(container)
+  card.appendChild(logo)
+  card.appendChild(title)
+  card.appendChild(subtitle)
+  card.appendChild(alert)
+  card.appendChild(form)
+  card.appendChild(footer)
+
+  main.appendChild(card)
   page.appendChild(main)
 
   form.addEventListener('submit', async e => {
@@ -173,13 +144,15 @@ export function RedefinirSenhaPage() {
 
     if (result.erro) {
       mostrarAlerta(alert, 'erro', result.erro)
+      mostrarToast('erro', result.erro)
     } else {
       mostrarAlerta(alert, 'sucesso', 'Senha redefinida com sucesso!')
+      mostrarToast('sucesso', 'Senha redefinida com sucesso!')
       setTimeout(() => window.dispatchEvent(new CustomEvent('navegar', { detail: '/login' })), 2000)
     }
   })
 
-  cardBody.querySelectorAll('a[href]').forEach(a => {
+  card.querySelectorAll('a[href]').forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault()
       window.dispatchEvent(new CustomEvent('navegar', { detail: a.getAttribute('href') }))

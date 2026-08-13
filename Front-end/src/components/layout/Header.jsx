@@ -28,19 +28,32 @@ export function Header(rotaAtiva) {
 
   const brand = document.createElement('a')
   brand.className = 'navbar-brand'
-  brand.href = '/login'
+  brand.href = '/'
   brand.style.cursor = 'pointer'
 
-  const logo = document.createElement('span')
-  logo.className = 'brand-logo'
-  logo.textContent = 'S'
+  const logo = document.createElement('img')
+  logo.src = '/assets/logo-sgr.svg'
+  logo.alt = 'Logo do SGR'
+  logo.style.cssText = 'width:32px;height:32px'
 
-  const brandText = document.createElement('span')
-  brandText.className = 'brand-text'
-  brandText.textContent = APP_NAME
+  const wordmark = document.createElement('span')
+  wordmark.className = 'brand-wordmark'
+  const letras = APP_NAME.split('')
+  letras.forEach((letra, i) => {
+    const s = document.createElement('span')
+    s.textContent = letra
+    if (i > 2) s.style.color = 'var(--color-text-title)'
+    wordmark.appendChild(s)
+  })
 
   brand.appendChild(logo)
-  brand.appendChild(brandText)
+  brand.appendChild(wordmark)
+
+  brand.addEventListener('click', e => {
+    e.preventDefault()
+    window.dispatchEvent(new CustomEvent('navegar', { detail: '/' }))
+  })
+
   container.appendChild(brand)
 
   const toggle = document.createElement('button')
