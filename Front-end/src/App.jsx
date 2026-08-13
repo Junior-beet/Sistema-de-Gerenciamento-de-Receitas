@@ -20,38 +20,24 @@ const rotas = {
 }
 
 function extrairCaminhoBase(caminho) {
-  let caminhoBase = caminho.split('?')[0].split('#')[0]
-  if (caminhoBase.length > 1 && caminhoBase.endsWith('/')) {
-    caminhoBase = caminhoBase.slice(0, -1)
-  }
-  return caminhoBase
-}
-
-function irPara(caminho, substituir = false) {
-  if (substituir) {
-    history.replaceState({}, '', caminho)
-  } else {
-    history.pushState({}, '', caminho)
-  }
-  rotear(caminho)
+  const idx = caminho.indexOf('?')
+  return idx === -1 ? caminho : caminho.slice(0, idx)
 }
 
 function rotear(caminho) {
   const app = document.getElementById('app')
-  if (!app) return
-
   app.innerHTML = ''
 
   const caminhoBase = extrairCaminhoBase(caminho)
 
   if (!ROTAS_PUBLICAS.includes(caminhoBase) && !auth.estaLogado()) {
-    irPara('/', true)
+    window.dispatchEvent(new CustomEvent('navegar', { detail: '/' }))
     return
   }
 
   const pagina = rotas[caminhoBase]
   if (!pagina) {
-    irPara('/', true)
+    window.dispatchEvent(new CustomEvent('navegar', { detail: '/' }))
     return
   }
 
@@ -63,12 +49,20 @@ function rotear(caminho) {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-window.addEventListener('navegar', e => {
-  irPara(e.detail)
-})
+export function App() {
+  const app = document.getElementById('app')
 
-window.addEventListener('popstate', () => {
-  rotear(location.pathname + location.search)
-})
+  window.addEventListener('navegar', e => {
+    const caminho = e.detail
+    history.pushState({}, '', caminho)
+    rotear(caminho)
+  })
 
-rotear(location.pathname + location.search || '/')
+  window.addEventListener('popstate', () => {
+    rotear(location.pathname + location.search)
+  })
+
+  rotear(location.pathname + location.search || '/')
+
+  return app
+}

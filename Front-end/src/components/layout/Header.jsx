@@ -22,6 +22,8 @@ export function Header(rotaAtiva) {
 
   const nav = document.createElement('nav')
   nav.className = 'navbar navbar-expand-sm'
+  nav.style.backgroundColor = '#1976D2'
+  nav.style.color = 'white'
 
   const container = document.createElement('div')
   container.className = 'container'
@@ -30,25 +32,15 @@ export function Header(rotaAtiva) {
   brand.className = 'navbar-brand'
   brand.href = '/'
   brand.style.cursor = 'pointer'
+  brand.style.color = 'white'
 
   const logo = document.createElement('img')
-  logo.src = '/assets/logo-sgr.svg'
+  logo.src = '/assets/letraLOGO.png'
   logo.alt = 'Logo do SGR'
-  logo.style.cssText = 'width:32px;height:32px'
-
-  const wordmark = document.createElement('span')
-  wordmark.className = 'brand-wordmark'
-  const letras = APP_NAME.split('')
-  letras.forEach((letra, i) => {
-    const s = document.createElement('span')
-    s.textContent = letra
-    if (i > 2) s.style.color = 'var(--color-text-title)'
-    wordmark.appendChild(s)
-  })
+  logo.style.cssText = 'width:72px;height:32px'
 
   brand.appendChild(logo)
-  brand.appendChild(wordmark)
-
+  
   brand.addEventListener('click', e => {
     e.preventDefault()
     window.dispatchEvent(new CustomEvent('navegar', { detail: '/' }))
@@ -80,6 +72,8 @@ export function Header(rotaAtiva) {
     a.className = `nav-link ${rota.href === rotaAtiva ? 'active' : ''}`
     a.href = rota.href
     a.textContent = rota.label
+    a.style.color = 'white'
+    a.style.setProperty('color', 'white', 'important')
 
     a.addEventListener('click', e => {
       e.preventDefault()

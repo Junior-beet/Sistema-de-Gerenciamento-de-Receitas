@@ -15,16 +15,16 @@ async function request(endpoint, options = {}) {
     headers,
   })
 
-  if (res.status === 401) {
-    storage.remove(STORAGE_KEYS.TOKEN)
-    window.dispatchEvent(new CustomEvent('navegar', { detail: '/login' }))
-    throw new Error('Não autorizado.')
-  }
-
-  const data = await res.json()
+  const data = await res.json().catch(() => null)
 
   if (!res.ok) {
-    throw new Error(data.mensagem || `Erro ${res.status}`)
+    if (res.status === 401 && token) {
+      storage.remove(STORAGE_KEYS.TOKEN)
+      if (location.pathname !== '/login') {
+        window.dispatchEvent(new CustomEvent('navegar', { detail: '/login' }))
+      }
+    }
+    throw new Error(data?.mensagem || `Erro ${res.status}`)
   }
 
   return data

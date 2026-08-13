@@ -599,6 +599,35 @@ h3, .h3 { font-size: 20px; font-weight: 600; line-height: 1.35; }
 .footer-section .footer-links a { color: var(--color-text-secondary); transition: color 0.2s ease; }
 .footer-section .footer-links a:hover { color: var(--color-primary); text-decoration: none; }
 
+.footer-section .footer-team { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+
+.footer-section .footer-team-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+}
+
+.footer-section .footer-team-avatar {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.footer-section .footer-team-nome {
+  color: #fff;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
 .footer-section .footer-contact li { display: flex; align-items: flex-start; gap: 8px; }
 
 .footer-section .contact-label {

@@ -1,30 +1,7 @@
 import { Header } from '../components/layout/Header.jsx'
 import { Footer } from '../components/layout/Footer.jsx'
 import { APP_NAME } from '../config/constants.jsx'
-
-const FEATURES = [
-  {
-    icon: 'R',
-    bg: 'var(--color-primary-light)',
-    color: 'var(--color-primary)',
-    title: 'Controle de Receitas',
-    desc: 'Registre e acompanhe todas as entradas financeiras da sua empresa em um só lugar, com histórico completo e organizado.',
-  },
-  {
-    icon: 'S',
-    bg: 'var(--color-green-light)',
-    color: 'var(--color-green)',
-    title: 'Segurança em Primeiro Lugar',
-    desc: 'Autenticação protegida e criptografia em cada etapa garantem que seus dados financeiros fiquem sempre seguros.',
-  },
-  {
-    icon: 'D',
-    bg: 'var(--color-yellow-light)',
-    color: '#F29900',
-    title: 'Decisões com Clareza',
-    desc: 'Relatórios e indicadores claros para apoiar decisões estratégicas e acompanhar a evolução do seu negócio.',
-  },
-]
+import { auth } from '../services/auth.jsx'
 
 const BENEFITS = [
   { num: '01', title: 'Cadastro simples', desc: 'Crie sua conta em poucos minutos e comece a registrar suas receitas imediatamente.' },
@@ -42,6 +19,33 @@ function navegar(el) {
 export function HomePage() {
   const page = document.createElement('div')
   page.appendChild(Header('/'))
+
+  const logado = auth.estaLogado()
+
+  const heroBtns = logado
+    ? `<a href="/saiba-mais" class="btn btn-primary btn-lg px-5 cta-link">Saiba Mais</a>`
+    : `<a href="/login" class="btn btn-primary btn-lg px-5 cta-link">Entrar</a>
+       <a href="/cadastro" class="btn btn-outline-primary btn-lg px-5 cta-link">Criar Conta</a>`
+
+  const ctaSection = logado
+    ? ''
+    : `
+      <section class="pb-5">
+        <div class="container pb-4">
+          <div class="cta-banner text-center text-lg-start">
+            <div class="row align-items-center position-relative">
+              <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+                <h2 class="mb-2" style="color:#fff;font-size:clamp(24px,3vw,34px)">Pronto para organizar suas receitas?</h2>
+                <p class="mb-0" style="color:rgba(255,255,255,0.85);font-size:16px">Crie sua conta gratuitamente e descubra uma forma mais simples de gerir suas finanças.</p>
+              </div>
+              <div class="col-12 col-lg-4 text-lg-end position-relative">
+                <a href="/cadastro" class="btn btn-white btn-lg px-5 cta-link" style="border-radius:999px">Criar Conta</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    `
 
   page.insertAdjacentHTML('beforeend', `
     <main>
@@ -63,18 +67,18 @@ export function HomePage() {
                 da sua empresa — com segurança, clareza e foco no que importa.
               </p>
               <div class="d-flex flex-column flex-sm-row gap-3 mb-4">
-                <a href="/login" class="btn btn-primary btn-lg px-5 cta-link">Entrar</a>
-                <a href="/cadastro" class="btn btn-outline-primary btn-lg px-5 cta-link">Criar Conta Gratuita</a>
+                ${heroBtns}
               </div>
               <div class="d-flex align-items-center gap-3">
                 <div class="d-flex">
+                  <span class="d-inline-flex align-items-center justify-content-center" style="width:28px;height:28px;border-radius:50%;background:#FF6D01;color:#fff;font-size:11px;font-weight:700;border:2px solid #fff;margin-left:-6px">L</span>
                   <span class="d-inline-flex align-items-center justify-content-center" style="width:28px;height:28px;border-radius:50%;background:#4285F4;color:#fff;font-size:11px;font-weight:700;border:2px solid #fff;margin-left:-6px">A</span>
                   <span class="d-inline-flex align-items-center justify-content-center" style="width:28px;height:28px;border-radius:50%;background:#EA4335;color:#fff;font-size:11px;font-weight:700;border:2px solid #fff;margin-left:-6px">J</span>
                   <span class="d-inline-flex align-items-center justify-content-center" style="width:28px;height:28px;border-radius:50%;background:#FBBC04;color:#fff;font-size:11px;font-weight:700;border:2px solid #fff;margin-left:-6px">M</span>
                   <span class="d-inline-flex align-items-center justify-content-center" style="width:28px;height:28px;border-radius:50%;background:#34A853;color:#fff;font-size:11px;font-weight:700;border:2px solid #fff;margin-left:-6px">N</span>
                   <span class="d-inline-flex align-items-center justify-content-center" style="width:28px;height:28px;border-radius:50%;background:#1A73E8;color:#fff;font-size:11px;font-weight:700;border:2px solid #fff;margin-left:-6px">S</span>
                 </div>
-                <small class="text-secondary-soft">Feito pela equipe SENAI · TCC 2026</small>
+                <small class="text-secondary-soft">Feito pela equipe TechSolutions · TCC 2026</small>
               </div>
             </div>
 
@@ -83,19 +87,11 @@ export function HomePage() {
                 <img src="/assets/hero-dashboard.svg" alt="Dashboard do SGR" class="hero-img">
                 <div class="hero-float-card" style="top:18%;left:-22px">
                   <span class="fc-icon" style="background:var(--color-green-light);color:var(--color-green)">R$</span>
-                  <div>
-                    <div style="font-size:13px;font-weight:700;color:var(--color-text-title)">Receita do mês</div>
-                    <div style="font-size:12px;color:var(--color-green);font-weight:600">▲ 12,5% vs. mês anterior</div>
-                  </div>
                 </div>
                 <div class="hero-float-card" style="bottom:14%;right:-18px">
                   <span class="fc-icon" style="background:var(--color-primary-light);color:var(--color-primary)">
                     <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 12l4-4 3 3 5-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   </span>
-                  <div>
-                    <div style="font-size:13px;font-weight:700;color:var(--color-text-title)">Evolução constante</div>
-                    <div style="font-size:12px;color:var(--color-text-secondary)">Relatórios em tempo real</div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -137,14 +133,7 @@ export function HomePage() {
             </p>
           </div>
           <div class="row g-4 justify-content-center">
-            ${FEATURES.map(f => `
-              <div class="col-12 col-md-6 col-lg-4">
-                <div class="feature-card">
-                  <span class="feature-icon" style="background:${f.bg};color:${f.color}">${f.icon}</span>
-                  <h3 class="fw-bold mb-2" style="font-size:1.1rem">${f.title}</h3>
-                  <p class="small mb-0" style="color:var(--color-text-secondary);line-height:1.7">${f.desc}</p>
-                </div>
-              </div>`).join('')}
+    
           </div>
         </div>
       </section>
@@ -191,21 +180,7 @@ export function HomePage() {
       </section>
 
       <!-- CTA -->
-      <section class="pb-5">
-        <div class="container pb-4">
-          <div class="cta-banner text-center text-lg-start">
-            <div class="row align-items-center position-relative">
-              <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-                <h2 class="mb-2" style="color:#fff;font-size:clamp(24px,3vw,34px)">Pronto para organizar suas receitas?</h2>
-                <p class="mb-0" style="color:rgba(255,255,255,0.85);font-size:16px">Crie sua conta gratuitamente e descubra uma forma mais simples de gerir suas finanças.</p>
-              </div>
-              <div class="col-12 col-lg-4 text-lg-end position-relative">
-                <a href="/cadastro" class="btn btn-white btn-lg px-5 cta-link" style="border-radius:999px">Criar Conta</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      ${ctaSection}
     </main>
   `)
 

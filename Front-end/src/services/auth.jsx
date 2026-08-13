@@ -11,7 +11,7 @@ export const auth = {
   async cadastrar({ nome, email, senha, cargo }) {
     try {
       const data = await api.post('/usuarios', { nome, email, senha_usuario: senha, cargo })
-      return { sucesso: true, usuario: data.usuario }
+      return { sucesso: true, usuario: data.usuario || data.dados }
     } catch (err) {
       return { erro: err.message }
     }
