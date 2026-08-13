@@ -3,13 +3,14 @@ import { APP_NAME } from '../../config/constants.jsx'
 export function Footer() {
   const footer = document.createElement('footer')
   footer.className = 'footer-section'
+  footer.style.backgroundColor = '#1976D2'
+  footer.style.color = 'white'
 
   footer.innerHTML = `
     <div class="container">
       <div class="row gy-4">
         <div class="col-lg-4">
           <div class="footer-brand">
-            <span class="footer-logo">S</span>
             <span class="footer-brand-name">${APP_NAME}</span>
           </div>
           <p class="footer-about">
@@ -61,6 +62,10 @@ export function Footer() {
       e.preventDefault()
       window.dispatchEvent(new CustomEvent('navegar', { detail: anchor.getAttribute('href') }))
     })
+  })
+
+  footer.querySelectorAll('h6, p, li, span, a').forEach(element => {
+    element.style.color = 'white'
   })
 
   return footer

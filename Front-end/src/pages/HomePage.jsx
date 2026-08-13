@@ -2,29 +2,6 @@ import { Header } from '../components/layout/Header.jsx'
 import { Footer } from '../components/layout/Footer.jsx'
 import { APP_NAME } from '../config/constants.jsx'
 
-const FEATURES = [
-  {
-    icon: 'R',
-    bg: 'var(--color-primary-light)',
-    color: 'var(--color-primary)',
-    title: 'Controle de Receitas',
-    desc: 'Registre e acompanhe todas as entradas financeiras da sua empresa em um só lugar, com histórico completo e organizado.',
-  },
-  {
-    icon: 'S',
-    bg: 'var(--color-green-light)',
-    color: 'var(--color-green)',
-    title: 'Segurança em Primeiro Lugar',
-    desc: 'Autenticação protegida e criptografia em cada etapa garantem que seus dados financeiros fiquem sempre seguros.',
-  },
-  {
-    icon: 'D',
-    bg: 'var(--color-yellow-light)',
-    color: '#F29900',
-    title: 'Decisões com Clareza',
-    desc: 'Relatórios e indicadores claros para apoiar decisões estratégicas e acompanhar a evolução do seu negócio.',
-  },
-]
 
 const BENEFITS = [
   { num: '01', title: 'Cadastro simples', desc: 'Crie sua conta em poucos minutos e comece a registrar suas receitas imediatamente.' },
@@ -64,7 +41,7 @@ export function HomePage() {
               </p>
               <div class="d-flex flex-column flex-sm-row gap-3 mb-4">
                 <a href="/login" class="btn btn-primary btn-lg px-5 cta-link">Entrar</a>
-                <a href="/cadastro" class="btn btn-outline-primary btn-lg px-5 cta-link">Criar Conta Gratuita</a>
+                <a href="/cadastro" class="btn btn-outline-primary btn-lg px-5 cta-link">Criar Conta</a>
               </div>
               <div class="d-flex align-items-center gap-3">
                 <div class="d-flex">
@@ -83,19 +60,11 @@ export function HomePage() {
                 <img src="/assets/hero-dashboard.svg" alt="Dashboard do SGR" class="hero-img">
                 <div class="hero-float-card" style="top:18%;left:-22px">
                   <span class="fc-icon" style="background:var(--color-green-light);color:var(--color-green)">R$</span>
-                  <div>
-                    <div style="font-size:13px;font-weight:700;color:var(--color-text-title)">Receita do mês</div>
-                    <div style="font-size:12px;color:var(--color-green);font-weight:600">▲ 12,5% vs. mês anterior</div>
-                  </div>
                 </div>
                 <div class="hero-float-card" style="bottom:14%;right:-18px">
                   <span class="fc-icon" style="background:var(--color-primary-light);color:var(--color-primary)">
                     <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 12l4-4 3 3 5-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   </span>
-                  <div>
-                    <div style="font-size:13px;font-weight:700;color:var(--color-text-title)">Evolução constante</div>
-                    <div style="font-size:12px;color:var(--color-text-secondary)">Relatórios em tempo real</div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -137,14 +106,7 @@ export function HomePage() {
             </p>
           </div>
           <div class="row g-4 justify-content-center">
-            ${FEATURES.map(f => `
-              <div class="col-12 col-md-6 col-lg-4">
-                <div class="feature-card">
-                  <span class="feature-icon" style="background:${f.bg};color:${f.color}">${f.icon}</span>
-                  <h3 class="fw-bold mb-2" style="font-size:1.1rem">${f.title}</h3>
-                  <p class="small mb-0" style="color:var(--color-text-secondary);line-height:1.7">${f.desc}</p>
-                </div>
-              </div>`).join('')}
+    
           </div>
         </div>
       </section>
