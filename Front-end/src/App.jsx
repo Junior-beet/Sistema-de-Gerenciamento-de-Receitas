@@ -7,6 +7,8 @@ import { CadastroPage } from './pages/CadastroPage.jsx'
 import { SaibaMaisPage } from './pages/SaibaMaisPage.jsx'
 import { EsqueciSenhaPage } from './pages/EsqueciSenhaPage.jsx'
 import { RedefinirSenhaPage } from './pages/RedefinirSenhaPage.jsx'
+import { DashboardPage } from './pages/DashboardPage.jsx'
+import { TransacaoFormPage } from './pages/TransacaoFormPage.jsx'
 import { auth } from './services/auth.jsx'
 import { ROTAS_PUBLICAS } from './config/constants.jsx'
 
@@ -17,11 +19,20 @@ const rotas = {
   '/saiba-mais': SaibaMaisPage,
   '/esqueci-senha': EsqueciSenhaPage,
   '/redefinir-senha': RedefinirSenhaPage,
+  '/dashboard': DashboardPage,
+  '/transacoes/nova': TransacaoFormPage,
+  '/transacoes/editar': TransacaoFormPage,
 }
 
 function extrairCaminhoBase(caminho) {
   const idx = caminho.indexOf('?')
   return idx === -1 ? caminho : caminho.slice(0, idx)
+}
+
+function matchRota(caminhoBase) {
+  if (rotas[caminhoBase]) return rotas[caminhoBase]
+  if (caminhoBase.startsWith('/transacoes/editar/')) return rotas['/transacoes/editar']
+  return null
 }
 
 function rotear(caminho) {
@@ -35,7 +46,7 @@ function rotear(caminho) {
     return
   }
 
-  const pagina = rotas[caminhoBase]
+  const pagina = matchRota(caminhoBase)
   if (!pagina) {
     window.dispatchEvent(new CustomEvent('navegar', { detail: '/' }))
     return

@@ -4,6 +4,7 @@ import { auth } from '../../services/auth.jsx'
 function getRotas() {
   if (auth.estaLogado()) {
     return [
+      { href: '/dashboard', label: 'Dashboard' },
       { href: '/saiba-mais', label: 'Saiba Mais' },
       { href: '#sair', label: 'Sair' },
     ]

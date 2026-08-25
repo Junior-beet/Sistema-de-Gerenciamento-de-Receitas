@@ -14,6 +14,7 @@ function getLinks() {
   if (auth.estaLogado()) {
     return [
       { href: '/', label: 'Home' },
+      { href: '/dashboard', label: 'Dashboard' },
       { href: '/saiba-mais', label: 'Saiba Mais' },
       { href: '#sair', label: 'Sair' },
     ]
@@ -31,11 +32,8 @@ export function Footer() {
   footer.className = 'footer-section'
   footer.style.backgroundColor = '#1976D2'
   footer.style.color = 'white'
-<<<<<<< HEAD
 
   const links = getLinks()
-=======
->>>>>>> 25787d0ad699044ce952b771753454b2ab3c51f4
 
   footer.innerHTML = `
     <div class="container">
@@ -101,13 +99,10 @@ export function Footer() {
     element.style.color = 'white'
   })
 
-<<<<<<< HEAD
   footer.querySelectorAll('.footer-links a').forEach(link => {
     link.addEventListener('mouseenter', () => link.style.color = '#BBDEFB')
     link.addEventListener('mouseleave', () => link.style.color = 'white')
   })
 
-=======
->>>>>>> 25787d0ad699044ce952b771753454b2ab3c51f4
   return footer
 }
