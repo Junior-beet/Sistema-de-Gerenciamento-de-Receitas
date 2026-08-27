@@ -1,4 +1,5 @@
 import { Header } from '../components/layout/Header.jsx'
+import { Footer } from '../components/layout/Footer.jsx'
 import { mostrarAlerta } from '../components/shared/Alert.jsx'
 import { mostrarToast } from '../components/shared/Toast.jsx'
 import { auth } from '../services/auth.jsx'
@@ -80,6 +81,7 @@ export function LoginPage() {
 
   main.appendChild(card)
   page.appendChild(main)
+  page.appendChild(Footer())
 
   form.addEventListener('submit', async e => {
     e.preventDefault()
@@ -93,7 +95,7 @@ export function LoginPage() {
     } else {
       mostrarAlerta(alert, 'sucesso', `Bem-vindo, ${result.usuario.nome}!`)
       mostrarToast('sucesso', `Login efetuado com sucesso. Bem-vindo, ${result.usuario.nome}!`)
-      setTimeout(() => window.dispatchEvent(new CustomEvent('navegar', { detail: '/categorias' })), 1200)
+      setTimeout(() => window.dispatchEvent(new CustomEvent('navegar', { detail: '/calculos' })), 1200)
     }
   })
 

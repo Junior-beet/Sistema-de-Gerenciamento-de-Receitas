@@ -21,10 +21,10 @@ const rotas = {
   '/saiba-mais': SaibaMaisPage,
   '/esqueci-senha': EsqueciSenhaPage,
   '/redefinir-senha': RedefinirSenhaPage,
-  '/categorias': CategoriasPage,
-  '/categorias/nova': CategoriaFormPage,
-  '/categorias/editar': CategoriaFormPage,
-  '/categorias/subcategorias': SubcategoriasPage,
+  '/calculos': CategoriasPage,
+  '/calculos/nova': CategoriaFormPage,
+  '/calculos/editar': CategoriaFormPage,
+  '/calculos/subcategorias': SubcategoriasPage,
   '/subcategorias/nova': SubcategoriaFormPage,
   '/subcategorias/editar': SubcategoriaFormPage,
 }
@@ -39,8 +39,8 @@ function extrairCaminhoBase(caminho) {
 
 function matchRota(caminhoBase) {
   if (rotas[caminhoBase]) return rotas[caminhoBase]
-  if (/^\/categorias\/editar\/\d+$/.test(caminhoBase)) return rotas['/categorias/editar']
-  if (/^\/categorias\/\d+\/subcategorias$/.test(caminhoBase)) return rotas['/categorias/subcategorias']
+  if (/^\/calculos\/editar\/\d+$/.test(caminhoBase)) return rotas['/calculos/editar']
+  if (/^\/calculos\/\d+\/subcategorias$/.test(caminhoBase)) return rotas['/calculos/subcategorias']
   if (/^\/subcategorias\/editar\/\d+$/.test(caminhoBase)) return rotas['/subcategorias/editar']
   return null
 }

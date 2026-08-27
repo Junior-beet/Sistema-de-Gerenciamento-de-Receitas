@@ -6,7 +6,7 @@ import { mostrarToast } from '../components/shared/Toast.jsx'
 
 export async function CategoriasPage() {
   const page = document.createElement('div')
-  page.appendChild(Header('/categorias'))
+  page.appendChild(Header('/calculos'))
 
   const main = document.createElement('main')
   main.className = 'container py-4'
@@ -17,15 +17,15 @@ export async function CategoriasPage() {
   main.innerHTML = `
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
-        <h1 class="h3 mb-1">Categorias</h1>
+        <h1 class="h3 mb-1">Calculos</h1>
         <p class="text-secondary-soft mb-0">Gerencie suas receitas e despesas, ${userName}.</p>
       </div>
       <div class="d-flex gap-2">
-        <a href="/categorias/nova?tipo=RECEITA" class="btn btn-success" id="btnNovaReceita">
+        <a href="/calculos/nova?tipo=RECEITA" class="btn btn-success" id="btnNovaReceita">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="margin-right:6px"><path d="M9 1v16M1 9h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           Nova Receita
         </a>
-        <a href="/categorias/nova?tipo=DESPESA" class="btn btn-danger" id="btnNovaDespesa">
+        <a href="/calculos/nova?tipo=DESPESA" class="btn btn-danger" id="btnNovaDespesa">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="margin-right:6px"><path d="M9 1v16M1 9h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           Nova Despesa
         </a>
@@ -47,7 +47,7 @@ export async function CategoriasPage() {
     <div id="categoriasContainer">
       <div class="text-center py-5">
         <div class="spinner mx-auto"></div>
-        <p class="text-secondary-soft mt-3">Carregando categorias...</p>
+        <p class="text-secondary-soft mt-3">Carregando calculos...</p>
       </div>
     </div>
   `
@@ -55,49 +55,49 @@ export async function CategoriasPage() {
   page.appendChild(main)
   page.appendChild(Footer())
 
+  const tabsEl = main.querySelector('#categoriasTabs')
+  const containerEl = main.querySelector('#categoriasContainer')
+
   let categorias = []
   let tabAtiva = 'todas'
 
   async function carregarCategorias() {
-    const container = document.getElementById('categoriasContainer')
-
     try {
       const data = await api.get(`/categorias/usuario/${usuario.id_usuario}`)
       categorias = data.dados || []
       renderizar()
     } catch (err) {
-      container.innerHTML = `
+      containerEl.innerHTML = `
         <div class="text-center py-5">
-          <p class="text-danger mb-2">Erro ao carregar categorias</p>
+          <p class="text-danger mb-2">Erro ao carregar calculos</p>
           <p class="text-secondary-soft small">${err.message}</p>
         </div>
       `
-      mostrarToast('erro', 'Erro ao carregar categorias')
+      mostrarToast('erro', 'Erro ao carregar calculos')
     }
   }
 
   function renderizar() {
-    const container = document.getElementById('categoriasContainer')
     const filtradas = tabAtiva === 'todas' ? categorias : categorias.filter(c => c.tipo === tabAtiva)
 
     if (filtradas.length === 0) {
       const msg = tabAtiva === 'todas'
-        ? 'Nenhuma categoria cadastrada'
+        ? 'Nenhum calculo cadastrado'
         : tabAtiva === 'RECEITA'
           ? 'Nenhuma receita cadastrada'
           : 'Nenhuma despesa cadastrada'
-      container.innerHTML = `
+      containerEl.innerHTML = `
         <div class="text-center py-5">
           <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="color:var(--color-text-muted);margin-bottom:12px">
             <rect x="6" y="10" width="36" height="28" rx="4" stroke="currentColor" stroke-width="1.5"/>
             <path d="M14 22h20M14 30h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
           <p class="text-secondary-soft mb-3">${msg}</p>
-          <a href="/categorias/nova?tipo=RECEITA" class="btn btn-outline-success btn-sm cat-link">Adicionar receita</a>
-          <a href="/categorias/nova?tipo=DESPESA" class="btn btn-outline-danger btn-sm ms-2 cat-link">Adicionar despesa</a>
+          <a href="/calculos/nova?tipo=RECEITA" class="btn btn-outline-success btn-sm cat-link">Adicionar receita</a>
+          <a href="/calculos/nova?tipo=DESPESA" class="btn btn-outline-danger btn-sm ms-2 cat-link">Adicionar despesa</a>
         </div>
       `
-      anexarLinks(container)
+      anexarLinks(containerEl)
       return
     }
 
@@ -134,8 +134,8 @@ export async function CategoriasPage() {
       html += '</div>'
     }
 
-    container.innerHTML = html
-    anexarEventos(container)
+    containerEl.innerHTML = html
+    anexarEventos(containerEl)
   }
 
   function renderizarCard(cat) {
@@ -153,11 +153,11 @@ export async function CategoriasPage() {
               <div class="color-dot" style="background:${cor}"></div>
             </div>
             <div class="d-flex gap-1 mt-3">
-              <a href="/categorias/editar/${cat.id_categoria}" class="btn btn-outline-primary btn-sm cat-link" data-action="editar" data-id="${cat.id_categoria}">
+              <a href="/calculos/editar/${cat.id_categoria}" class="btn btn-outline-primary btn-sm cat-link" data-action="editar" data-id="${cat.id_categoria}">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11l3-3 4 4-3 3H2v-4zM12 2l2 2-4 4-2-2 4-4z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Editar
               </a>
-              <a href="/categorias/${cat.id_categoria}/subcategorias" class="btn btn-outline-secondary btn-sm cat-link">
+              <a href="/calculos/${cat.id_categoria}/subcategorias" class="btn btn-outline-secondary btn-sm cat-link">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5h8M3 9h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                 Subcategorias
               </a>
@@ -188,25 +188,25 @@ export async function CategoriasPage() {
         e.preventDefault()
         const id = btn.dataset.id
         const nome = btn.dataset.nome
-        if (!confirm(`Tem certeza que deseja excluir a categoria "${nome}"? Todas as subcategorias tambem serao removidas.`)) return
+        if (!confirm(`Tem certeza que deseja excluir o calculo "${nome}"? Todas as subcategorias tambem serao removidas.`)) return
 
         try {
           await api.delete(`/categorias/${id}`)
-          mostrarToast('sucesso', 'Categoria excluida com sucesso')
+          mostrarToast('sucesso', 'Calculo excluido com sucesso')
           categorias = categorias.filter(c => c.id_categoria != id)
           renderizar()
         } catch (err) {
-          mostrarToast('erro', err.message || 'Erro ao excluir categoria')
+          mostrarToast('erro', err.message || 'Erro ao excluir calculo')
         }
       })
     })
   }
 
-  document.getElementById('categoriasTabs').addEventListener('click', e => {
+  tabsEl.addEventListener('click', e => {
     const btn = e.target.closest('[data-tab]')
     if (!btn) return
     tabAtiva = btn.dataset.tab
-    document.querySelectorAll('#categoriasTabs .nav-link').forEach(l => l.classList.remove('active'))
+    tabsEl.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'))
     btn.classList.add('active')
     renderizar()
   })

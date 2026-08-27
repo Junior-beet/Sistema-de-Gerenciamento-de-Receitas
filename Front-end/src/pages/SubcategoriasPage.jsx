@@ -6,7 +6,7 @@ import { mostrarToast } from '../components/shared/Toast.jsx'
 
 function extrairCategoriaIdDaRota() {
   const path = location.pathname
-  const match = path.match(/\/categorias\/(\d+)\/subcategorias/)
+  const match = path.match(/\/calculos\/(\d+)\/subcategorias/)
   return match ? match[1] : null
 }
 
@@ -15,7 +15,7 @@ export async function SubcategoriasPage() {
   const categoriaId = extrairCategoriaIdDaRota()
 
   if (!categoriaId) {
-    window.dispatchEvent(new CustomEvent('navegar', { detail: '/categorias' }))
+    window.dispatchEvent(new CustomEvent('navegar', { detail: '/calculos' }))
     return page
   }
 
@@ -25,7 +25,7 @@ export async function SubcategoriasPage() {
     return page
   }
 
-  page.appendChild(Header('/categorias'))
+  page.appendChild(Header('/calculos'))
 
   const main = document.createElement('main')
   main.className = 'container py-4'
@@ -35,7 +35,7 @@ export async function SubcategoriasPage() {
   main.innerHTML = `
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
-        <p class="text-secondary-soft mb-1"><a href="/categorias" id="linkVoltar" class="text-decoration-none">&larr; Categorias</a></p>
+        <p class="text-secondary-soft mb-1"><a href="/calculos" id="linkVoltar" class="text-decoration-none">&larr; Calculos</a></p>
         <h1 class="h3 mb-1" id="pageTitle">Subcategorias</h1>
         <p class="text-secondary-soft mb-0" id="pageSubtitle">Carregando...</p>
       </div>
@@ -56,6 +56,9 @@ export async function SubcategoriasPage() {
   page.appendChild(main)
   page.appendChild(Footer())
 
+  const linkVoltarEl = main.querySelector('#linkVoltar')
+  const btnNovaSubEl = main.querySelector('#btnNovaSub')
+
   let subcategorias = []
 
   async function carregarCategoria() {
@@ -65,20 +68,20 @@ export async function SubcategoriasPage() {
       const isReceita = categoria.tipo === 'RECEITA'
       const cor = categoria.cor || (isReceita ? '#34A853' : '#D93025')
 
-      document.getElementById('pageTitle').innerHTML = `
+      main.querySelector('#pageTitle').innerHTML = `
         <span class="me-2">${categoria.nome}</span>
         <span class="badge ${isReceita ? 'bg-success' : 'bg-danger'}" style="font-size:12px">${isReceita ? 'Receita' : 'Despesa'}</span>
       `
-      document.getElementById('pageSubtitle').textContent = `Gerencie as subcategorias de "${categoria.nome}"`
+      main.querySelector('#pageSubtitle').textContent = `Gerencie as subcategorias de "${categoria.nome}"`
     } catch (err) {
-      document.getElementById('pageTitle').textContent = 'Categoria nao encontrada'
-      document.getElementById('pageSubtitle').textContent = err.message
-      document.getElementById('btnNovaSub').style.display = 'none'
+      main.querySelector('#pageTitle').textContent = 'Calculo nao encontrado'
+      main.querySelector('#pageSubtitle').textContent = err.message
+      btnNovaSubEl.style.display = 'none'
     }
   }
 
   async function carregarSubcategorias() {
-    const container = document.getElementById('subcategoriasContainer')
+    const container = main.querySelector('#subcategoriasContainer')
 
     try {
       const data = await api.get(`/subcategorias/categoria/${categoriaId}`)
@@ -96,7 +99,7 @@ export async function SubcategoriasPage() {
   }
 
   function renderizar() {
-    const container = document.getElementById('subcategoriasContainer')
+    const container = main.querySelector('#subcategoriasContainer')
 
     if (subcategorias.length === 0) {
       container.innerHTML = `
@@ -168,12 +171,12 @@ export async function SubcategoriasPage() {
     })
   }
 
-  document.getElementById('linkVoltar').addEventListener('click', e => {
+  linkVoltarEl.addEventListener('click', e => {
     e.preventDefault()
-    window.dispatchEvent(new CustomEvent('navegar', { detail: '/categorias' }))
+    window.dispatchEvent(new CustomEvent('navegar', { detail: '/calculos' }))
   })
 
-  document.getElementById('btnNovaSub').addEventListener('click', e => {
+  btnNovaSubEl.addEventListener('click', e => {
     e.preventDefault()
     window.dispatchEvent(new CustomEvent('navegar', { detail: e.currentTarget.getAttribute('href') }))
   })

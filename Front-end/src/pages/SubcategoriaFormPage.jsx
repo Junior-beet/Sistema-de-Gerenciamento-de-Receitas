@@ -24,7 +24,7 @@ export async function SubcategoriaFormPage() {
     return page
   }
 
-  page.appendChild(Header('/categorias'))
+  page.appendChild(Header('/calculos'))
 
   const main = document.createElement('main')
   main.className = 'auth-page'
@@ -57,9 +57,9 @@ export async function SubcategoriaFormPage() {
   const catGroup = document.createElement('div')
   catGroup.className = 'mb-3'
   catGroup.innerHTML = `
-    <label for="categoria" class="form-label">Categoria Pai <span class="text-danger">*</span></label>
+    <label for="categoria" class="form-label">Calculo Pai <span class="text-danger">*</span></label>
     <select class="form-select" id="categoria" required>
-      <option value="" disabled selected>Carregando categorias...</option>
+      <option value="" disabled selected>Carregando calculos...</option>
     </select>
   `
   form.appendChild(catGroup)
@@ -85,7 +85,7 @@ export async function SubcategoriaFormPage() {
 
   const footer = document.createElement('div')
   footer.className = 'text-center'
-  const voltarHref = categoriaId ? `/categorias/${categoriaId}/subcategorias` : '/categorias'
+  const voltarHref = categoriaId ? `/calculos/${categoriaId}/subcategorias` : '/calculos'
   footer.innerHTML = `<p class="small mb-0" style="color:var(--color-text-secondary)"><a href="${voltarHref}" class="fw-semibold">&larr; Voltar</a></p>`
 
   card.appendChild(logo)
@@ -109,13 +109,13 @@ export async function SubcategoriaFormPage() {
 
       const select = document.getElementById('categoria')
       if (categorias.length === 0) {
-        select.innerHTML = '<option value="" disabled selected>Nenhuma categoria cadastrada</option>'
+        select.innerHTML = '<option value="" disabled selected>Nenhum calculo cadastrado</option>'
         select.disabled = true
         btn.disabled = true
         return
       }
 
-      select.innerHTML = '<option value="" disabled selected>Selecione a categoria</option>' +
+      select.innerHTML = '<option value="" disabled selected>Selecione o calculo</option>' +
         categorias.map(c => {
           const tipo = c.tipo === 'RECEITA' ? 'Receita' : 'Despesa'
           return `<option value="${c.id_categoria}">${c.nome} (${tipo})</option>`
@@ -126,8 +126,8 @@ export async function SubcategoriaFormPage() {
         select.value = categoriaId
       }
     } catch (err) {
-      document.getElementById('categoria').innerHTML = '<option value="" disabled selected>Erro ao carregar categorias</option>'
-      mostrarToast('erro', 'Erro ao carregar categorias')
+      document.getElementById('categoria').innerHTML = '<option value="" disabled selected>Erro ao carregar calculos</option>'
+      mostrarToast('erro', 'Erro ao carregar calculos')
     }
   }
 
@@ -183,7 +183,7 @@ export async function SubcategoriaFormPage() {
         mostrarToast('sucesso', 'Subcategoria cadastrada com sucesso!')
       }
 
-      const voltarPara = idCategoria ? `/categorias/${idCategoria}/subcategorias` : '/categorias'
+      const voltarPara = idCategoria ? `/calculos/${idCategoria}/subcategorias` : '/calculos'
       setTimeout(() => {
         window.dispatchEvent(new CustomEvent('navegar', { detail: voltarPara }))
       }, 800)

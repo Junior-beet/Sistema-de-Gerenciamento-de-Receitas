@@ -31,19 +31,6 @@ export const auth = {
     storage.remove(STORAGE_KEYS.TOKEN)
   },
 
-  async sessao() {
-    const token = storage.get(STORAGE_KEYS.TOKEN)
-    if (!token) return null
-
-    try {
-      const data = await api.get('/sessao')
-      return data.usuario
-    } catch {
-      this.logout()
-      return null
-    }
-  },
-
   sessaoLocal() {
     const token = storage.get(STORAGE_KEYS.TOKEN)
     if (!token) return null

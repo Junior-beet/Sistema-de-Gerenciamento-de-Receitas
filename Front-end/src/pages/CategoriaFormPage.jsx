@@ -7,7 +7,7 @@ import { mostrarAlerta } from '../components/shared/Alert.jsx'
 
 function extrairIdDaRota() {
   const path = location.pathname
-  const match = path.match(/\/categorias\/editar\/(\d+)/)
+  const match = path.match(/\/calculos\/editar\/(\d+)/)
   return match ? match[1] : null
 }
 
@@ -17,7 +17,7 @@ export async function CategoriaFormPage() {
   const tipoInicial = params.get('tipo') || 'RECEITA'
   const idRota = extrairIdDaRota()
   const isEdit = !!idRota
-  const titulo = isEdit ? 'Editar' : 'Nova'
+  const titulo = isEdit ? 'Editar' : 'Novo'
   const tipoLabel = tipoInicial === 'RECEITA' ? 'Receita' : 'Despesa'
 
   const usuario = auth.sessaoLocal()
@@ -26,7 +26,7 @@ export async function CategoriaFormPage() {
     return page
   }
 
-  page.appendChild(Header('/categorias'))
+  page.appendChild(Header('/calculos'))
 
   const main = document.createElement('main')
   main.className = 'auth-page'
@@ -42,7 +42,7 @@ export async function CategoriaFormPage() {
 
   const title = document.createElement('h1')
   title.className = 'auth-title'
-  title.textContent = `${titulo} Categoria`
+  title.textContent = `${titulo} Calculo`
 
   const subtitle = document.createElement('p')
   subtitle.className = 'auth-subtitle'
@@ -89,7 +89,7 @@ export async function CategoriaFormPage() {
   const btn = document.createElement('button')
   btn.type = 'submit'
   btn.className = 'btn btn-primary btn-lg w-100'
-  btn.textContent = isEdit ? 'Salvar Alteracoes' : 'Cadastrar Categoria'
+  btn.textContent = isEdit ? 'Salvar Alteracoes' : 'Cadastrar Calculo'
   btn.id = 'btnSubmit'
   form.appendChild(btn)
 
@@ -99,7 +99,7 @@ export async function CategoriaFormPage() {
 
   const footer = document.createElement('div')
   footer.className = 'text-center'
-  footer.innerHTML = `<p class="small mb-0" style="color:var(--color-text-secondary)"><a href="/categorias" class="fw-semibold">&larr; Voltar para categorias</a></p>`
+  footer.innerHTML = `<p class="small mb-0" style="color:var(--color-text-secondary)"><a href="/calculos" class="fw-semibold">&larr; Voltar para calculos</a></p>`
 
   card.appendChild(logo)
   card.appendChild(title)
@@ -128,7 +128,7 @@ export async function CategoriaFormPage() {
       btn.disabled = false
       btn.textContent = 'Salvar Alteracoes'
     } catch (err) {
-      mostrarAlerta(alert, 'erro', 'Erro ao carregar categoria: ' + err.message)
+      mostrarAlerta(alert, 'erro', 'Erro ao carregar calculo: ' + err.message)
       btn.disabled = false
       btn.textContent = 'Tentar novamente'
     }
@@ -142,7 +142,7 @@ export async function CategoriaFormPage() {
     const cor = document.getElementById('cor').value
 
     if (!nome) {
-      mostrarAlerta(alert, 'erro', 'Preencha o nome da categoria')
+      mostrarAlerta(alert, 'erro', 'Preencha o nome do calculo')
       return
     }
 
@@ -159,21 +159,21 @@ export async function CategoriaFormPage() {
     try {
       if (isEdit) {
         await api.put(`/categorias/${idRota}`, payload)
-        mostrarToast('sucesso', 'Categoria atualizada com sucesso!')
+        mostrarToast('sucesso', 'Calculo atualizado com sucesso!')
       } else {
         await api.post('/categorias', payload)
-        mostrarToast('sucesso', 'Categoria cadastrada com sucesso!')
+        mostrarToast('sucesso', 'Calculo cadastrado com sucesso!')
       }
 
       setTimeout(() => {
-        window.dispatchEvent(new CustomEvent('navegar', { detail: '/categorias' }))
+        window.dispatchEvent(new CustomEvent('navegar', { detail: '/calculos' }))
       }, 800)
     } catch (err) {
-      mostrarAlerta(alert, 'erro', err.message || 'Erro ao salvar categoria')
-      mostrarToast('erro', err.message || 'Erro ao salvar categoria')
+      mostrarAlerta(alert, 'erro', err.message || 'Erro ao salvar calculo')
+      mostrarToast('erro', err.message || 'Erro ao salvar calculo')
     } finally {
       btn.disabled = false
-      btn.textContent = isEdit ? 'Salvar Alteracoes' : 'Cadastrar Categoria'
+      btn.textContent = isEdit ? 'Salvar Alteracoes' : 'Cadastrar Calculo'
     }
   })
 

@@ -14,7 +14,7 @@ function getLinks() {
   if (auth.estaLogado()) {
     return [
       { href: '/', label: 'Home' },
-      { href: '/categorias', label: 'Categorias' },
+      { href: '/calculos', label: 'Calculos' },
       { href: '/saiba-mais', label: 'Saiba Mais' },
       { href: '#sair', label: 'Sair' },
     ]
