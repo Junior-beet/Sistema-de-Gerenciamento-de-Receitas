@@ -84,7 +84,7 @@ export function HomePage() {
                   <span class="d-inline-flex align-items-center justify-content-center" style="width:28px;height:28px;border-radius:50%;background:#34A853;color:#fff;font-size:11px;font-weight:700;border:2px solid #fff;margin-left:-6px">N</span>
                   <span class="d-inline-flex align-items-center justify-content-center" style="width:28px;height:28px;border-radius:50%;background:#1A73E8;color:#fff;font-size:11px;font-weight:700;border:2px solid #fff;margin-left:-6px">S</span>
                 </div>
-                <small class="text-secondary-soft">Feito pela equipe TechSolutions · TCC 2026</small>
+                <small class="text-secondary-soft">Feito pela equipe TechSolutions</small>
               </div>
             </div>
 

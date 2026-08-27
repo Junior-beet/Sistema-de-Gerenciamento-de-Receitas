@@ -56,7 +56,7 @@ export function Footer() {
           </ul>
         </div>
 
-        <div class="col-6 col-lg-3">
+        <div class="col-6 col-lg-2">
           <div class="footer-team-wrapper">
             <button type="button" class="footer-team-toggle" aria-expanded="false" aria-controls="equipe-techsolutions">
               <span>Equipe TechSolutions</span>
@@ -72,7 +72,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div class="col-lg-6">
+        <div class="col-6 col-lg-3">
           <h6>Contato</h6>
           <ul class="footer-contact mb-0">
             <li><span class="contact-label">E-mail</span> contato@sgr.com.br</li>
