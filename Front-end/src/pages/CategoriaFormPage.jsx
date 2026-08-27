@@ -11,14 +11,15 @@ function extrairIdDaRota() {
   return match ? match[1] : null
 }
 
+const COR_PADRAO = { RECEITA: '#34A853', DESPESA: '#D93025' }
+
 export async function CategoriaFormPage() {
   const page = document.createElement('div')
   const params = new URLSearchParams(location.search)
   const tipoInicial = params.get('tipo') || 'RECEITA'
   const idRota = extrairIdDaRota()
   const isEdit = !!idRota
-  const titulo = isEdit ? 'Editar' : 'Novo'
-  const tipoLabel = tipoInicial === 'RECEITA' ? 'Receita' : 'Despesa'
+  let corManual = false
 
   const usuario = auth.sessaoLocal()
   if (!usuario) {
@@ -42,11 +43,11 @@ export async function CategoriaFormPage() {
 
   const title = document.createElement('h1')
   title.className = 'auth-title'
-  title.textContent = `${titulo} Calculo`
+  title.textContent = `${isEdit ? 'Editar' : 'Nova'} ${tipoInicial === 'RECEITA' ? 'Receita' : 'Despesa'}`
 
   const subtitle = document.createElement('p')
   subtitle.className = 'auth-subtitle'
-  subtitle.textContent = `Preencha os dados da ${tipoLabel.toLowerCase()}`
+  subtitle.textContent = `Preencha os dados da ${tipoInicial === 'RECEITA' ? 'receita' : 'despesa'}`
 
   const alert = document.createElement('div')
   alert.className = 'alert d-none'
@@ -80,7 +81,7 @@ export async function CategoriaFormPage() {
   corGroup.innerHTML = `
     <label for="cor" class="form-label">Cor (opcional)</label>
     <div class="d-flex align-items-center gap-3">
-      <input type="color" class="form-control form-control-color" id="cor" value="#34A853" title="Selecione uma cor">
+      <input type="color" class="form-control form-control-color" id="cor" value="${COR_PADRAO[tipoInicial]}" title="Selecione uma cor">
       <span class="small text-secondary-soft">Cor para identificacao visual</span>
     </div>
   `
@@ -88,8 +89,8 @@ export async function CategoriaFormPage() {
 
   const btn = document.createElement('button')
   btn.type = 'submit'
-  btn.className = 'btn btn-primary btn-lg w-100'
-  btn.textContent = isEdit ? 'Salvar Alteracoes' : 'Cadastrar Calculo'
+  btn.className = `btn btn-lg w-100 ${tipoInicial === 'RECEITA' ? 'btn-success' : 'btn-danger'}`
+  btn.textContent = isEdit ? 'Salvar Alteracoes' : `Cadastrar ${tipoInicial === 'RECEITA' ? 'Receita' : 'Despesa'}`
   btn.id = 'btnSubmit'
   form.appendChild(btn)
 
@@ -97,9 +98,11 @@ export async function CategoriaFormPage() {
   divider.className = 'auth-divider'
   divider.textContent = 'ou'
 
-  const footer = document.createElement('div')
-  footer.className = 'text-center'
-  footer.innerHTML = `<p class="small mb-0" style="color:var(--color-text-secondary)"><a href="/calculos" class="fw-semibold">&larr; Voltar para calculos</a></p>`
+  const voltarBtn = document.createElement('a')
+  voltarBtn.href = '/calculos'
+  voltarBtn.id = 'btnVoltar'
+  voltarBtn.className = `btn btn-lg w-100 ${tipoInicial === 'RECEITA' ? 'btn-outline-success' : 'btn-outline-danger'}`
+  voltarBtn.textContent = 'Cancelar e voltar'
 
   card.appendChild(logo)
   card.appendChild(title)
@@ -107,11 +110,32 @@ export async function CategoriaFormPage() {
   card.appendChild(alert)
   card.appendChild(form)
   card.appendChild(divider)
-  card.appendChild(footer)
+  card.appendChild(voltarBtn)
 
   main.appendChild(card)
   page.appendChild(main)
   page.appendChild(Footer())
+
+  const tipoSelect = form.querySelector('#tipo')
+  const corInput = form.querySelector('#cor')
+
+  function aplicarTema(isReceita) {
+    const label = isReceita ? 'Receita' : 'Despesa'
+    title.textContent = `${isEdit ? 'Editar' : 'Nova'} ${label}`
+    subtitle.textContent = `Preencha os dados da ${isReceita ? 'receita' : 'despesa'}`
+    voltarBtn.className = `btn btn-lg w-100 ${isReceita ? 'btn-outline-success' : 'btn-outline-danger'}`
+    btn.className = `btn btn-lg w-100 ${isReceita ? 'btn-success' : 'btn-danger'}`
+    btn.textContent = isEdit ? 'Salvar Alteracoes' : `Cadastrar ${label}`
+    if (!corManual) corInput.value = isReceita ? COR_PADRAO.RECEITA : COR_PADRAO.DESPESA
+  }
+
+  corInput.addEventListener('input', () => { corManual = true })
+
+  tipoSelect.addEventListener('change', () => {
+    aplicarTema(tipoSelect.value === 'RECEITA')
+  })
+
+  aplicarTema(tipoInicial === 'RECEITA')
 
   if (isEdit) {
     btn.disabled = true
@@ -120,16 +144,18 @@ export async function CategoriaFormPage() {
     try {
       const data = await api.get(`/categorias/${idRota}`)
       const cat = data.dados
+      const tipoCarregado = cat.tipo || tipoInicial
 
       document.getElementById('nome').value = cat.nome || ''
-      document.getElementById('tipo').value = cat.tipo || tipoInicial
-      subtitle.textContent = `Preencha os dados da ${(cat.tipo || tipoInicial) === 'DESPESA' ? 'despesa' : 'receita'}`
-      if (cat.cor) document.getElementById('cor').value = cat.cor
+      document.getElementById('tipo').value = tipoCarregado
+      corManual = !!(cat.cor && cat.cor !== COR_PADRAO[tipoCarregado])
+      corInput.value = cat.cor || COR_PADRAO[tipoCarregado]
+      aplicarTema(tipoCarregado === 'RECEITA')
 
       btn.disabled = false
       btn.textContent = 'Salvar Alteracoes'
     } catch (err) {
-      mostrarAlerta(alert, 'erro', 'Erro ao carregar calculo: ' + err.message)
+      mostrarAlerta(alert, 'erro', 'Erro ao carregar: ' + err.message)
       btn.disabled = false
       btn.textContent = 'Tentar novamente'
     }
@@ -141,9 +167,10 @@ export async function CategoriaFormPage() {
     const nome = document.getElementById('nome').value.trim()
     const tipo = document.getElementById('tipo').value
     const cor = document.getElementById('cor').value
+    const labelAtual = tipo === 'RECEITA' ? 'Receita' : 'Despesa'
 
     if (!nome) {
-      mostrarAlerta(alert, 'erro', 'Preencha o nome do calculo')
+      mostrarAlerta(alert, 'erro', `Preencha o nome da ${labelAtual.toLowerCase()}`)
       return
     }
 
@@ -160,21 +187,21 @@ export async function CategoriaFormPage() {
     try {
       if (isEdit) {
         await api.put(`/categorias/${idRota}`, payload)
-        mostrarToast('sucesso', 'Calculo atualizado com sucesso!')
+        mostrarToast('sucesso', `${labelAtual} atualizada com sucesso!`)
       } else {
         await api.post('/categorias', payload)
-        mostrarToast('sucesso', 'Calculo cadastrado com sucesso!')
+        mostrarToast('sucesso', `${labelAtual} cadastrada com sucesso!`)
       }
 
       setTimeout(() => {
         window.dispatchEvent(new CustomEvent('navegar', { detail: '/calculos' }))
       }, 800)
     } catch (err) {
-      mostrarAlerta(alert, 'erro', err.message || 'Erro ao salvar calculo')
-      mostrarToast('erro', err.message || 'Erro ao salvar calculo')
+      mostrarAlerta(alert, 'erro', err.message || 'Erro ao salvar')
+      mostrarToast('erro', err.message || 'Erro ao salvar')
     } finally {
       btn.disabled = false
-      btn.textContent = isEdit ? 'Salvar Alteracoes' : 'Cadastrar Calculo'
+      btn.textContent = isEdit ? 'Salvar Alteracoes' : `Cadastrar ${tipoSelect.value === 'RECEITA' ? 'Receita' : 'Despesa'}`
     }
   })
 
