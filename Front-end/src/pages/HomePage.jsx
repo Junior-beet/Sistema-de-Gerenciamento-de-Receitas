@@ -51,13 +51,8 @@ export function HomePage() {
     <main>
       <!-- HERO -->
       <section class="hero-section">
-<<<<<<< HEAD
         <div class="container py-4">
           <div class="row align-items-center gy-0 py-0 py-lg-0">
-=======
-        <div class="container py-5">
-          <div class="row align-items-center gy-5 py-3 py-lg-5">
->>>>>>> bde6a628fc4775ed468de38184d9671064a97e01
             <div class="col-12 col-lg-6">
               <span class="hero-badge mb-3">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" fill="#34A853"/><path d="M4 7l2 2 4-4" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
