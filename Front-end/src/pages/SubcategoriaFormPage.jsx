@@ -107,7 +107,7 @@ export async function SubcategoriaFormPage() {
       const data = await api.get(`/categorias/usuario/${usuario.id_usuario}`)
       categorias = data.dados || []
 
-      const select = document.getElementById('categoria')
+      const select = form.querySelector('#categoria')
       if (categorias.length === 0) {
         select.innerHTML = '<option value="" disabled selected>Nenhum calculo cadastrado</option>'
         select.disabled = true
@@ -126,7 +126,7 @@ export async function SubcategoriaFormPage() {
         select.value = categoriaId
       }
     } catch (err) {
-      document.getElementById('categoria').innerHTML = '<option value="" disabled selected>Erro ao carregar calculos</option>'
+      form.querySelector('#categoria').innerHTML = '<option value="" disabled selected>Erro ao carregar calculos</option>'
       mostrarToast('erro', 'Erro ao carregar calculos')
     }
   }
@@ -141,8 +141,8 @@ export async function SubcategoriaFormPage() {
 
       await carregarCategorias()
 
-      document.getElementById('categoria').value = sub.id_categoria
-      document.getElementById('nome').value = sub.nome || ''
+      form.querySelector('#categoria').value = sub.id_categoria
+      form.querySelector('#nome').value = sub.nome || ''
 
       btn.disabled = false
       btn.textContent = 'Salvar Alteracoes'
@@ -158,8 +158,8 @@ export async function SubcategoriaFormPage() {
   form.addEventListener('submit', async e => {
     e.preventDefault()
 
-    const idCategoria = document.getElementById('categoria').value
-    const nome = document.getElementById('nome').value.trim()
+    const idCategoria = form.querySelector('#categoria').value
+    const nome = form.querySelector('#nome').value.trim()
 
     if (!idCategoria || !nome) {
       mostrarAlerta(alert, 'erro', 'Preencha todos os campos obrigatorios')
