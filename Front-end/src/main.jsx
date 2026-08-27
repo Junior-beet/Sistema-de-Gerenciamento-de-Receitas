@@ -7,6 +7,10 @@ import { CadastroPage } from './pages/CadastroPage.jsx'
 import { SaibaMaisPage } from './pages/SaibaMaisPage.jsx'
 import { EsqueciSenhaPage } from './pages/EsqueciSenhaPage.jsx'
 import { RedefinirSenhaPage } from './pages/RedefinirSenhaPage.jsx'
+import { CategoriasPage } from './pages/CategoriasPage.jsx'
+import { CategoriaFormPage } from './pages/CategoriaFormPage.jsx'
+import { SubcategoriasPage } from './pages/SubcategoriasPage.jsx'
+import { SubcategoriaFormPage } from './pages/SubcategoriaFormPage.jsx'
 import { auth } from './services/auth.jsx'
 import { ROTAS_PUBLICAS } from './config/constants.jsx'
 
@@ -17,6 +21,12 @@ const rotas = {
   '/saiba-mais': SaibaMaisPage,
   '/esqueci-senha': EsqueciSenhaPage,
   '/redefinir-senha': RedefinirSenhaPage,
+  '/categorias': CategoriasPage,
+  '/categorias/nova': CategoriaFormPage,
+  '/categorias/editar': CategoriaFormPage,
+  '/categorias/subcategorias': SubcategoriasPage,
+  '/subcategorias/nova': SubcategoriaFormPage,
+  '/subcategorias/editar': SubcategoriaFormPage,
 }
 
 function extrairCaminhoBase(caminho) {
@@ -25,6 +35,14 @@ function extrairCaminhoBase(caminho) {
     caminhoBase = caminhoBase.slice(0, -1)
   }
   return caminhoBase
+}
+
+function matchRota(caminhoBase) {
+  if (rotas[caminhoBase]) return rotas[caminhoBase]
+  if (/^\/categorias\/editar\/\d+$/.test(caminhoBase)) return rotas['/categorias/editar']
+  if (/^\/categorias\/\d+\/subcategorias$/.test(caminhoBase)) return rotas['/categorias/subcategorias']
+  if (/^\/subcategorias\/editar\/\d+$/.test(caminhoBase)) return rotas['/subcategorias/editar']
+  return null
 }
 
 function irPara(caminho, substituir = false) {
@@ -36,7 +54,7 @@ function irPara(caminho, substituir = false) {
   rotear(caminho)
 }
 
-function rotear(caminho) {
+async function rotear(caminho) {
   const app = document.getElementById('app')
   if (!app) return
 
@@ -49,16 +67,18 @@ function rotear(caminho) {
     return
   }
 
-  const pagina = rotas[caminhoBase]
+  const pagina = matchRota(caminhoBase)
   if (!pagina) {
     irPara('/', true)
     return
   }
 
-  const el = pagina()
+  const el = await pagina()
 
-  el.classList.add('page-enter')
-  app.appendChild(el)
+  if (el) {
+    el.classList.add('page-enter')
+    app.appendChild(el)
+  }
 
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }

@@ -93,7 +93,7 @@ export function LoginPage() {
     } else {
       mostrarAlerta(alert, 'sucesso', `Bem-vindo, ${result.usuario.nome}!`)
       mostrarToast('sucesso', `Login efetuado com sucesso. Bem-vindo, ${result.usuario.nome}!`)
-      setTimeout(() => window.dispatchEvent(new CustomEvent('navegar', { detail: '/saiba-mais' })), 1200)
+      setTimeout(() => window.dispatchEvent(new CustomEvent('navegar', { detail: '/categorias' })), 1200)
     }
   })
 
