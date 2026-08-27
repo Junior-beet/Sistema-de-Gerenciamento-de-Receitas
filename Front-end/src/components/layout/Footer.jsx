@@ -14,6 +14,7 @@ function getLinks() {
   if (auth.estaLogado()) {
     return [
       { href: '/', label: 'Home' },
+      { href: '/categorias', label: 'Categorias' },
       { href: '/saiba-mais', label: 'Saiba Mais' },
       { href: '#sair', label: 'Sair' },
     ]
@@ -31,6 +32,7 @@ export function Footer() {
   footer.className = 'footer-section'
   footer.style.backgroundColor = '#1976D2'
   footer.style.color = 'white'
+
   const links = getLinks()
 
   footer.innerHTML = `
