@@ -15,6 +15,29 @@
   --shadow-md:0 1px 3px rgba(60,64,67,.3),0 4px 8px 3px rgba(60,64,67,.15);
   --shadow-lg:0 2px 6px 2px rgba(60,64,67,.15),0 8px 20px 6px rgba(60,64,67,.12);
   --focus:0 0 0 3px rgba(26,115,232,.3);
+
+  /* Alias (--color-*) usados em estilos inline no código */
+  --color-text:var(--text);
+  --color-text-title:var(--title);
+  --color-text-secondary:var(--secondary);
+  --color-text-muted:var(--text-muted);
+  --color-primary:var(--primary);
+  --color-primary-hover:var(--primary-hover);
+  --color-primary-active:var(--primary-active);
+  --color-primary-light:var(--primary-light);
+  --color-primary-border:var(--primary-border);
+  --color-success:var(--success);
+  --color-success-hover:var(--success-hover);
+  --color-success-light:var(--success-light);
+  --color-danger:var(--danger);
+  --color-danger-hover:var(--danger-hover);
+  --color-danger-light:var(--danger-light);
+  --color-green:#34A853;
+  --color-green-light:#CEEAD6;
+  --color-border:var(--border);
+  --color-border-light:var(--border-light);
+  --color-surface-muted:var(--muted);
+  --font-heading:var(--heading);
 }
 
 /* GERAL */
@@ -28,7 +51,12 @@ body {
   -webkit-font-smoothing:antialiased;
 }
 
-a,a:hover,a:focus,a:active,a:visited { text-decoration:none!important; }
+a,a:hover,a:focus,a:active,a:visited,
+a.btn,a.btn:hover,a.btn:focus,a.btn:active,a.btn:visited,
+#btnNovaReceita,#btnNovaReceita:hover,#btnNovaReceita:focus,#btnNovaReceita:active,
+#btnNovaDespesa,#btnNovaDespesa:hover,#btnNovaDespesa:focus,#btnNovaDespesa:active,
+.cat-link,.cat-link:hover,.cat-link:focus,.cat-link:active,
+.sub-link,.sub-link:hover,.sub-link:focus,.sub-link:active { text-decoration:none!important; }
 a { color:var(--primary); transition:.2s; }
 a:hover { color:var(--primary-hover); }
 

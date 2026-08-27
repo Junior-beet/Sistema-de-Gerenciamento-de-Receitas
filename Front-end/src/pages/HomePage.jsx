@@ -9,6 +9,12 @@ const BENEFITS = [
   { num: '03', title: 'Relatórios claros', desc: 'Acompanhe seus ganhos com visualizações simples e objetivas.' },
 ]
 
+const FEATURES = [
+  { letra: '$', titulo: 'Receitas e Despesas', desc: 'Crie categorias de receita e despesa em poucos cliques para organizar ganhos e gastos.', bg: 'var(--color-success-light)', fg: 'var(--color-success)' },
+  { letra: 'R', titulo: 'Subcategorias', desc: 'Detalhe cada categoria com subcategorias para um controle ainda mais preciso.', bg: 'var(--color-primary-light)', fg: 'var(--color-primary)' },
+  { letra: 'S', titulo: 'Acesso seguro', desc: 'Login protegido com criptografia e sessão segura para a sua conta.', bg: 'var(--color-danger-light)', fg: 'var(--color-danger)' },
+]
+
 function navegar(el) {
   el.addEventListener('click', e => {
     e.preventDefault()
@@ -133,8 +139,14 @@ export function HomePage() {
             </p>
           </div>
           <div class="row g-4 justify-content-center">
-    
-    
+            ${FEATURES.map(f => `
+              <div class="col-12 col-md-6 col-lg-4">
+                <div class="feature-card">
+                  <span class="feature-icon" style="background:${f.bg};color:${f.fg}">${f.letra}</span>
+                  <h3 class="h5 fw-bold mb-2">${f.titulo}</h3>
+                  <p class="small mb-0" style="color:var(--color-text-secondary)">${f.desc}</p>
+                </div>
+              </div>`).join('')}
           </div>
         </div>
       </section>

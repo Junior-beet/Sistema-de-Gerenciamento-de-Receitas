@@ -123,6 +123,7 @@ export async function CategoriaFormPage() {
 
       document.getElementById('nome').value = cat.nome || ''
       document.getElementById('tipo').value = cat.tipo || tipoInicial
+      subtitle.textContent = `Preencha os dados da ${(cat.tipo || tipoInicial) === 'DESPESA' ? 'despesa' : 'receita'}`
       if (cat.cor) document.getElementById('cor').value = cat.cor
 
       btn.disabled = false
