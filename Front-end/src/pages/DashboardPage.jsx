@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Header } from '../components/layout/Header.jsx'
 import { Footer } from '../components/layout/Footer.jsx'
@@ -6,6 +7,8 @@ import { auth } from '../services/auth.jsx'
 import { dashboardService } from '../services/dashboardService.js'
 import { useFetchDados } from '../hooks/useFetchDados.js'
 import { mostrarToast } from '../components/shared/Toast.jsx'
+import { KpiCard } from '../components/shared/KpiCard.jsx'
+import { FiltroBusca } from '../components/shared/FiltroBusca.jsx'
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -253,10 +256,32 @@ function DashboardConteudo({ usuario }) {
     return { categorias: categoriasArr, receitas, despesas }
   }, [usuario.id_usuario])
 
+  const [filtro, setFiltro] = useState({ busca: '', tipo: 'TODOS' })
+
   const handleAtualizar = () => {
     recarregar()
     mostrarToast('sucesso', 'Dashboard atualizado!')
   }
+
+  const handleFiltrar = (novoFiltro) => {
+    setFiltro(novoFiltro)
+  }
+
+  const receitasFiltradas = (dados?.receitas || []).filter(r => {
+    const buscaMatch = !filtro.busca || (r.descricao || '').toLowerCase().includes(filtro.busca.toLowerCase()) || (r.origem || '').toLowerCase().includes(filtro.busca.toLowerCase())
+    const tipoMatch = filtro.tipo === 'TODOS' || filtro.tipo === 'RECEITA'
+    return buscaMatch && tipoMatch
+  })
+
+  const despesasFiltradas = (dados?.despesas || []).filter(d => {
+    const buscaMatch = !filtro.busca || (d.descricao || '').toLowerCase().includes(filtro.busca.toLowerCase()) || (d.origem || '').toLowerCase().includes(filtro.busca.toLowerCase())
+    const tipoMatch = filtro.tipo === 'TODOS' || filtro.tipo === 'DESPESA'
+    return buscaMatch && tipoMatch
+  })
+
+  const totalReceitas = (dados?.receitas || []).reduce((s, r) => s + (Number(r.valor) || 0), 0)
+  const totalDespesas = (dados?.despesas || []).reduce((s, d) => s + (Number(d.valor) || 0), 0)
+  const saldo = totalReceitas - totalDespesas
 
   return (
     <div>
@@ -284,7 +309,28 @@ function DashboardConteudo({ usuario }) {
         </div>
       ) : (
         <>
-          <CardsResumo receitas={dados.receitas} despesas={dados.despesas} />
+          <div className="row g-3 mb-4">
+            <KpiCard
+              titulo="Saldo Total"
+              valor={saldo}
+              cor={saldo >= 0 ? '#1A73E8' : '#D93025'}
+              icone={<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 1v20M5 5h6a3 3 0 010 6H5M5 11h7a3 3 0 010 6H5" stroke={saldo >= 0 ? '#1A73E8' : '#D93025'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+            />
+            <KpiCard
+              titulo="Total Receitas"
+              valor={totalReceitas}
+              cor="#1E8E3E"
+              icone={<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 18V4M5 10l6-6 6 6" stroke="#1E8E3E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+            />
+            <KpiCard
+              titulo="Total Despesas"
+              valor={totalDespesas}
+              cor="#D93025"
+              icone={<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 4v14M5 14l6 6 6-6" stroke="#D93025" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+            />
+          </div>
+
+          <FiltroBusca onFiltrar={handleFiltrar} />
 
           <div className="row g-4 mb-4">
             <div className="col-12 col-lg-8">
@@ -294,7 +340,7 @@ function DashboardConteudo({ usuario }) {
                     <h5 className="mb-0 fw-semibold">Movimentacoes Recentes</h5>
                     <button className="btn btn-outline-primary btn-sm" onClick={() => navegar('/calculos')}>Ver Categorias</button>
                   </div>
-                    <TabelaMovimentacoes receitas={dados.receitas} despesas={dados.despesas} />
+                    <TabelaMovimentacoes receitas={receitasFiltradas} despesas={despesasFiltradas} />
                 </div>
               </div>
             </div>
@@ -302,13 +348,13 @@ function DashboardConteudo({ usuario }) {
               <div className="card mb-4">
                 <div className="card-body">
                   <h5 className="fw-semibold mb-3">Resumo por Tipo</h5>
-                  <ResumoTipo receitas={dados.receitas} despesas={dados.despesas} />
+                  <ResumoTipo receitas={receitasFiltradas} despesas={despesasFiltradas} />
                 </div>
               </div>
               <div className="card">
                 <div className="card-body">
                   <h5 className="fw-semibold mb-3">Categorias com Movimentacoes</h5>
-                  <ResumoCategorias categorias={dados.categorias} receitas={dados.receitas} despesas={dados.despesas} />
+                  <ResumoCategorias categorias={dados.categorias} receitas={receitasFiltradas} despesas={despesasFiltradas} />
                 </div>
               </div>
             </div>
