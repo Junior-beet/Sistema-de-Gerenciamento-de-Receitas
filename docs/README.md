@@ -1,259 +1,167 @@
-# RF-003, RF-004, RF-005/006 — Lançamentos Financeiros
+# 📚 Projeto "Sistema de Gerencimento de Receitas"
 
-API REST para criação, listagem, edição e exclusão de receitas e despesas do Sistema de Gerenciamento Financeiro.
+Bem-vindo à **Sistema de Gerencimento de Receitas**.
+Este repositório contém a documentação e implementação de um sistema de gerencimento de receitas desenvolvido pela equipe BrTech solutions
 
-**Stack:** Node.js • Express • MySQL  
-**Arquitetura:** Model → Repository → Controller → Routes
+## 🎯 Objetivo
 
----
+Projeto acadêmico com o objetivo de apoiar o ensino de **back-end e front-end**, abordando conceitos como:
 
-## Arquivos criados
+* Arquitetura de sistemas
+* Modelagem de dados (DER)
+* Programação orientada a objetos
+* Desenvolvimento de interfaces
+* Boas práticas de organização de código
 
-src/
-├── controllers/ → receitaController.js, despesaController.js
-├── models/ → Movimentacao.js, Receita.js, Despesa.js
-├── repositories/ → movimentacaoRepository.js, receitaRepository.js, despesaRepository.js, parceladoRepository.js
-└── routes/ → receitaRoutes.js, despesaRoutes.js
+## 🛠️ Tecnologias Utilizadas
 
+### 🌐 Front-end
 
----
+* HTML5
+* CSS3
+* JavaScript
+* React
 
-## Registrar no routes.js
+### ⚙️ Back-end
 
-```javascript
-import receitaRoutes from './receitaRoutes.js';
-import despesaRoutes from './despesaRoutes.js';
+* Node.js
+* Express
 
-routes.use('/receitas', receitaRoutes);
-routes.use('/despesas', despesaRoutes);
+### 🗄️ Banco de Dados
+
+* SQLServer
+
+## 📂 Documentação
+
+A documentação do projeto está organizada por público e finalidade:
+
+### 👨‍💻 Para Programadores
+
+Contém informações técnicas para desenvolvimento e manutenção do sistema:
+
+* 📄 [Guia do Programador](./programadores.md)
+* 🧩 [Diagrama de Classes](./classes.md)
+* 🗄️ [Banco de Dados (DER)](./database.md)
+
+### 👤 Para Clientes
+
+Documentação voltada à visão do sistema e sua utilização:
+
+* 📄 [Guia do Cliente](./clientes.md)
+* 🎨 [Design System](./design-system.md)
+
+### 🛠️ Para Administradores
+
+Informações sobre gerenciamento e operação do sistema:
+
+* 📄 [Guia do Administrador](./administradores.md)
+
+## 📌 Observações
+
+Este projeto tem fins educacionais e busca simular um ambiente real de desenvolvimento, incluindo documentação técnica e organização profissional.
+
+## 💰 Lógica inicial de saldo e estrutura de contas
+
+O sistema foi desenvolvido utilizando uma estrutura centralizada de movimentações financeiras, permitindo que todos os cálculos sejam realizados de forma automática, organizada e escalável.
+
+A base principal da lógica financeira está na tabela movimentacoes, responsável por armazenar todas as entradas e saídas do sistema.
+
+Cada movimentação contém informações essenciais como:
+
+* tipo da movimentação (RECEITA ou DESPESA);
+* valor;
+* conta vinculada;
+* categoria e subcategoria;
+* data do lançamento;
+* descrição;
+* forma de pagamento.
+
+A partir dessa estrutura, o sistema consegue calcular automaticamente:
+
+* saldo total;
+* total de receitas;
+* total de despesas;
+* gastos por categoria;
+* relatórios mensais;
+* movimentações por período;
+* dashboards financeiros.
+
+# Centralização das Regras Financeiras
+
+Toda a lógica de cálculo do sistema é baseada na tabela movimentacoes.
+Dessa forma, evita-se duplicação de informações e inconsistências nos valores armazenados.
+
+As tabelas receitas e despesas funcionam como complementos especializados, armazenando informações específicas de cada tipo de movimentação.
+
+# Receitas
+
+A tabela receitas armazena dados complementares como:
+
+* origem da receita;
+* data prevista de recebimento.
+* Despesas
+
+A tabela despesas armazena informações como:
+
+* data de vencimento;
+* data de pagamento;
+* status da despesa.
+
+# Sistema de Parcelamento
+
+O sistema também possui suporte para movimentações parceladas através da tabela parcelado.
+
+Essa estrutura permite:
+
+* geração automática de parcelas;
+* controle de quantidade total de parcelas;
+* acompanhamento de status de pagamento;
+* organização financeira mensal.
+
+# Organização por Categorias
+
+As tabelas categorias e subcategorias foram implementadas para melhorar a organização financeira e geração de relatórios.
+
+Com isso, o sistema consegue identificar:
+
+* categorias com maiores gastos;
+* principais fontes de receita;
+* distribuição financeira por área;
+* análises detalhadas de movimentações.
+* Controle de Acesso (RBAC)
+
+# Implementação no Backend
+
+O backend será responsável por toda a lógica de negócio do sistema financeiro, incluindo autenticação, controle de acesso, cálculos automáticos e gerenciamento das movimentações.
+
+A aplicação será organizada em camadas para facilitar manutenção e escalabilidade:
+
+```txt id="4mw1py"
+controllers/
+services/
+repositories/
+models/
+routes/
+middlewares/
 ```
 
----
+* **Controllers:** recebem as requisições e retornam as respostas da API;
+* **Services:** concentram as regras de negócio e cálculos financeiros;
+* **Repositories:** realizam a comunicação com o banco de dados;
+* **Models:** representam as entidades do sistema;
+* **Routes:** definem os endpoints da API;
+* **Middlewares:** realizam autenticação, validações e controle de acesso.
 
-## Regras de Negócio
+O sistema utilizará autenticação com JWT e criptografia de senhas com bcrypt.
 
-- Toda movimentação é salva em `movimentacoes` e depois na tabela específica (`receitas` ou `despesas`)
-- Despesas podem ser **parceladas** — cada parcela gera uma movimentação separada com valor dividido igualmente e mês incrementado automaticamente
-- Exclusão é **soft delete** — `ativo = 0` preserva o histórico financeiro
-- Apenas `DIRETOR_FINANCEIRO` pode criar, editar e deletar
-- `CEO` e `GERENTE` apenas visualizam
+Os cálculos financeiros serão feitos dinamicamente utilizando a tabela `movimentacoes` como base principal, permitindo gerar:
 
----
+* saldo total;
+* receitas;
+* despesas;
+* relatórios;
+* dashboards financeiros.
 
-## Rotas
+O backend também será responsável pelo gerenciamento de parcelamentos, filtros e geração de relatórios financeiros em formato JSON para o frontend.
 
-| Método | Rota | Descrição | Cargo |
-|--------|------|-----------|-------|
-| POST | `/receitas` | Cria uma receita | DIRETOR_FINANCEIRO |
-| GET | `/receitas` | Lista todas as receitas | Todos |
-| GET | `/receitas/conta/:id_conta` | Lista receitas por conta | Todos |
-| GET | `/receitas/:id` | Busca receita por ID | Todos |
-| PUT | `/receitas/:id` | Atualiza uma receita | DIRETOR_FINANCEIRO |
-| DELETE | `/receitas/:id` | Soft delete de receita | DIRETOR_FINANCEIRO |
-| POST | `/despesas` | Cria despesa simples ou parcelada | DIRETOR_FINANCEIRO |
-| GET | `/despesas` | Lista todas as despesas | Todos |
-| GET | `/despesas/conta/:id_conta` | Lista despesas por conta | Todos |
-| GET | `/despesas/:id` | Busca despesa por ID | Todos |
-| PUT | `/despesas/:id` | Atualiza uma despesa | DIRETOR_FINANCEIRO |
-| DELETE | `/despesas/:id` | Soft delete de despesa | DIRETOR_FINANCEIRO |
 
----
-
-## Endpoints
-
-### POST `/receitas`
-
-**Body:**
-```json
-{
-  "id_conta": 1,
-  "id_categoria": 1,
-  "id_subcategoria": 1,
-  "valor": 15000.00,
-  "data_lancamento": "2026-07-01",
-  "descricao": "Venda de produtos julho",
-  "forma_pagamento": "PIX",
-  "origem": "Cliente ABC Ltda",
-  "data_prevista": "2026-07-05"
-}
-```
-
-| Campo | Obrigatório |
-|-------|-------------|
-| id_conta | ✅ |
-| id_categoria | ✅ |
-| valor | ✅ |
-| data_lancamento | ✅ |
-| id_subcategoria, descricao, forma_pagamento, origem, data_prevista | ❌ |
-
-```json
-// 201 - Sucesso
-{ "sucesso": true, "mensagem": "Receita criada com sucesso", "dados": { "id_movimentacao": 1 } }
-
-// 400 - Campos faltando
-{ "sucesso": false, "mensagem": "Preencha todos os campos obrigatórios: id_conta, id_categoria, valor e data_lancamento" }
-
-// 403 - Sem permissão
-{ "sucesso": false, "mensagem": "Acesso negado: você não tem permissão para esta ação" }
-```
-
----
-
-### GET `/receitas` e `/receitas/conta/:id_conta`
-
-```json
-// 200 - Sucesso
-{
-  "sucesso": true,
-  "dados": [
-    {
-      "id_movimentacao": 1, "id_receita": 1, "id_conta": 1,
-      "tipo": "RECEITA", "valor": "15000.00",
-      "data_lancamento": "2026-07-01", "origem": "Cliente ABC Ltda"
-    }
-  ]
-}
-```
-
----
-
-### PUT `/receitas/:id`
-
-Mesmos campos do POST. Atualiza movimentação e receita.
-
-```json
-// 200 - Sucesso
-{ "sucesso": true, "mensagem": "Receita atualizada com sucesso" }
-
-// 404 - Não encontrada
-{ "sucesso": false, "mensagem": "Receita não encontrada" }
-```
-
----
-
-### DELETE `/receitas/:id`
-
-Soft delete — seta `ativo = 0`. Registro permanece no banco.
-
-```json
-// 200 - Sucesso
-{ "sucesso": true, "mensagem": "Receita removida com sucesso" }
-
-// 404 - Não encontrada
-{ "sucesso": false, "mensagem": "Receita não encontrada" }
-```
-
----
-
-### POST `/despesas`
-
-**Body — Despesa simples:**
-```json
-{
-  "id_conta": 1,
-  "id_categoria": 3,
-  "valor": 5000.00,
-  "data_lancamento": "2026-07-05",
-  "descricao": "Salário funcionário João",
-  "forma_pagamento": "Transferência",
-  "data_vencimento": "2026-07-05",
-  "status": "PENDENTE"
-}
-```
-
-**Body — Despesa parcelada:**
-```json
-{
-  "id_conta": 1,
-  "id_categoria": 3,
-  "valor": 6000.00,
-  "data_lancamento": "2026-07-01",
-  "descricao": "Computadores para escritório",
-  "forma_pagamento": "Cartão de Crédito",
-  "data_vencimento": "2026-07-15",
-  "status": "PENDENTE",
-  "parcelado": true,
-  "total_parcelas": 3
-}
-```
-
-| Campo | Obrigatório |
-|-------|-------------|
-| id_conta | ✅ |
-| id_categoria | ✅ |
-| valor | ✅ |
-| data_lancamento | ✅ |
-| id_subcategoria, descricao, forma_pagamento, data_vencimento, data_pagamento, status, parcelado, total_parcelas | ❌ |
-
-```json
-// 201 - Despesa simples
-{ "sucesso": true, "mensagem": "Despesa criada com sucesso", "dados": { "id_movimentacao": 5 } }
-
-// 201 - Despesa parcelada
-{ "sucesso": true, "mensagem": "Despesa parcelada em 3x criada com sucesso", "dados": { "ids_movimentacoes": [6, 7, 8] } }
-
-// 400 - Campos faltando
-{ "sucesso": false, "mensagem": "Preencha todos os campos obrigatórios: id_conta, id_categoria, valor e data_lancamento" }
-```
-
----
-
-### PUT `/despesas/:id`
-
-Mesmos campos do POST sem `parcelado` e `total_parcelas`. Usado também para marcar como **PAGO**:
-
-```json
-{
-  "id_conta": 1,
-  "id_categoria": 4,
-  "valor": 3500.00,
-  "data_lancamento": "2026-07-01",
-  "data_vencimento": "2026-07-10",
-  "data_pagamento": "2026-07-08",
-  "status": "PAGO"
-}
-```
-
-```json
-// 200 - Sucesso
-{ "sucesso": true, "mensagem": "Despesa atualizada com sucesso" }
-
-// 404 - Não encontrada
-{ "sucesso": false, "mensagem": "Despesa não encontrada" }
-```
-
----
-
-### DELETE `/despesas/:id`
-
-Soft delete — seta `ativo = 0`. Registro permanece no banco.
-
-```json
-// 200 - Sucesso
-{ "sucesso": true, "mensagem": "Despesa removida com sucesso" }
-
-// 404 - Não encontrada
-{ "sucesso": false, "mensagem": "Despesa não encontrada" }
-```
-
----
-
-## Códigos de Status HTTP
-
-| Código | Quando ocorre |
-|--------|---------------|
-| 200 | Listagem, busca, atualização ou exclusão bem-sucedida |
-| 201 | Receita ou despesa criada com sucesso |
-| 400 | Campos obrigatórios faltando ou ID inválido |
-| 403 | Cargo sem permissão |
-| 404 | Não encontrada ou já deletada |
-| 500 | Erro no servidor ou validação no Model |
-
----
-
-## Observações Técnicas
-
-- **Tabela central:** toda movimentação passa por `movimentacoes` primeiro. O `insertId` é usado para inserir na tabela específica.
-- **Parcelamento:** divide o valor total pelo número de parcelas e cria uma movimentação por parcela, incrementando o mês automaticamente.
-- **Soft delete (RF-005/006):** `ativo = 0` em `movimentacoes`. Listagens sempre filtram por `ativo = 1`.
-- **Status da despesa:** padrão `PENDENTE`. Atualizar para `PAGO` via `PUT` quando o pagamento for efetuado.
