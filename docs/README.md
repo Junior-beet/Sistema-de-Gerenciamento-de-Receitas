@@ -39,9 +39,9 @@ A documentação do projeto está organizada por público e finalidade:
 
 Contém informações técnicas para desenvolvimento e manutenção do sistema:
 
-* 📄 [Guia do Programador](./01_Guia_do_Programador (1).md)
-* 🧩 [Diagrama de Classes](./02_Diagrama_de_Classes (1).md)
-* 🗄️ [Banco de Dados (DER)](./03_Banco_de_Dados_DER (1).md)
+* 📄 [Guia do Programador](././01_Guia_do_Programador%20(1).md)
+* 🧩 [Diagrama de Classes](././02_Diagrama_de_Classes%20(1).md)
+* 🗄️ [Banco de Dados (DER)](./03_Banco_de_Dados_DER%20(1).md)
 
 ### 👤 Para Clientes
 
