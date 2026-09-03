@@ -56,7 +56,8 @@ a.btn,a.btn:hover,a.btn:focus,a.btn:active,a.btn:visited,
 #btnNovaReceita,#btnNovaReceita:hover,#btnNovaReceita:focus,#btnNovaReceita:active,
 #btnNovaDespesa,#btnNovaDespesa:hover,#btnNovaDespesa:focus,#btnNovaDespesa:active,
 .cat-link,.cat-link:hover,.cat-link:focus,.cat-link:active,
-.sub-link,.sub-link:hover,.sub-link:focus,.sub-link:active { text-decoration:none!important; }
+.sub-link,.sub-link:hover,.sub-link:focus,.sub-link:active,
+.dash-link,.dash-link:hover,.dash-link:focus,.dash-link:active { text-decoration:none!important; }
 a { color:var(--primary); transition:.2s; }
 a:hover { color:var(--primary-hover); }
 
@@ -713,6 +714,11 @@ small,.small { font-size:14px; }
 .spinner-lg { width:40px; height:40px; border-width:4px; }
 
 @keyframes spin { to { transform:rotate(360deg); } }
+
+@keyframes dashPulse {
+  0%,100% { opacity:1; }
+  50% { opacity:.4; }
+}
 
 .skeleton {
   background:linear-gradient(90deg,var(--border-light) 25%,var(--border) 50%,var(--border-light) 75%);

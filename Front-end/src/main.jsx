@@ -11,6 +11,7 @@ import { CategoriasPage } from './pages/CategoriasPage.jsx'
 import { CategoriaFormPage } from './pages/CategoriaFormPage.jsx'
 import { SubcategoriasPage } from './pages/SubcategoriasPage.jsx'
 import { SubcategoriaFormPage } from './pages/SubcategoriaFormPage.jsx'
+import { DashboardPage } from './pages/DashboardPage.jsx'
 import { auth } from './services/auth.jsx'
 import { ROTAS_PUBLICAS } from './config/constants.jsx'
 
@@ -27,6 +28,7 @@ const rotas = {
   '/calculos/subcategorias': SubcategoriasPage,
   '/subcategorias/nova': SubcategoriaFormPage,
   '/subcategorias/editar': SubcategoriaFormPage,
+  '/dashboard': DashboardPage,
 }
 
 function extrairCaminhoBase(caminho) {
