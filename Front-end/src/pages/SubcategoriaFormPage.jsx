@@ -7,7 +7,7 @@ import { mostrarAlerta } from '../components/shared/Alert.jsx'
 
 function extrairIdDaRota() {
   const path = location.pathname
-  const match = path.match(/\/subcategorias\/editar\/(\d+)/)
+  const match = path.match(/\/subcategorias\/editar\/([^/]+)/)
   return match ? match[1] : null
 }
 
@@ -170,7 +170,7 @@ export async function SubcategoriaFormPage() {
     btn.innerHTML = '<span class="spinner spinner-sm me-2"></span>Salvando...'
 
     const payload = {
-      id_categoria: parseInt(idCategoria),
+      id_categoria: idCategoria,
       nome
     }
 

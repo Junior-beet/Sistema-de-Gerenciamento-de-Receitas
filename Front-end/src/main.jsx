@@ -41,9 +41,9 @@ function extrairCaminhoBase(caminho) {
 
 function matchRota(caminhoBase) {
   if (rotas[caminhoBase]) return rotas[caminhoBase]
-  if (/^\/calculos\/editar\/\d+$/.test(caminhoBase)) return rotas['/calculos/editar']
-  if (/^\/calculos\/\d+\/subcategorias$/.test(caminhoBase)) return rotas['/calculos/subcategorias']
-  if (/^\/subcategorias\/editar\/\d+$/.test(caminhoBase)) return rotas['/subcategorias/editar']
+  if (/^\/calculos\/editar\/[^/]+$/.test(caminhoBase)) return rotas['/calculos/editar']
+  if (/^\/calculos\/[^/]+\/subcategorias$/.test(caminhoBase)) return rotas['/calculos/subcategorias']
+  if (/^\/subcategorias\/editar\/[^/]+$/.test(caminhoBase)) return rotas['/subcategorias/editar']
   return null
 }
 

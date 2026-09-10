@@ -7,7 +7,7 @@ import { mostrarAlerta } from '../components/shared/Alert.jsx'
 
 function extrairIdDaRota() {
   const path = location.pathname
-  const match = path.match(/\/calculos\/editar\/(\d+)/)
+  const match = path.match(/\/calculos\/editar\/([^/]+)/)
   return match ? match[1] : null
 }
 

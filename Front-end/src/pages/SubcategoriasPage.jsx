@@ -6,7 +6,7 @@ import { mostrarToast } from '../components/shared/Toast.jsx'
 
 function extrairCategoriaIdDaRota() {
   const path = location.pathname
-  const match = path.match(/\/calculos\/(\d+)\/subcategorias/)
+  const match = path.match(/\/calculos\/([^/]+)\/subcategorias/)
   return match ? match[1] : null
 }
 
