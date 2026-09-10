@@ -241,13 +241,13 @@ function ResumoCategorias({ categorias, receitas, despesas }) {
 
 function DashboardConteudo({ usuario }) {
   const { dados, carregando, erro, recarregar } = useFetchDados(async () => {
-    const [categorias, todasReceitas, todasDespesas] = await Promise.all([
-      dashboardService.buscarCategorias(usuario.id_usuario),
+    const [todasCategorias, todasReceitas, todasDespesas] = await Promise.all([
+      dashboardService.buscarCategorias(),
       dashboardService.buscarReceitas(),
       dashboardService.buscarDespesas(),
     ])
 
-    const categoriasArr = (categorias?.dados || []).map(c => c)
+    const categoriasArr = (todasCategorias?.dados || []).filter(c => c.id_usuario === usuario.id_usuario)
     const categoriasDoUsuario = new Set(categoriasArr.map(c => c.id_categoria))
 
     const receitas = (todasReceitas?.dados || []).filter(r => categoriasDoUsuario.has(r.id_categoria))
