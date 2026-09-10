@@ -2,15 +2,15 @@ import { connection } from '../configs/Database.js';
 
 const categoriaRepository = {
     criar: async (categoria) => {
-        const sql = `INSERT INTO categorias (id_usuario, nome, tipo, cor, ordem) VALUES (?, ?, ?, ?, ?)`;
-        const values = [categoria.id_usuario, categoria.nome, categoria.tipo, categoria.cor, categoria.ordem];
+        const sql = `INSERT INTO categorias (id_categoria, id_usuario, nome, tipo, cor, ordem) VALUES (?, ?, ?, ?, ?, ?)`;
+        const values = [categoria.id_categoria, categoria.id_usuario, categoria.nome, categoria.tipo, categoria.cor, categoria.ordem];
         const [rows] = await connection.execute(sql, values);
         return rows;
     },
 
-    selecionar: async (id_usuario) => {
-        const sql = `SELECT * FROM categorias WHERE id_usuario = ?`;
-        const [rows] = await connection.execute(sql, [id_usuario]);
+    selecionar: async () => {
+        const sql = `SELECT * FROM categorias`;
+        const [rows] = await connection.execute(sql);
         return rows;
     },
 
@@ -21,8 +21,8 @@ const categoriaRepository = {
     },
 
     atualizar: async (categoria) => {
-        const sql = `UPDATE categorias SET nome = ?, tipo = ?, cor = ?, ordem = ? WHERE id_categoria = ? AND id_usuario = ?`;
-        const values = [categoria.nome, categoria.tipo, categoria.cor, categoria.ordem, categoria.id_categoria, categoria.id_usuario];
+        const sql = `UPDATE categorias SET nome = ?, tipo = ?, cor = ?, ordem = ? WHERE id_categoria = ?`;
+        const values = [categoria.nome, categoria.tipo, categoria.cor, categoria.ordem, categoria.id_categoria];
         const [rows] = await connection.execute(sql, values);
         return rows;
     },

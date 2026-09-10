@@ -5,7 +5,7 @@ import cargoMiddleware from '../middlewares/cargo.middleware.js';
 
 const categoriaRoutes = Router();
 
-categoriaRoutes.get('/usuario/:id_usuario', authMiddleware, categoriaController.selecionar);
+categoriaRoutes.get('/', authMiddleware, categoriaController.selecionar);
 categoriaRoutes.get('/:id', authMiddleware, categoriaController.selecionarPorId);
 
 categoriaRoutes.post('/', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), categoriaController.criar);

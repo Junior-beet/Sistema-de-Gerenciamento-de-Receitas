@@ -22,13 +22,7 @@ const categoriaController = {
 
     selecionar: async (req, res) => {
         try {
-            const id_usuario = Number(req.params.id_usuario);
-
-            if (!id_usuario || id_usuario <= 0) {
-                return res.status(400).json({ sucesso: false, mensagem: 'ID de usuário inválido' });
-            }
-
-            const result = await categoriaRepository.selecionar(id_usuario);
+            const result = await categoriaRepository.selecionar();
             res.status(200).json({ sucesso: true, dados: result });
         } catch (error) {
             console.log(error);
@@ -92,10 +86,10 @@ const categoriaController = {
             if (!existe) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Categoria não encontrada' });
             }
-            
+
             await categoriaRepository.deletarSubcategorias(id_categoria);
 
-          
+
             const result = await categoriaRepository.deletar(id_categoria);
 
             res.status(200).json({ sucesso: true, mensagem: 'Categoria e subcategorias vinculadas deletadas com sucesso', dados: result });

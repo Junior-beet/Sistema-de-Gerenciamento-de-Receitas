@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export class Movimentacao {
     #id_movimentacao;
     #id_conta;
@@ -20,7 +22,7 @@ export class Movimentacao {
         this.descricao = pDescricao;
         this.forma_pagamento = pFormaPagamento;
         this.ativo = pAtivo;
-        this.#id_movimentacao = pId;
+        this.#id_movimentacao = pId || uuidv4();
     }
 
     get id_movimentacao() { return this.#id_movimentacao; }
@@ -28,13 +30,13 @@ export class Movimentacao {
 
     get id_conta() { return this.#id_conta; }
     set id_conta(value) {
-        this.#validarId(value, 'Conta');
+        if (!value) throw new Error('Conta inválida!');
         this.#id_conta = value;
     }
 
     get id_categoria() { return this.#id_categoria; }
     set id_categoria(value) {
-        this.#validarId(value, 'Categoria');
+        if (!value) throw new Error('Categoria inválida!');
         this.#id_categoria = value;
     }
 
@@ -68,10 +70,6 @@ export class Movimentacao {
 
     get ativo() { return this.#ativo; }
     set ativo(value) { this.#ativo = value ?? 1; }
-
-    #validarId(value, campo) {
-        if (!value || value <= 0) throw new Error(`${campo} inválida!`);
-    }
 
     static criar(dados) {
         return new Movimentacao(

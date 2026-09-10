@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export class Usuario {
     #id_usuario;
     #nome;
@@ -10,7 +12,7 @@ export class Usuario {
         this.email = pEmail;
         this.senha_usuario = pSenha;
         this.cargo = pCargo;
-        this.#id_usuario = pIdUsuario;
+        this.#id_usuario = pIdUsuario || uuidv4();
     }
 
     get id_usuario() { return this.#id_usuario; }

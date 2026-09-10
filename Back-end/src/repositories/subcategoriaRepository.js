@@ -2,8 +2,8 @@ import { connection } from '../configs/Database.js';
 
 const subcategoriaRepository = {
     criar: async (subcategoria) => {
-        const sql = `INSERT INTO subcategorias (id_categoria, nome) VALUES (?, ?)`;
-        const values = [subcategoria.id_categoria, subcategoria.nome];
+        const sql = `INSERT INTO subcategorias (id_subcategoria, id_categoria, nome) VALUES (?, ?, ?)`;
+        const values = [subcategoria.id_subcategoria, subcategoria.id_categoria, subcategoria.nome];
         const [rows] = await connection.execute(sql, values);
         return rows;
     },

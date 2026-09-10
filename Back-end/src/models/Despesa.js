@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export class Despesa {
     #id_despesa;
     #id_movimentacao;
@@ -10,7 +12,7 @@ export class Despesa {
         this.data_vencimento = pDataVencimento;
         this.data_pagamento = pDataPagamento;
         this.status = pStatus;
-        this.#id_despesa = pIdDespesa;
+        this.#id_despesa = pIdDespesa || uuidv4();
     }
 
     get id_despesa() { return this.#id_despesa; }
@@ -18,7 +20,7 @@ export class Despesa {
 
     get id_movimentacao() { return this.#id_movimentacao; }
     set id_movimentacao(value) {
-        if (!value || value <= 0) throw new Error('Movimentação inválida!');
+        if (!value) throw new Error('Movimentação inválida!');
         this.#id_movimentacao = value;
     }
 

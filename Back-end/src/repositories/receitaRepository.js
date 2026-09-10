@@ -2,8 +2,8 @@ import { connection } from '../configs/Database.js';
 
 const receitaRepository = {
     criar: async (receita) => {
-        const sql = `INSERT INTO receitas (id_movimentacao, origem, data_prevista) VALUES (?, ?, ?)`;
-        const values = [receita.id_movimentacao, receita.origem, receita.data_prevista];
+        const sql = `INSERT INTO receitas (id_receita, id_movimentacao, origem, data_prevista) VALUES (?, ?, ?, ?)`;
+        const values = [receita.id_receita, receita.id_movimentacao, receita.origem, receita.data_prevista];
         const [rows] = await connection.execute(sql, values);
         return rows;
     },
@@ -16,17 +16,6 @@ const receitaRepository = {
             WHERE m.tipo = 'RECEITA' AND m.ativo = 1
         `;
         const [rows] = await connection.execute(sql);
-        return rows;
-    },
-
-    selecionarPorConta: async (id_conta) => {
-        const sql = `
-            SELECT m.*, r.id_receita, r.origem, r.data_prevista
-            FROM movimentacoes m
-            INNER JOIN receitas r ON m.id_movimentacao = r.id_movimentacao
-            WHERE m.id_conta = ? AND m.tipo = 'RECEITA' AND m.ativo = 1
-        `;
-        const [rows] = await connection.execute(sql, [id_conta]);
         return rows;
     },
 
