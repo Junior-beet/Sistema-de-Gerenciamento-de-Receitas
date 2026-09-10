@@ -29,8 +29,8 @@ client.interceptors.response.use(
 )
 
 export const dashboardService = {
-  buscarCategorias(idUsuario) {
-    return client.get(`/categorias/usuario/${idUsuario}`)
+  buscarCategorias() {
+    return client.get('/categorias')
   },
 
   buscarReceitas() {
