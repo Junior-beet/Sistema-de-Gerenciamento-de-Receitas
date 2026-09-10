@@ -104,8 +104,8 @@ export async function SubcategoriaFormPage() {
 
   async function carregarCategorias() {
     try {
-      const data = await api.get(`/categorias/usuario/${usuario.id_usuario}`)
-      categorias = data.dados || []
+      const data = await api.get('/categorias')
+      categorias = (data.dados || []).filter(c => c.id_usuario === usuario.id_usuario)
 
       const select = form.querySelector('#categoria')
       if (categorias.length === 0) {
