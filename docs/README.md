@@ -229,3 +229,41 @@ Exporta movimentações do mês em CSV com as colunas: tipo, valor, data, descri
 O `auditoriaMiddleware` é aplicado em todas as rotas do sistema e registra cada ação em `logs/auditoria.log`.
 
 **Formato do log:**
+[2026-07-10T19:00:00.000Z] | USUARIO: Miguel Vallim (DIRETOR_FINANCEIRO) | ACAO: CONSULTA_RELATORIO_MENSAL | METODO: GET | ROTA: /relatorios/mensal?ano=2026&mes=7 | IP: ::1
+
+
+**Ações registradas:**
+
+| Ação | Rota |
+|------|------|
+| CADASTRO_USUARIO | POST /usuarios |
+| ATUALIZACAO_USUARIO | PUT /usuarios/:id |
+| EXCLUSAO_USUARIO | DELETE /usuarios/:id |
+| CONSULTA_SALDO_TODAS_CONTAS | GET /relatorios/saldo |
+| CONSULTA_SALDO_CONTA | GET /relatorios/saldo/:id_conta |
+| CONSULTA_LUCRO | GET /relatorios/lucro |
+| CONSULTA_RELATORIO_MENSAL | GET /relatorios/mensal |
+| EXPORTACAO_PDF | GET /relatorios/exportar/pdf |
+| EXPORTACAO_CSV | GET /relatorios/exportar/csv |
+
+---
+
+## Códigos de Status HTTP
+
+| Código | Quando ocorre |
+|--------|---------------|
+| 200 | Consulta ou exportação bem-sucedida |
+| 400 | Parâmetros obrigatórios faltando |
+| 404 | Conta não encontrada |
+| 500 | Erro no servidor ao calcular ou exportar |
+
+---
+
+## Observações Técnicas
+
+- **Saldo sempre atualizado:** calculado via SQL com `SUM + CASE WHEN` — não armazenado no banco.
+- **Soft delete respeitado:** todas as queries filtram por `ativo = 1` — movimentações deletadas não entram nos cálculos.
+- **Saldo histórico vs saldo do mês:** o relatório mensal separa o lucro do mês do saldo geral histórico de todas as movimentações.
+- **PDF temporário:** salvo na pasta `relatorios/` e deletado do servidor após o download.
+- **CSV direto:** enviado na resposta sem salvar arquivo no servidor.
+- **Log de auditoria:** aplicado após o `authMiddleware`, sempre tem acesso ao nome e cargo do usuário logado em `req.usuario`.
