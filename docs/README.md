@@ -1,105 +1,81 @@
-# RF-003, RF-004, RF-005/006 — Lançamentos Financeiros
+# RF-007, RF-008, RF-009, RF-010, RF-014 — Cálculos, Relatórios e Auditoria
 
-API REST para criação, listagem, edição e exclusão de receitas e despesas do Sistema de Gerenciamento Financeiro.
+Continuação da API do Sistema de Gerenciamento Financeiro. Adição do módulo de cálculos financeiros, relatórios mensais, auditoria de ações e exportação de dados.
 
-**Stack:** Node.js • Express • MySQL  
-**Arquitetura:** Model → Repository → Controller → Routes
-
----
-
-## Arquivos criados
-
-src/
-├── controllers/ → receitaController.js, despesaController.js
-├── models/ → Movimentacao.js, Receita.js, Despesa.js
-├── repositories/ → movimentacaoRepository.js, receitaRepository.js, despesaRepository.js, parceladoRepository.js
-└── routes/ → receitaRoutes.js, despesaRoutes.js
-
-
----
-
-## Registrar no routes.js
-
-```javascript
-import receitaRoutes from './receitaRoutes.js';
-import despesaRoutes from './despesaRoutes.js';
-
-routes.use('/receitas', receitaRoutes);
-routes.use('/despesas', despesaRoutes);
+**Novas dependências:**
+```bash
+npm install pdfkit json2csv
 ```
 
 ---
 
-## Regras de Negócio
+## Arquivos adicionados
+src/
+├── controllers/
+│ └── relatorioController.js ← novo
+├── repositories/
+│ └── relatorioRepository.js ← novo
+├── routes/
+│ └── relatorioRoutes.js ← novo
+└── middlewares/
+└── auditoria.middleware.js ← novo
 
-- Toda movimentação é salva em `movimentacoes` e depois na tabela específica (`receitas` ou `despesas`)
-- Despesas podem ser **parceladas** — cada parcela gera uma movimentação separada com valor dividido igualmente e mês incrementado automaticamente
-- Exclusão é **soft delete** — `ativo = 0` preserva o histórico financeiro
-- Apenas `DIRETOR_FINANCEIRO` pode criar, editar e deletar
-- `CEO` e `GERENTE` apenas visualizam
+logs/
+└── auditoria.log ← criado automaticamente na primeira requisição
+
 
 ---
 
-## Rotas
+## Alterações em arquivos existentes
 
-| Método | Rota | Descrição | Cargo |
-|--------|------|-----------|-------|
-| POST | `/receitas` | Cria uma receita | DIRETOR_FINANCEIRO |
-| GET | `/receitas` | Lista todas as receitas | Todos |
-| GET | `/receitas/conta/:id_conta` | Lista receitas por conta | Todos |
-| GET | `/receitas/:id` | Busca receita por ID | Todos |
-| PUT | `/receitas/:id` | Atualiza uma receita | DIRETOR_FINANCEIRO |
-| DELETE | `/receitas/:id` | Soft delete de receita | DIRETOR_FINANCEIRO |
-| POST | `/despesas` | Cria despesa simples ou parcelada | DIRETOR_FINANCEIRO |
-| GET | `/despesas` | Lista todas as despesas | Todos |
-| GET | `/despesas/conta/:id_conta` | Lista despesas por conta | Todos |
-| GET | `/despesas/:id` | Busca despesa por ID | Todos |
-| PUT | `/despesas/:id` | Atualiza uma despesa | DIRETOR_FINANCEIRO |
-| DELETE | `/despesas/:id` | Soft delete de despesa | DIRETOR_FINANCEIRO |
+**`routes/routes.js`** — adicionar:
+```javascript
+import relatorioRoutes from './relatorioRoutes.js';
+
+routes.use('/relatorios', relatorioRoutes);
+```
+
+**`routes/usuarioRoutes.js`** — adicionar auditoria nas rotas de escrita:
+```javascript
+import auditoriaMiddleware from '../middlewares/auditoria.middleware.js';
+
+usuarioRoutes.post('/', auditoriaMiddleware('CADASTRO_USUARIO'), usuarioController.criar);
+usuarioRoutes.put('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), auditoriaMiddleware('ATUALIZACAO_USUARIO'), usuarioController.atualizar);
+usuarioRoutes.delete('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), auditoriaMiddleware('EXCLUSAO_USUARIO'), usuarioController.deletar);
+```
+
+---
+
+## Decisões técnicas
+
+- **RF-007:** saldo calculado na hora via SQL — sem salvar no banco, sempre atualizado
+- **RF-008:** lucro = total receitas menos total despesas do período informado
+- **RF-009:** relatório mensal completo com resumo, movimentações, saldo histórico e resultado
+- **RF-010:** log salvo em `logs/auditoria.log` — pasta criada automaticamente se não existir
+- **RF-014:** PDF gerado com pdfkit e deletado do servidor após download — CSV enviado direto na resposta
+
+---
+
+## Novas rotas
+
+| Método | Rota | Descrição | RF |
+|--------|------|-----------|-----|
+| GET | `/relatorios/saldo` | Saldo de todas as contas | RF-007 |
+| GET | `/relatorios/saldo/:id_conta` | Saldo de uma conta específica | RF-007 |
+| GET | `/relatorios/lucro` | Lucro por período | RF-008 |
+| GET | `/relatorios/mensal` | Relatório mensal completo | RF-009 |
+| GET | `/relatorios/exportar/pdf` | Exporta relatório em PDF | RF-014 |
+| GET | `/relatorios/exportar/csv` | Exporta relatório em CSV | RF-014 |
+
+Todas as rotas exigem token JWT e registram log de auditoria automaticamente.
 
 ---
 
 ## Endpoints
 
-### POST `/receitas`
+### GET `/relatorios/saldo`
 
-**Body:**
-```json
-{
-  "id_conta": 1,
-  "id_categoria": 1,
-  "id_subcategoria": 1,
-  "valor": 15000.00,
-  "data_lancamento": "2026-07-01",
-  "descricao": "Venda de produtos julho",
-  "forma_pagamento": "PIX",
-  "origem": "Cliente ABC Ltda",
-  "data_prevista": "2026-07-05"
-}
-```
-
-| Campo | Obrigatório |
-|-------|-------------|
-| id_conta | ✅ |
-| id_categoria | ✅ |
-| valor | ✅ |
-| data_lancamento | ✅ |
-| id_subcategoria, descricao, forma_pagamento, origem, data_prevista | ❌ |
-
-```json
-// 201 - Sucesso
-{ "sucesso": true, "mensagem": "Receita criada com sucesso", "dados": { "id_movimentacao": 1 } }
-
-// 400 - Campos faltando
-{ "sucesso": false, "mensagem": "Preencha todos os campos obrigatórios: id_conta, id_categoria, valor e data_lancamento" }
-
-// 403 - Sem permissão
-{ "sucesso": false, "mensagem": "Acesso negado: você não tem permissão para esta ação" }
-```
-
----
-
-### GET `/receitas` e `/receitas/conta/:id_conta`
+Retorna saldo de todas as contas — total de receitas, despesas e saldo calculado.
 
 ```json
 // 200 - Sucesso
@@ -107,9 +83,13 @@ routes.use('/despesas', despesaRoutes);
   "sucesso": true,
   "dados": [
     {
-      "id_movimentacao": 1, "id_receita": 1, "id_conta": 1,
-      "tipo": "RECEITA", "valor": "15000.00",
-      "data_lancamento": "2026-07-01", "origem": "Cliente ABC Ltda"
+      "id_conta": "uuid",
+      "numero": "001",
+      "tipo": "Corrente",
+      "descricao": "Conta principal",
+      "total_receitas": 15000.00,
+      "total_despesas": 8500.00,
+      "saldo": 6500.00
     }
   ]
 }
@@ -117,143 +97,135 @@ routes.use('/despesas', despesaRoutes);
 
 ---
 
-### PUT `/receitas/:id`
+### GET `/relatorios/saldo/:id_conta`
 
-Mesmos campos do POST. Atualiza movimentação e receita.
-
-```json
-// 200 - Sucesso
-{ "sucesso": true, "mensagem": "Receita atualizada com sucesso" }
-
-// 404 - Não encontrada
-{ "sucesso": false, "mensagem": "Receita não encontrada" }
-```
-
----
-
-### DELETE `/receitas/:id`
-
-Soft delete — seta `ativo = 0`. Registro permanece no banco.
+Retorna saldo de uma conta específica.
 
 ```json
 // 200 - Sucesso
-{ "sucesso": true, "mensagem": "Receita removida com sucesso" }
-
-// 404 - Não encontrada
-{ "sucesso": false, "mensagem": "Receita não encontrada" }
-```
-
----
-
-### POST `/despesas`
-
-**Body — Despesa simples:**
-```json
 {
-  "id_conta": 1,
-  "id_categoria": 3,
-  "valor": 5000.00,
-  "data_lancamento": "2026-07-05",
-  "descricao": "Salário funcionário João",
-  "forma_pagamento": "Transferência",
-  "data_vencimento": "2026-07-05",
-  "status": "PENDENTE"
+  "sucesso": true,
+  "dados": {
+    "id_conta": "uuid",
+    "numero": "001",
+    "total_receitas": 15000.00,
+    "total_despesas": 8500.00,
+    "saldo": 6500.00
+  }
 }
-```
 
-**Body — Despesa parcelada:**
-```json
-{
-  "id_conta": 1,
-  "id_categoria": 3,
-  "valor": 6000.00,
-  "data_lancamento": "2026-07-01",
-  "descricao": "Computadores para escritório",
-  "forma_pagamento": "Cartão de Crédito",
-  "data_vencimento": "2026-07-15",
-  "status": "PENDENTE",
-  "parcelado": true,
-  "total_parcelas": 3
-}
-```
-
-| Campo | Obrigatório |
-|-------|-------------|
-| id_conta | ✅ |
-| id_categoria | ✅ |
-| valor | ✅ |
-| data_lancamento | ✅ |
-| id_subcategoria, descricao, forma_pagamento, data_vencimento, data_pagamento, status, parcelado, total_parcelas | ❌ |
-
-```json
-// 201 - Despesa simples
-{ "sucesso": true, "mensagem": "Despesa criada com sucesso", "dados": { "id_movimentacao": 5 } }
-
-// 201 - Despesa parcelada
-{ "sucesso": true, "mensagem": "Despesa parcelada em 3x criada com sucesso", "dados": { "ids_movimentacoes": [6, 7, 8] } }
-
-// 400 - Campos faltando
-{ "sucesso": false, "mensagem": "Preencha todos os campos obrigatórios: id_conta, id_categoria, valor e data_lancamento" }
+// 404 - Não encontrada
+{ "sucesso": false, "mensagem": "Conta não encontrada" }
 ```
 
 ---
 
-### PUT `/despesas/:id`
+### GET `/relatorios/lucro?data_inicio=YYYY-MM-DD&data_fim=YYYY-MM-DD`
 
-Mesmos campos do POST sem `parcelado` e `total_parcelas`. Usado também para marcar como **PAGO**:
+Calcula lucro ou prejuízo em um período.
+
+| Parâmetro | Obrigatório | Descrição |
+|-----------|-------------|-----------|
+| data_inicio | ✅ | Data inicial `YYYY-MM-DD` |
+| data_fim | ✅ | Data final `YYYY-MM-DD` |
 
 ```json
+// 200 - Lucro
 {
-  "id_conta": 1,
-  "id_categoria": 4,
-  "valor": 3500.00,
-  "data_lancamento": "2026-07-01",
-  "data_vencimento": "2026-07-10",
-  "data_pagamento": "2026-07-08",
-  "status": "PAGO"
+  "sucesso": true,
+  "dados": {
+    "total_receitas": 15000.00,
+    "total_despesas": 8500.00,
+    "lucro": 6500.00,
+    "resultado": "LUCRO"
+  }
 }
+
+// 200 - Prejuízo
+{
+  "sucesso": true,
+  "dados": {
+    "total_receitas": 5000.00,
+    "total_despesas": 8500.00,
+    "lucro": -3500.00,
+    "resultado": "PREJUIZO"
+  }
+}
+
+// 400 - Parâmetros faltando
+{ "sucesso": false, "mensagem": "Informe data_inicio e data_fim" }
 ```
+
+---
+
+### GET `/relatorios/mensal?ano=YYYY&mes=M`
+
+Relatório financeiro completo de um mês.
+
+| Parâmetro | Obrigatório | Descrição |
+|-----------|-------------|-----------|
+| ano | ✅ | Ex: `2026` |
+| mes | ✅ | Ex: `7` |
 
 ```json
 // 200 - Sucesso
-{ "sucesso": true, "mensagem": "Despesa atualizada com sucesso" }
+{
+  "sucesso": true,
+  "dados": {
+    "periodo": {
+      "ano": 2026,
+      "mes": 7,
+      "data_inicio": "2026-07-01",
+      "data_fim": "2026-07-31"
+    },
+    "resumo": {
+      "total_receitas": 15000.00,
+      "total_despesas": 8500.00,
+      "lucro": 6500.00
+    },
+    "saldo_geral": 6500.00,
+    "resultado": "LUCRO",
+    "movimentacoes": [
+      {
+        "id_movimentacao": "uuid",
+        "tipo": "RECEITA",
+        "valor": "15000.00",
+        "data_lancamento": "2026-07-01",
+        "descricao": "Venda de produtos julho",
+        "categoria": "Vendas",
+        "subcategoria": null,
+        "forma_pagamento": "PIX"
+      }
+    ]
+  }
+}
 
-// 404 - Não encontrada
-{ "sucesso": false, "mensagem": "Despesa não encontrada" }
+// 400 - Parâmetros faltando
+{ "sucesso": false, "mensagem": "Informe ano e mes" }
 ```
 
 ---
 
-### DELETE `/despesas/:id`
+### GET `/relatorios/exportar/pdf?ano=YYYY&mes=M`
 
-Soft delete — seta `ativo = 0`. Registro permanece no banco.
+Gera e faz download do relatório mensal em PDF.
 
-```json
-// 200 - Sucesso
-{ "sucesso": true, "mensagem": "Despesa removida com sucesso" }
+**Resposta:** download do arquivo `relatorio_2026_07.pdf`
 
-// 404 - Não encontrada
-{ "sucesso": false, "mensagem": "Despesa não encontrada" }
-```
+O PDF contém resumo financeiro do mês e lista completa de movimentações. O arquivo é deletado do servidor após o download.
 
 ---
 
-## Códigos de Status HTTP
+### GET `/relatorios/exportar/csv?ano=YYYY&mes=M`
 
-| Código | Quando ocorre |
-|--------|---------------|
-| 200 | Listagem, busca, atualização ou exclusão bem-sucedida |
-| 201 | Receita ou despesa criada com sucesso |
-| 400 | Campos obrigatórios faltando ou ID inválido |
-| 403 | Cargo sem permissão |
-| 404 | Não encontrada ou já deletada |
-| 500 | Erro no servidor ou validação no Model |
+Exporta movimentações do mês em CSV com as colunas: tipo, valor, data, descrição, categoria, subcategoria e forma de pagamento.
+
+**Resposta:** download do arquivo `relatorio_2026_07.csv`
 
 ---
 
-## Observações Técnicas
+## RF-010 — Auditoria
 
-- **Tabela central:** toda movimentação passa por `movimentacoes` primeiro. O `insertId` é usado para inserir na tabela específica.
-- **Parcelamento:** divide o valor total pelo número de parcelas e cria uma movimentação por parcela, incrementando o mês automaticamente.
-- **Soft delete (RF-005/006):** `ativo = 0` em `movimentacoes`. Listagens sempre filtram por `ativo = 1`.
-- **Status da despesa:** padrão `PENDENTE`. Atualizar para `PAGO` via `PUT` quando o pagamento for efetuado.
+O `auditoriaMiddleware` é aplicado em todas as rotas do sistema e registra cada ação em `logs/auditoria.log`.
+
+**Formato do log:**
