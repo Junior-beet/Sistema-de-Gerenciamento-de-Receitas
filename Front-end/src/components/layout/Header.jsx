@@ -5,12 +5,13 @@ function getRotas() {
   if (auth.estaLogado()) {
     const usuario = auth.sessaoLocal()
     const rotas = [
-      { href: '/dashboard', label: 'Dashboard' },
+      { href: '/dashboard', label: 'Painel' },
       { href: '/saiba-mais', label: 'Saiba Mais' },
       { href: '#sair', label: 'Sair' },
     ]
     if (usuario?.cargo === 'DIRETOR_FINANCEIRO') {
-      rotas.splice(1, 0, { href: '/calculos', label: 'Calculos' })
+      rotas.splice(1, 0, { href: '/calculos', label: 'Movimentações' })
+      rotas.splice(2, 0, { href: '/relatorios', label: 'Relatorios' })
     }
     return rotas
   }

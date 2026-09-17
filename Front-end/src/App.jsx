@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react'
-import { HomePage } from './pages/HomePage.jsx'
-import { LoginPage } from './pages/LoginPage.jsx'
-import { CadastroPage } from './pages/CadastroPage.jsx'
-import { SaibaMaisPage } from './pages/SaibaMaisPage.jsx'
-import { EsqueciSenhaPage } from './pages/EsqueciSenhaPage.jsx'
-import { RedefinirSenhaPage } from './pages/RedefinirSenhaPage.jsx'
-import { CategoriasPage } from './pages/CategoriasPage.jsx'
-import { CategoriaFormPage } from './pages/CategoriaFormPage.jsx'
-import { SubcategoriasPage } from './pages/SubcategoriasPage.jsx'
-import { SubcategoriaFormPage } from './pages/SubcategoriaFormPage.jsx'
-import { ReceitaFormPage } from './pages/ReceitaFormPage.jsx'
-import { DespesaFormPage } from './pages/DespesaFormPage.jsx'
-import { DashboardPage } from './pages/DashboardPage.jsx'
+import { HomePage } from './pages/infos/HomePage.jsx'
+import { LoginPage } from './pages/cadastro/LoginPage.jsx'
+import { CadastroPage } from './pages/cadastro/CadastroPage.jsx'
+import { SaibaMaisPage } from './pages/infos/SaibaMaisPage.jsx'
+import { EsqueciSenhaPage } from './pages/cadastro/EsqueciSenhaPage.jsx'
+import { RedefinirSenhaPage } from './pages/cadastro/RedefinirSenhaPage.jsx'
+import { CategoriasPage } from './pages/categorias/CategoriasPage.jsx'
+import { CategoriaFormPage } from './pages/categorias/CategoriaFormPage.jsx'
+import { SubcategoriasPage } from './pages/categorias/SubcategoriasPage.jsx'
+import { SubcategoriaFormPage } from './pages/categorias/SubcategoriaFormPage.jsx'
+import { ReceitaFormPage } from './pages/movimentacoes/ReceitaFormPage.jsx'
+import { DespesaFormPage } from './pages/movimentacoes/DespesaFormPage.jsx'
+import { DashboardPage } from './pages/relatorios/DashboardPage.jsx'
+import { RelatoriosPage } from './pages/relatorios/RelatoriosPage.jsx'
 import { ToastHost } from './components/shared/Toast.jsx'
 import { auth } from './services/auth.jsx'
 import { ROTAS_PUBLICAS } from './config/constants.jsx'
@@ -33,6 +34,7 @@ const rotas = {
   '/receitas/nova': ReceitaFormPage,
   '/despesas/nova': DespesaFormPage,
   '/dashboard': DashboardPage,
+  '/relatorios': RelatoriosPage,
 }
 
 function extrairCaminhoBase(caminho) {

@@ -75,7 +75,7 @@ small,.small { font-size:14px; }
 /* HEADER */
 
 .app-header {
-  background:#1765CC; box-shadow:0 4px 12px rgba(0,0,0,.15);
+  background:#1765CC; box-shadow:0 4px 12px rgba(255, 255, 255, 0.15);
   backdrop-filter:blur(12px); transition:.25s;
 }
 
@@ -104,7 +104,7 @@ small,.small { font-size:14px; }
 .brand-wordmark span:nth-child(3) { color:#34A853; }
 
 .app-header .nav-link {
-  color:var(--secondary)!important; font-weight:500;
+  color:#fff!important; font-weight:500;
   font-size:14px; padding:8px 16px; border-radius:999px;
   transition:.2s;
 }
@@ -117,6 +117,7 @@ small,.small { font-size:14px; }
 .app-header .nav-link.active { font-weight:600; }
 .app-header .navbar-toggler { border:0; padding:4px 8px; }
 .app-header .navbar-toggler:focus { box-shadow:none; }
+.app-header .navbar-toggler-icon { filter:brightness(0) invert(1); }
 
 /* HERO */
 
@@ -403,6 +404,29 @@ small,.small { font-size:14px; }
   border-top:1px solid var(--border-light);
   padding:3.5rem 0 0;
   color:var(--secondary);
+}
+
+.footer-section,
+.footer-section h6,
+.footer-section p,
+.footer-section li,
+.footer-section span,
+.footer-section a,
+.footer-section .footer-brand-name,
+.footer-section .footer-about,
+.footer-section .footer-bottom,
+.footer-section .footer-contact li,
+.footer-section .footer-links a,
+.footer-section .footer-team-toggle,
+.footer-section .footer-team-chevron,
+.footer-section .footer-team-nome {
+  color:#fff!important;
+}
+
+.footer-section .footer-links a:hover,
+.footer-section .footer-links a:focus-visible {
+  color:#fff!important;
+  text-decoration:underline;
 }
 
 .footer-section h6 {
@@ -754,3 +778,16 @@ small,.small { font-size:14px; }
   outline:2px solid var(--primary);
   outline-offset:2px;
 }
+
+@media print {
+  .app-header, .footer-section, .toast-container, .relatorio-cabecalho, .filtros-movimentacoes { display:none!important; }
+  body { background:#fff!important; }
+  .container { max-width:none!important; width:100%!important; padding:0!important; }
+  .card, .value-card { border:1px solid #ddd!important; box-shadow:none!important; break-inside:avoid; }
+  .table { font-size:11px; }
+}
+
+.grafico-trilho { height:18px; border-radius:4px; overflow:hidden; background:var(--border-light); }
+.grafico-barra { height:100%; min-width:2px; border-radius:4px; }
+.grafico-entrada { background:var(--success); }
+.grafico-saida { background:var(--danger); }
