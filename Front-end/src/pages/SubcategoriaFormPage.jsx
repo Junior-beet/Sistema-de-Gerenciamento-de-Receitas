@@ -1,177 +1,71 @@
+import { useEffect, useState } from 'react'
 import { Header } from '../components/layout/Header.jsx'
 import { Footer } from '../components/layout/Footer.jsx'
 import { auth } from '../services/auth.jsx'
 import { api } from '../services/api.jsx'
 import { mostrarToast } from '../components/shared/Toast.jsx'
-import { mostrarAlerta } from '../components/shared/Alert.jsx'
+import { navegar } from '../services/navigation.jsx'
 
 function extrairIdDaRota() {
-  const path = location.pathname
-  const match = path.match(/\/subcategorias\/editar\/([^/]+)/)
+  const match = location.pathname.match(/\/subcategorias\/editar\/([^/]+)/)
   return match ? match[1] : null
 }
 
-export async function SubcategoriaFormPage() {
-  const page = document.createElement('div')
+export function SubcategoriaFormPage() {
   const params = new URLSearchParams(location.search)
   const categoriaId = params.get('categoria') || null
   const idRota = extrairIdDaRota()
   const isEdit = !!idRota
 
   const usuario = auth.sessaoLocal()
-  if (!usuario) {
-    window.dispatchEvent(new CustomEvent('navegar', { detail: '/login' }))
-    return page
-  }
 
-  page.appendChild(Header('/calculos'))
+  const [categorias, setCategorias] = useState([])
+  const [idCategoria, setIdCategoria] = useState(categoriaId || '')
+  const [nome, setNome] = useState('')
+  const [carregando, setCarregando] = useState(true)
+  const [salvando, setSalvando] = useState(false)
+  const [alert, setAlert] = useState(null)
 
-  const main = document.createElement('main')
-  main.className = 'auth-page'
+  useEffect(() => {
+    if (!usuario) {
+      navegar('/login')
+      return
+    }
+    iniciar()
+  }, [])
 
-  const card = document.createElement('div')
-  card.className = 'auth-card'
-  card.style.maxWidth = '520px'
-
-  const logo = document.createElement('img')
-  logo.src = '/assets/logo-sgr.svg'
-  logo.alt = 'Logo do SGR'
-  logo.className = 'auth-logo'
-
-  const title = document.createElement('h1')
-  title.className = 'auth-title'
-  title.textContent = isEdit ? 'Editar Subcategoria' : 'Nova Subcategoria'
-
-  const subtitle = document.createElement('p')
-  subtitle.className = 'auth-subtitle'
-  subtitle.textContent = 'Preencha os dados da subcategoria'
-
-  const alert = document.createElement('div')
-  alert.className = 'alert d-none'
-  alert.id = 'formAlert'
-
-  const form = document.createElement('form')
-  form.id = 'subcategoriaForm'
-  form.noValidate = true
-
-  const catGroup = document.createElement('div')
-  catGroup.className = 'mb-3'
-  catGroup.innerHTML = `
-    <label for="categoria" class="form-label">Calculo Pai <span class="text-danger">*</span></label>
-    <select class="form-select" id="categoria" required>
-      <option value="" disabled selected>Carregando calculos...</option>
-    </select>
-  `
-  form.appendChild(catGroup)
-
-  const nomeGroup = document.createElement('div')
-  nomeGroup.className = 'mb-4'
-  nomeGroup.innerHTML = `
-    <label for="nome" class="form-label">Nome <span class="text-danger">*</span></label>
-    <input type="text" class="form-control" id="nome" placeholder="Ex: Supermercado, Restaurante, Transporte..." required maxlength="100">
-  `
-  form.appendChild(nomeGroup)
-
-  const btn = document.createElement('button')
-  btn.type = 'submit'
-  btn.className = 'btn btn-primary btn-lg w-100'
-  btn.textContent = isEdit ? 'Salvar Alteracoes' : 'Cadastrar Subcategoria'
-  btn.id = 'btnSubmit'
-  form.appendChild(btn)
-
-  const divider = document.createElement('div')
-  divider.className = 'auth-divider'
-  divider.textContent = 'ou'
-
-  const footer = document.createElement('div')
-  footer.className = 'text-center'
-  const voltarHref = categoriaId ? `/calculos/${categoriaId}/subcategorias` : '/calculos'
-  footer.innerHTML = `<p class="small mb-0" style="color:var(--color-text-secondary)"><a href="${voltarHref}" class="fw-semibold">&larr; Voltar</a></p>`
-
-  card.appendChild(logo)
-  card.appendChild(title)
-  card.appendChild(subtitle)
-  card.appendChild(alert)
-  card.appendChild(form)
-  card.appendChild(divider)
-  card.appendChild(footer)
-
-  main.appendChild(card)
-  page.appendChild(main)
-  page.appendChild(Footer())
-
-  let categorias = []
-
-  async function carregarCategorias() {
+  async function iniciar() {
     try {
       const data = await api.get('/categorias')
-      categorias = data.dados || []
+      const lista = data.dados || []
+      setCategorias(lista)
 
-      const select = form.querySelector('#categoria')
-      if (categorias.length === 0) {
-        select.innerHTML = '<option value="" disabled selected>Nenhum calculo cadastrado</option>'
-        select.disabled = true
-        btn.disabled = true
-        return
-      }
-
-      select.innerHTML = '<option value="" disabled selected>Selecione o calculo</option>' +
-        categorias.map(c => {
-          const tipo = c.tipo === 'RECEITA' ? 'Receita' : 'Despesa'
-          return `<option value="${c.id_categoria}">${c.nome} (${tipo})</option>`
-        }).join('')
-      select.disabled = false
-
-      if (categoriaId) {
-        select.value = categoriaId
+      if (isEdit) {
+        const sub = await api.get(`/subcategorias/${idRota}`)
+        setIdCategoria(sub.dados.id_categoria)
+        setNome(sub.dados.nome || '')
       }
     } catch (err) {
-      form.querySelector('#categoria').innerHTML = '<option value="" disabled selected>Erro ao carregar calculos</option>'
-      mostrarToast('erro', 'Erro ao carregar calculos')
+      setAlert({ tipo: 'erro', mensagem: 'Erro ao carregar: ' + err.message })
+    } finally {
+      setCarregando(false)
     }
   }
 
-  if (isEdit) {
-    btn.disabled = true
-    btn.textContent = 'Carregando...'
-
-    try {
-      const data = await api.get(`/subcategorias/${idRota}`)
-      const sub = data.dados
-
-      await carregarCategorias()
-
-      form.querySelector('#categoria').value = sub.id_categoria
-      form.querySelector('#nome').value = sub.nome || ''
-
-      btn.disabled = false
-      btn.textContent = 'Salvar Alteracoes'
-    } catch (err) {
-      mostrarAlerta(alert, 'erro', 'Erro ao carregar subcategoria: ' + err.message)
-      btn.disabled = false
-      btn.textContent = 'Tentar novamente'
-    }
-  } else {
-    await carregarCategorias()
-  }
-
-  form.addEventListener('submit', async e => {
+  const aoEnviar = async e => {
     e.preventDefault()
 
-    const idCategoria = form.querySelector('#categoria').value
-    const nome = form.querySelector('#nome').value.trim()
-
-    if (!idCategoria || !nome) {
-      mostrarAlerta(alert, 'erro', 'Preencha todos os campos obrigatorios')
+    if (!idCategoria || !nome.trim()) {
+      setAlert({ tipo: 'erro', mensagem: 'Preencha todos os campos obrigatórios' })
       return
     }
 
-    btn.disabled = true
-    btn.innerHTML = '<span class="spinner spinner-sm me-2"></span>Salvando...'
+    setSalvando(true)
+    setAlert(null)
 
     const payload = {
       id_categoria: idCategoria,
-      nome
+      nome: nome.trim(),
     }
 
     try {
@@ -184,24 +78,84 @@ export async function SubcategoriaFormPage() {
       }
 
       const voltarPara = idCategoria ? `/calculos/${idCategoria}/subcategorias` : '/calculos'
-      setTimeout(() => {
-        window.dispatchEvent(new CustomEvent('navegar', { detail: voltarPara }))
-      }, 800)
+      setTimeout(() => navegar(voltarPara), 800)
     } catch (err) {
-      mostrarAlerta(alert, 'erro', err.message || 'Erro ao salvar subcategoria')
+      setAlert({ tipo: 'erro', mensagem: err.message || 'Erro ao salvar subcategoria' })
       mostrarToast('erro', err.message || 'Erro ao salvar subcategoria')
     } finally {
-      btn.disabled = false
-      btn.textContent = isEdit ? 'Salvar Alteracoes' : 'Cadastrar Subcategoria'
+      setSalvando(false)
     }
-  })
+  }
 
-  card.querySelectorAll('a[href]').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault()
-      window.dispatchEvent(new CustomEvent('navegar', { detail: a.getAttribute('href') }))
-    })
-  })
+  const voltarHref = categoriaId ? `/calculos/${categoriaId}/subcategorias` : '/calculos'
 
-  return page
+  return (
+    <div>
+      <Header rotaAtiva="/calculos" />
+      <main className="auth-page">
+        <div className="auth-card" style={{ maxWidth: 520 }}>
+          <img src="/assets/logo-sgr.svg" alt="Logo do SGR" className="auth-logo" />
+          <h1 className="auth-title">{isEdit ? 'Editar Subcategoria' : 'Nova Subcategoria'}</h1>
+          <p className="auth-subtitle">Preencha os dados da subcategoria</p>
+
+          {alert && (
+            <div className={`alert ${alert.tipo === 'erro' ? 'alert-danger' : 'alert-success'}`}>
+              {alert.mensagem}
+            </div>
+          )}
+
+          <form noValidate onSubmit={aoEnviar}>
+            <div className="mb-3">
+              <label htmlFor="categoria" className="form-label">Calculo Pai <span className="text-danger">*</span></label>
+              <select
+                className="form-select"
+                id="categoria"
+                required
+                value={idCategoria}
+                onChange={e => setIdCategoria(e.target.value)}
+                disabled={carregando || categorias.length === 0}
+              >
+                <option value="" disabled>
+                  {categorias.length === 0 ? 'Nenhum calculo cadastrado' : 'Selecione o calculo'}
+                </option>
+                {categorias.map(c => (
+                  <option value={c.id_categoria} key={c.id_categoria}>
+                    {c.nome} ({c.tipo === 'RECEITA' ? 'Receita' : 'Despesa'})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="nome" className="form-label">Nome <span className="text-danger">*</span></label>
+              <input
+                type="text"
+                className="form-control"
+                id="nome"
+                placeholder="Ex: Supermercado, Restaurante, Transporte..."
+                required
+                maxLength="100"
+                value={nome}
+                onChange={e => setNome(e.target.value)}
+                disabled={carregando}
+              />
+            </div>
+
+            <button type="submit" className="btn btn-primary btn-lg w-100" disabled={carregando || salvando || categorias.length === 0}>
+              {carregando ? 'Carregando...' : salvando ? 'Salvando...' : isEdit ? 'Salvar Alterações' : 'Cadastrar Subcategoria'}
+            </button>
+          </form>
+
+          <div className="auth-divider">ou</div>
+
+          <div className="text-center">
+            <p className="small mb-0" style={{ color: 'var(--color-text-secondary)' }}>
+              <a href={voltarHref} className="fw-semibold" onClick={e => { e.preventDefault(); navegar(voltarHref) }}>&larr; Voltar</a>
+            </p>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  )
 }

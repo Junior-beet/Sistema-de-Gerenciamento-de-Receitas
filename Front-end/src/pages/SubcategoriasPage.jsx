@@ -1,188 +1,149 @@
+import { useEffect, useState } from 'react'
 import { Header } from '../components/layout/Header.jsx'
 import { Footer } from '../components/layout/Footer.jsx'
 import { auth } from '../services/auth.jsx'
 import { api } from '../services/api.jsx'
 import { mostrarToast } from '../components/shared/Toast.jsx'
+import { navegar } from '../services/navigation.jsx'
 
 function extrairCategoriaIdDaRota() {
-  const path = location.pathname
-  const match = path.match(/\/calculos\/([^/]+)\/subcategorias/)
+  const match = location.pathname.match(/\/calculos\/([^/]+)\/subcategorias/)
   return match ? match[1] : null
 }
 
-export async function SubcategoriasPage() {
-  const page = document.createElement('div')
+export function SubcategoriasPage() {
   const categoriaId = extrairCategoriaIdDaRota()
-
-  if (!categoriaId) {
-    window.dispatchEvent(new CustomEvent('navegar', { detail: '/calculos' }))
-    return page
-  }
-
   const usuario = auth.sessaoLocal()
-  if (!usuario) {
-    window.dispatchEvent(new CustomEvent('navegar', { detail: '/login' }))
-    return page
-  }
 
-  page.appendChild(Header('/calculos'))
+  const [categoria, setCategoria] = useState(null)
+  const [subcategorias, setSubcategorias] = useState([])
+  const [carregando, setCarregando] = useState(true)
+  const [erroCategoria, setErroCategoria] = useState(null)
+  const [erroLista, setErroLista] = useState(null)
 
-  const main = document.createElement('main')
-  main.className = 'container py-4'
+  useEffect(() => {
+    if (!categoriaId) {
+      navegar('/calculos')
+      return
+    }
+    if (!usuario) {
+      navegar('/login')
+      return
+    }
+    carregarDados()
+  }, [])
 
-  let categoria = null
-
-  main.innerHTML = `
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <div>
-        <p class="text-secondary-soft mb-1"><a href="/calculos" id="linkVoltar" class="text-decoration-none">&larr; Calculos</a></p>
-        <h1 class="h3 mb-1" id="pageTitle">Subcategorias</h1>
-        <p class="text-secondary-soft mb-0" id="pageSubtitle">Carregando...</p>
-      </div>
-      <a href="/subcategorias/nova?categoria=${categoriaId}" class="btn btn-primary" id="btnNovaSub">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="margin-right:6px"><path d="M9 1v16M1 9h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        Nova Subcategoria
-      </a>
-    </div>
-
-    <div id="subcategoriasContainer">
-      <div class="text-center py-5">
-        <div class="spinner mx-auto"></div>
-        <p class="text-secondary-soft mt-3">Carregando subcategorias...</p>
-      </div>
-    </div>
-  `
-
-  page.appendChild(main)
-  page.appendChild(Footer())
-
-  const linkVoltarEl = main.querySelector('#linkVoltar')
-  const btnNovaSubEl = main.querySelector('#btnNovaSub')
-
-  let subcategorias = []
-
-  async function carregarCategoria() {
+  async function carregarDados() {
+    setCarregando(true)
     try {
       const data = await api.get(`/categorias/${categoriaId}`)
-      categoria = data.dados
-      const isReceita = categoria.tipo === 'RECEITA'
-      const cor = categoria.cor || (isReceita ? '#34A853' : '#D93025')
-
-      main.querySelector('#pageTitle').innerHTML = `
-        <span class="me-2">${categoria.nome}</span>
-        <span class="badge ${isReceita ? 'bg-success' : 'bg-danger'}" style="font-size:12px">${isReceita ? 'Receita' : 'Despesa'}</span>
-      `
-      main.querySelector('#pageSubtitle').textContent = `Gerencie as subcategorias de "${categoria.nome}"`
+      setCategoria(data.dados)
+      setErroCategoria(null)
     } catch (err) {
-      main.querySelector('#pageTitle').textContent = 'Calculo nao encontrado'
-      main.querySelector('#pageSubtitle').textContent = err.message
-      btnNovaSubEl.style.display = 'none'
+      setErroCategoria(err.message)
     }
-  }
-
-  async function carregarSubcategorias() {
-    const container = main.querySelector('#subcategoriasContainer')
 
     try {
       const data = await api.get(`/subcategorias/categoria/${categoriaId}`)
-      subcategorias = (data.dados || []).filter(s => s.ativo === 1)
-      renderizar()
+      setSubcategorias((data.dados || []).filter(s => s.ativo === 1))
+      setErroLista(null)
     } catch (err) {
-      container.innerHTML = `
-        <div class="text-center py-5">
-          <p class="text-danger mb-2">Erro ao carregar subcategorias</p>
-          <p class="text-secondary-soft small">${err.message}</p>
-        </div>
-      `
+      setErroLista(err.message)
       mostrarToast('erro', 'Erro ao carregar subcategorias')
+    } finally {
+      setCarregando(false)
     }
   }
 
-  function renderizar() {
-    const container = main.querySelector('#subcategoriasContainer')
+  async function excluir(sub) {
+    if (!window.confirm(`Tem certeza que deseja excluir a subcategoria "${sub.nome}"?`)) return
 
-    if (subcategorias.length === 0) {
-      container.innerHTML = `
-        <div class="text-center py-5">
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="color:var(--color-text-muted);margin-bottom:12px">
-            <rect x="6" y="10" width="36" height="28" rx="4" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M14 22h20M14 30h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          <p class="text-secondary-soft mb-3">Nenhuma subcategoria cadastrada</p>
-          <a href="/subcategorias/nova?categoria=${categoriaId}" class="btn btn-outline-primary btn-sm sub-link">Adicionar primeira subcategoria</a>
-        </div>
-      `
-      anexarLinks(container)
-      return
+    try {
+      await api.delete(`/subcategorias/${sub.id_subcategoria}`)
+      mostrarToast('sucesso', 'Subcategoria excluída com sucesso')
+      setSubcategorias(prev => prev.filter(s => s.id_subcategoria !== sub.id_subcategoria))
+    } catch (err) {
+      mostrarToast('erro', err.message || 'Erro ao excluir subcategoria')
     }
+  }
 
-    let html = '<div class="row g-3">'
-    subcategorias.forEach(sub => {
-      html += `
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="card subcategoria-card">
-            <div class="card-body d-flex justify-content-between align-items-center">
-              <div>
-                <h6 class="card-title mb-0 fw-semibold">${sub.nome}</h6>
-              </div>
-              <div class="d-flex gap-1">
-                <a href="/subcategorias/editar/${sub.id_subcategoria}" class="btn btn-outline-primary btn-sm sub-link">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11l3-3 4 4-3 3H2v-4zM12 2l2 2-4 4-2-2 4-4z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-                <button type="button" class="btn btn-outline-danger btn-sm btn-excluir-sub" data-id="${sub.id_subcategoria}" data-nome="${sub.nome}">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 4h8M5 4v8M10 4v8M7 4V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                </button>
-              </div>
-            </div>
+  const isReceita = categoria?.tipo === 'RECEITA'
+
+  return (
+    <div>
+      <Header rotaAtiva="/calculos" />
+      <main className="container py-4">
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <p className="text-secondary-soft mb-1">
+              <a href="/calculos" className="text-decoration-none" onClick={e => { e.preventDefault(); navegar('/calculos') }}>&larr; Calculos</a>
+            </p>
+            <h1 className="h3 mb-1">
+              {categoria ? (
+                <>
+                  <span className="me-2">{categoria.nome}</span>
+                  <span className={`badge ${isReceita ? 'bg-success' : 'bg-danger'}`} style={{ fontSize: 12 }}>{isReceita ? 'Receita' : 'Despesa'}</span>
+                </>
+              ) : (
+                erroCategoria ? 'Calculo nao encontrado' : 'Subcategorias'
+              )}
+            </h1>
+            <p className="text-secondary-soft mb-0">
+              {categoria ? `Gerencie as subcategorias de "${categoria.nome}"` : erroCategoria || 'Carregando...'}
+            </p>
           </div>
+          {categoria && (
+            <button type="button" className="btn btn-primary" onClick={() => navegar(`/subcategorias/nova?categoria=${categoriaId}`)}>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ marginRight: 6 }}><path d="M9 1v16M1 9h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+              Nova Subcategoria
+            </button>
+          )}
         </div>
-      `
-    })
-    html += '</div>'
-    container.innerHTML = html
 
-    anexarLinks(container)
-
-    container.querySelectorAll('.btn-excluir-sub').forEach(btn => {
-      btn.addEventListener('click', async e => {
-        e.preventDefault()
-        const id = btn.dataset.id
-        const nome = btn.dataset.nome
-        if (!confirm(`Tem certeza que deseja excluir a subcategoria "${nome}"?`)) return
-
-        try {
-          await api.delete(`/subcategorias/${id}`)
-          mostrarToast('sucesso', 'Subcategoria excluida com sucesso')
-          subcategorias = subcategorias.filter(s => s.id_subcategoria != id)
-          renderizar()
-        } catch (err) {
-          mostrarToast('erro', err.message || 'Erro ao excluir subcategoria')
-        }
-      })
-    })
-  }
-
-  function anexarLinks(container) {
-    container.querySelectorAll('.sub-link').forEach(a => {
-      a.addEventListener('click', e => {
-        e.preventDefault()
-        window.dispatchEvent(new CustomEvent('navegar', { detail: a.getAttribute('href') }))
-      })
-    })
-  }
-
-  linkVoltarEl.addEventListener('click', e => {
-    e.preventDefault()
-    window.dispatchEvent(new CustomEvent('navegar', { detail: '/calculos' }))
-  })
-
-  btnNovaSubEl.addEventListener('click', e => {
-    e.preventDefault()
-    window.dispatchEvent(new CustomEvent('navegar', { detail: e.currentTarget.getAttribute('href') }))
-  })
-
-  await carregarCategoria()
-  await carregarSubcategorias()
-
-  return page
+        {carregando ? (
+          <div className="text-center py-5">
+            <div className="spinner mx-auto"></div>
+            <p className="text-secondary-soft mt-3">Carregando subcategorias...</p>
+          </div>
+        ) : erroLista ? (
+          <div className="text-center py-5">
+            <p className="text-danger mb-2">Erro ao carregar subcategorias</p>
+            <p className="text-secondary-soft small">{erroLista}</p>
+          </div>
+        ) : subcategorias.length === 0 ? (
+          <div className="text-center py-5">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style={{ color: 'var(--color-text-muted)', marginBottom: 12 }}>
+              <rect x="6" y="10" width="36" height="28" rx="4" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M14 22h20M14 30h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            <p className="text-secondary-soft mb-3">Nenhuma subcategoria cadastrada</p>
+            <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => navegar(`/subcategorias/nova?categoria=${categoriaId}`)}>Adicionar primeira subcategoria</button>
+          </div>
+        ) : (
+          <div className="row g-3">
+            {subcategorias.map(sub => (
+              <div className="col-12 col-sm-6 col-lg-4" key={sub.id_subcategoria}>
+                <div className="card subcategoria-card">
+                  <div className="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 className="card-title mb-0 fw-semibold">{sub.nome}</h6>
+                    </div>
+                    <div className="d-flex gap-1">
+                      <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => navegar(`/subcategorias/editar/${sub.id_subcategoria}`)}>
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11l3-3 4 4-3 3H2v-4zM12 2l2 2-4 4-2-2 4-4z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      </button>
+                      <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => excluir(sub)}>
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 4h8M5 4v8M10 4v8M7 4V2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+      <Footer />
+    </div>
+  )
 }

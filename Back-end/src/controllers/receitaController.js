@@ -38,9 +38,9 @@ const receitaController = {
 
     selecionarPorConta: async (req, res) => {
         try {
-            const id_conta = Number(req.params.id_conta);
+            const id_conta = req.params.id_conta;
 
-            if (!id_conta || id_conta <= 0) {
+            if (!id_conta) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID de conta inválido' });
             }
 
@@ -54,7 +54,7 @@ const receitaController = {
 
     selecionarPorId: async (req, res) => {
         try {
-            const id_receita = Number(req.params.id);
+            const id_receita = req.params.id;
             const result = await receitaRepository.selecionarPorId(id_receita);
 
             if (!result) {
@@ -70,10 +70,10 @@ const receitaController = {
 
     atualizar: async (req, res) => {
         try {
-            const id_receita = Number(req.params.id);
+            const id_receita = req.params.id;
             const { id_conta, id_categoria, id_subcategoria, valor, data_lancamento, descricao, forma_pagamento, origem, data_prevista } = req.body;
 
-            if (!id_receita || id_receita <= 0) {
+            if (!id_receita) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
             }
 
@@ -101,9 +101,9 @@ const receitaController = {
 
     deletar: async (req, res) => {
         try {
-            const id_receita = Number(req.params.id);
+            const id_receita = req.params.id;
 
-            if (!id_receita || id_receita <= 0) {
+            if (!id_receita) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
             }
 

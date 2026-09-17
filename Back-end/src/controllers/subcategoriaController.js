@@ -28,9 +28,9 @@ const subcategoriaController = {
 
     selecionarPorCategoria: async (req, res) => {
         try {
-            const id_categoria = Number(req.params.id_categoria);
+            const id_categoria = req.params.id_categoria;
 
-            if (!id_categoria || id_categoria <= 0) {
+            if (!id_categoria) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID de categoria inválido' });
             }
 
@@ -44,7 +44,7 @@ const subcategoriaController = {
 
     selecionarPorId: async (req, res) => {
         try {
-            const id_subcategoria = Number(req.params.id);
+            const id_subcategoria = req.params.id;
             const result = await subcategoriaRepository.selecionarPorId(id_subcategoria);
 
             if (!result) {
@@ -60,10 +60,10 @@ const subcategoriaController = {
 
     atualizar: async (req, res) => {
         try {
-            const id_subcategoria = Number(req.params.id);
+            const id_subcategoria = req.params.id;
             const { id_categoria, nome, ativo } = req.body;
 
-            if (!id_subcategoria || id_subcategoria <= 0) {
+            if (!id_subcategoria) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
             }
 
@@ -88,9 +88,9 @@ const subcategoriaController = {
 
     deletar: async (req, res) => {
         try {
-            const id_subcategoria = Number(req.params.id);
+            const id_subcategoria = req.params.id;
 
-            if (!id_subcategoria || id_subcategoria <= 0) {
+            if (!id_subcategoria) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
             }
 

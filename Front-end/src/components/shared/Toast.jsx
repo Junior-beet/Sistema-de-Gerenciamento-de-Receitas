@@ -1,67 +1,51 @@
+import { useEffect, useState } from 'react'
+
+const TOAST_EVENT = 'sgr:toast'
+
+const TIPOS = {
+  sucesso: { icone: '✓', titulo: 'Sucesso!', classe: 'toast-success' },
+  erro: { icone: '✕', titulo: 'Erro!', classe: 'toast-error' },
+  info: { icone: 'ℹ', titulo: 'Aviso', classe: 'toast-info' },
+}
+
 export function mostrarToast(tipo, mensagem) {
-  const tipoConfig = {
-    sucesso: { icone: '✓', titulo: 'Sucesso!', classe: 'toast-success' },
-    erro: { icone: '✕', titulo: 'Erro!', classe: 'toast-error' },
-    info: { icone: 'ℹ', titulo: 'Aviso', classe: 'toast-info' },
+  window.dispatchEvent(new CustomEvent(TOAST_EVENT, { detail: { tipo, mensagem } }))
+}
+
+export function ToastHost() {
+  const [toasts, setToasts] = useState([])
+
+  useEffect(() => {
+    const aoToast = e => {
+      const { tipo = 'info', mensagem = '' } = e.detail || {}
+      const id = Date.now() + Math.random()
+      setToasts(prev => [...prev, { id, tipo, mensagem }])
+      setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000)
+    }
+    window.addEventListener(TOAST_EVENT, aoToast)
+    return () => window.removeEventListener(TOAST_EVENT, aoToast)
+  }, [])
+
+  const fechar = id => {
+    setToasts(prev => prev.filter(t => t.id !== id))
   }
 
-  const cfg = tipoConfig[tipo] || tipoConfig.info
-
-  let container = document.getElementById('toastContainer')
-  if (!container) {
-    container = document.createElement('div')
-    container.id = 'toastContainer'
-    container.className = 'toast-container'
-    document.body.appendChild(container)
-  }
-
-  const toast = document.createElement('div')
-  toast.className = `toast balloon ${cfg.classe}`
-
-  const icon = document.createElement('span')
-  icon.className = 'toast-icon'
-  icon.textContent = cfg.icone
-
-  const body = document.createElement('div')
-  body.className = 'toast-body'
-
-  const title = document.createElement('div')
-  title.className = 'toast-title'
-  title.textContent = cfg.titulo
-
-  const text = document.createElement('div')
-  text.className = 'toast-msg'
-  text.textContent = mensagem
-
-  const close = document.createElement('button')
-  close.className = 'toast-close'
-  close.type = 'button'
-  close.setAttribute('aria-label', 'Fechar')
-  close.innerHTML = '&times;'
-
-  const progress = document.createElement('div')
-  progress.className = 'toast-progress'
-
-  body.appendChild(title)
-  body.appendChild(text)
-
-  toast.appendChild(icon)
-  toast.appendChild(body)
-  toast.appendChild(close)
-  toast.appendChild(progress)
-
-  container.appendChild(toast)
-
-  requestAnimationFrame(() => toast.classList.add('toast-show'))
-
-  const fechar = () => {
-    toast.classList.remove('toast-show')
-    toast.classList.add('toast-hide')
-    setTimeout(() => toast.remove(), 300)
-  }
-
-  close.addEventListener('click', fechar)
-
-  const duracao = 4000
-  setTimeout(() => fechar(), duracao)
+  return (
+    <div className="toast-container" id="toastContainer">
+      {toasts.map(t => {
+        const cfg = TIPOS[t.tipo] || TIPOS.info
+        return (
+          <div key={t.id} className={`toast balloon ${cfg.classe} toast-show`} role="alert">
+            <span className="toast-icon">{cfg.icone}</span>
+            <div className="toast-body">
+              <div className="toast-title">{cfg.titulo}</div>
+              <div className="toast-msg">{t.mensagem}</div>
+            </div>
+            <button type="button" className="toast-close" aria-label="Fechar" onClick={() => fechar(t.id)}>&times;</button>
+            <div className="toast-progress"></div>
+          </div>
+        )
+      })}
+    </div>
+  )
 }

@@ -65,9 +65,9 @@ const despesaController = {
 
     selecionarPorConta: async (req, res) => {
         try {
-            const id_conta = Number(req.params.id_conta);
+            const id_conta = req.params.id_conta;
 
-            if (!id_conta || id_conta <= 0) {
+            if (!id_conta) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID de conta inválido' });
             }
 
@@ -81,7 +81,7 @@ const despesaController = {
 
     selecionarPorId: async (req, res) => {
         try {
-            const id_despesa = Number(req.params.id);
+            const id_despesa = req.params.id;
             const result = await despesaRepository.selecionarPorId(id_despesa);
 
             if (!result) {
@@ -97,10 +97,10 @@ const despesaController = {
 
     atualizar: async (req, res) => {
         try {
-            const id_despesa = Number(req.params.id);
+            const id_despesa = req.params.id;
             const { id_conta, id_categoria, id_subcategoria, valor, data_lancamento, descricao, forma_pagamento, data_vencimento, data_pagamento, status } = req.body;
 
-            if (!id_despesa || id_despesa <= 0) {
+            if (!id_despesa) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
             }
 
@@ -128,9 +128,9 @@ const despesaController = {
 
     deletar: async (req, res) => {
         try {
-            const id_despesa = Number(req.params.id);
+            const id_despesa = req.params.id;
 
-            if (!id_despesa || id_despesa <= 0) {
+            if (!id_despesa) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
             }
 

@@ -32,7 +32,7 @@ const categoriaController = {
 
     selecionarPorId: async (req, res) => {
         try {
-            const id_categoria = Number(req.params.id);
+            const id_categoria = req.params.id;
             const result = await categoriaRepository.selecionarPorId(id_categoria);
 
             if (!result) {
@@ -48,10 +48,10 @@ const categoriaController = {
 
     atualizar: async (req, res) => {
         try {
-            const id_categoria = Number(req.params.id);
+            const id_categoria = req.params.id;
             const { id_usuario, nome, tipo, cor, ordem } = req.body;
 
-            if (!id_categoria || id_categoria <= 0) {
+            if (!id_categoria) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
             }
 
@@ -76,9 +76,9 @@ const categoriaController = {
 
     deletar: async (req, res) => {
         try {
-            const id_categoria = Number(req.params.id);
+            const id_categoria = req.params.id;
 
-            if (!id_categoria || id_categoria <= 0) {
+            if (!id_categoria) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
             }
 

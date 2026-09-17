@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { useState } from 'react'
-import { createRoot } from 'react-dom/client'
 import { Header } from '../components/layout/Header.jsx'
 import { Footer } from '../components/layout/Footer.jsx'
 import { auth } from '../services/auth.jsx'
+import { navegar } from '../services/navigation.jsx'
 import { dashboardService } from '../services/dashboardService.js'
 import { useFetchDados } from '../hooks/useFetchDados.js'
 import { mostrarToast } from '../components/shared/Toast.jsx'
@@ -338,7 +338,7 @@ function DashboardConteudo({ usuario }) {
                 <div className="card-body">
                   <div className="d-flex justify-content-between align-items-center mb-3">
                     <h5 className="mb-0 fw-semibold">Movimentacoes Recentes</h5>
-                    <button className="btn btn-outline-primary btn-sm" onClick={() => navegar('/calculos')}>Ver Categorias</button>
+                    <button className="btn btn-outline-primary btn-sm" onClick={() => navegar('/calculos')}>Ver Lançamentos</button>
                   </div>
                     <TabelaMovimentacoes receitas={receitasFiltradas} despesas={despesasFiltradas} />
                 </div>
@@ -365,39 +365,18 @@ function DashboardConteudo({ usuario }) {
   )
 }
 
-function navegar(caminho) {
-  window.dispatchEvent(new CustomEvent('navegar', { detail: caminho }))
-}
-
-export async function DashboardPage() {
-  const page = document.createElement('div')
-  page.appendChild(Header('/dashboard'))
-
-  const main = document.createElement('main')
-  main.className = 'container py-4'
-
-  const root = document.createElement('div')
-  main.appendChild(root)
-  page.appendChild(main)
-  page.appendChild(Footer())
-
+export function DashboardPage() {
   const usuario = auth.sessaoLocal()
-  const reactRoot = createRoot(root)
-  reactRoot.render(
-    <ErrorBoundary>
-      <DashboardConteudo usuario={usuario} />
-    </ErrorBoundary>
+
+  return (
+    <div>
+      <Header rotaAtiva="/dashboard" />
+      <main className="container py-4">
+        <ErrorBoundary>
+          <DashboardConteudo usuario={usuario} />
+        </ErrorBoundary>
+      </main>
+      <Footer />
+    </div>
   )
-
-  const desmontar = () => {
-    try {
-      reactRoot.unmount()
-    } catch (e) {
-      console.warn('Dashboard ja desmontada', e)
-    }
-  }
-
-  window.addEventListener('navegar', desmontar, { once: true })
-
-  return page
 }
