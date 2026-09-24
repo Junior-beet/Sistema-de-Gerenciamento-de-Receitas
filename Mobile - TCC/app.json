@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "mobile-tcc",
+    "slug": "mobile-tcc",
+    "version": "1.0.0",
+<<<<<<< HEAD
+=======
+    "scheme": "sgr",
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+<<<<<<< HEAD
+      "supportsTablet": true
+=======
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocalNetworkUsageDescription": "Permite conectar ao servidor financeiro durante o desenvolvimento."
+      }
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+<<<<<<< HEAD
+      "favicon": "./assets/favicon.png"
+    }
+=======
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router"
+    ]
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
+  }
+}
