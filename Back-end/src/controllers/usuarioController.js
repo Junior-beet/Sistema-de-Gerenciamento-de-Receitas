@@ -51,9 +51,9 @@ const usuarioController = {
 
     selecionarPorId: async (req, res) => {
         try {
-            const id_usuario = Number(req.params.id);
+            const id_usuario = String(req.params.id || '').trim();
 
-            if (!id_usuario || id_usuario <= 0) {
+            if (!id_usuario) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
             }
 
@@ -72,10 +72,10 @@ const usuarioController = {
 
     atualizar: async (req, res) => {
         try {
-            const id_usuario = Number(req.params.id);
+            const id_usuario = String(req.params.id || '').trim();
             const { nome, email, cargo } = req.body;
 
-            if (!id_usuario || id_usuario <= 0) {
+            if (!id_usuario) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
             }
 
@@ -112,9 +112,9 @@ const usuarioController = {
 
     deletar: async (req, res) => {
         try {
-            const id_usuario = Number(req.params.id);
+            const id_usuario = String(req.params.id || '').trim();
 
-            if (!id_usuario || id_usuario <= 0) {
+            if (!id_usuario) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
             }
 

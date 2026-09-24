@@ -1,0 +1,1015 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: API
+meta:
+  id: wrk_5c332d02c76349339c72144c242107ea
+  created: 1783018021524
+  modified: 1783018021524
+  description: ""
+collection:
+  - name: Categorias
+    meta:
+      id: fld_eec4aa99d49347aaa2bcb96302a0ffb3
+      created: 1783018038433
+      modified: 1783018038433
+      sortKey: -1783018038433
+      description: ""
+    children:
+      - url: http://localhost:8080/categorias
+        name: Criação de categoria
+        meta:
+          id: req_0d3294384c4c4c3591b368e640709a26
+          created: 1783023813450
+          modified: 1783023973376
+          isPrivate: false
+          description: ""
+          sortKey: -1783023813450
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id_usuario": 1,
+              "nome": "Salário",
+              "tipo": "RECEITA",
+              "cor": "#2ECC71",
+              "ordem": 1
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiU2FtdWVsIEZpbmFuY2Vpcm8iLCJlbWFpbCI6InNhbXVlbHJhYmVsb2Rhc2lsdmFAZ21haWwuY29tIiwiY2FyZ28iOiJESVJFVE9SX0ZJTkFOQ0VJUk8iLCJpYXQiOjE3ODMwMjM3NzIsImV4cCI6MTc4MzA1MjU3Mn0.Pfc-pITXM_f7ryWt7t6c8jrNjPczKXeE4X2s6xL1cyk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/categorias
+        name: Criação de categoria com despesa
+        meta:
+          id: req_9e501166bc5546d9b262209f4433e9ed
+          created: 1783023996117
+          modified: 1786818139611
+          isPrivate: false
+          description: ""
+          sortKey: -1783022445964
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id_usuario": 1,
+              "nome": "Alimentação",
+              "tipo": "DESPESA",
+              "cor": "#E74C3C",
+              "ordem": 2
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiU2FtdWVsIEZpbmFuY2Vpcm8iLCJlbWFpbCI6InNhbXVlbHJhYmVsb2Rhc2lsdmFAZ21haWwuY29tIiwiY2FyZ28iOiJESVJFVE9SX0ZJTkFOQ0VJUk8iLCJpYXQiOjE3ODMwMjM3NzIsImV4cCI6MTc4MzA1MjU3Mn0.Pfc-pITXM_f7ryWt7t6c8jrNjPczKXeE4X2s6xL1cyk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/categorias
+        name: Criar categoria com tipo inválido
+        meta:
+          id: req_55a8efa888ba45d18e4f0c5229685e6b
+          created: 1783024159284
+          modified: 1783024169092
+          isPrivate: false
+          description: ""
+          sortKey: -1783021762221
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id_usuario": 1,
+              "nome": "Teste",
+              "tipo": "INVALIDO"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiU2FtdWVsIEZpbmFuY2Vpcm8iLCJlbWFpbCI6InNhbXVlbHJhYmVsb2Rhc2lsdmFAZ21haWwuY29tIiwiY2FyZ28iOiJESVJFVE9SX0ZJTkFOQ0VJUk8iLCJpYXQiOjE3ODMwMjM3NzIsImV4cCI6MTc4MzA1MjU3Mn0.Pfc-pITXM_f7ryWt7t6c8jrNjPczKXeE4X2s6xL1cyk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/categorias/usuario/1
+        name: Listar categorias do usuário
+        meta:
+          id: req_ea1fe5e5ef4f4b4f8c765f726b7014a0
+          created: 1783024183334
+          modified: 1783024232221
+          isPrivate: false
+          description: ""
+          sortKey: -1783024183334
+        method: GET
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiU2FtdWVsIEZpbmFuY2Vpcm8iLCJlbWFpbCI6InNhbXVlbHJhYmVsb2Rhc2lsdmFAZ21haWwuY29tIiwiY2FyZ28iOiJESVJFVE9SX0ZJTkFOQ0VJUk8iLCJpYXQiOjE3ODMwMjM3NzIsImV4cCI6MTc4MzA1MjU3Mn0.Pfc-pITXM_f7ryWt7t6c8jrNjPczKXeE4X2s6xL1cyk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/categorias/1
+        name: Atualizar categoria
+        meta:
+          id: req_d1678a4b4d354ea2b338e31bc06a3c22
+          created: 1783024271251
+          modified: 1783024411915
+          isPrivate: false
+          description: ""
+          sortKey: -1783024218168.5
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id_usuario": 1,
+              "nome": "Salário Atualizado",
+              "tipo": "RECEITA",
+              "cor": "#27AE60",
+              "ordem": 1
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiU2FtdWVsIEZpbmFuY2Vpcm8iLCJlbWFpbCI6InNhbXVlbHJhYmVsb2Rhc2lsdmFAZ21haWwuY29tIiwiY2FyZ28iOiJESVJFVE9SX0ZJTkFOQ0VJUk8iLCJpYXQiOjE3ODMwMjM3NzIsImV4cCI6MTc4MzA1MjU3Mn0.Pfc-pITXM_f7ryWt7t6c8jrNjPczKXeE4X2s6xL1cyk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/categorias/2
+        name: Buscar categoria por ID
+        meta:
+          id: req_06acab8d25d24f61bde9577b19f593ea
+          created: 1783024314340
+          modified: 1783025049166
+          isPrivate: false
+          description: ""
+          sortKey: -1783024200751.25
+        method: GET
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiU2FtdWVsIEZpbmFuY2Vpcm8iLCJlbWFpbCI6InNhbXVlbHJhYmVsb2Rhc2lsdmFAZ21haWwuY29tIiwiY2FyZ28iOiJESVJFVE9SX0ZJTkFOQ0VJUk8iLCJpYXQiOjE3ODMwMjM3NzIsImV4cCI6MTc4MzA1MjU3Mn0.Pfc-pITXM_f7ryWt7t6c8jrNjPczKXeE4X2s6xL1cyk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/categorias/2
+        name: Deletar categoria
+        meta:
+          id: req_827d057cae24440e90af32addd7a9a96
+          created: 1783024415647
+          modified: 1783040967936
+          isPrivate: false
+          description: ""
+          sortKey: -1783024415647
+        method: DELETE
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiU2FtdWVsIEZpbmFuY2Vpcm8iLCJlbWFpbCI6InNhbXVlbHJhYmVsb2Rhc2lsdmFAZ21haWwuY29tIiwiY2FyZ28iOiJESVJFVE9SX0ZJTkFOQ0VJUk8iLCJpYXQiOjE3ODMwMjM3NzIsImV4cCI6MTc4MzA1MjU3Mn0.Pfc-pITXM_f7ryWt7t6c8jrNjPczKXeE4X2s6xL1cyk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Subcategorias
+    meta:
+      id: fld_9e56902139ef4427812435fe893c4062
+      created: 1783018049715
+      modified: 1783018049715
+      sortKey: -1783018049715
+      description: ""
+    children:
+      - url: http://localhost:8080/subcategorias
+        name: Criar subcategoria
+        meta:
+          id: req_30f2186a6ea249dba719a01ad965e66f
+          created: 1783024501465
+          modified: 1783024578396
+          isPrivate: false
+          description: ""
+          sortKey: -1783024501465
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id_categoria": 2,
+              "nome": "Cantina"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiU2FtdWVsIEZpbmFuY2Vpcm8iLCJlbWFpbCI6InNhbXVlbHJhYmVsb2Rhc2lsdmFAZ21haWwuY29tIiwiY2FyZ28iOiJESVJFVE9SX0ZJTkFOQ0VJUk8iLCJpYXQiOjE3ODMwMjM3NzIsImV4cCI6MTc4MzA1MjU3Mn0.Pfc-pITXM_f7ryWt7t6c8jrNjPczKXeE4X2s6xL1cyk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/subcategorias
+        name: Criar subcategoria com categoria inexistente
+        meta:
+          id: req_38ef208d30eb43ddb4bf4e5209c20b1c
+          created: 1783024609911
+          modified: 1783024624742
+          isPrivate: false
+          description: ""
+          sortKey: -1783024458556
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id_categoria": 10,
+              "nome": "Freelance"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiU2FtdWVsIEZpbmFuY2Vpcm8iLCJlbWFpbCI6InNhbXVlbHJhYmVsb2Rhc2lsdmFAZ21haWwuY29tIiwiY2FyZ28iOiJESVJFVE9SX0ZJTkFOQ0VJUk8iLCJpYXQiOjE3ODMwMjM3NzIsImV4cCI6MTc4MzA1MjU3Mn0.Pfc-pITXM_f7ryWt7t6c8jrNjPczKXeE4X2s6xL1cyk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/subcategorias/categoria/2
+        name: Listar subcategorias da categoria
+        meta:
+          id: req_bd5a35b551f344439db287c10169181d
+          created: 1783024651854
+          modified: 1783024695443
+          isPrivate: false
+          description: ""
+          sortKey: -1783024437101.5
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiU2FtdWVsIEZpbmFuY2Vpcm8iLCJlbWFpbCI6InNhbXVlbHJhYmVsb2Rhc2lsdmFAZ21haWwuY29tIiwiY2FyZ28iOiJESVJFVE9SX0ZJTkFOQ0VJUk8iLCJpYXQiOjE3ODMwMjM3NzIsImV4cCI6MTc4MzA1MjU3Mn0.Pfc-pITXM_f7ryWt7t6c8jrNjPczKXeE4X2s6xL1cyk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: " http://localhost:8080/subcategorias/2"
+        name: "Deletar subcategoria "
+        meta:
+          id: req_393b43ca1a104e209dcc5bfd3b83c04a
+          created: 1783024740765
+          modified: 1783040912416
+          isPrivate: false
+          description: ""
+          sortKey: -1783024426374.25
+        method: DELETE
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiU2FtdWVsIEZpbmFuY2Vpcm8iLCJlbWFpbCI6InNhbXVlbHJhYmVsb2Rhc2lsdmFAZ21haWwuY29tIiwiY2FyZ28iOiJESVJFVE9SX0ZJTkFOQ0VJUk8iLCJpYXQiOjE3ODMwMjM3NzIsImV4cCI6MTc4MzA1MjU3Mn0.Pfc-pITXM_f7ryWt7t6c8jrNjPczKXeE4X2s6xL1cyk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/subcategorias/3
+        name: Atualizar subcategoria
+        meta:
+          id: req_61f1e43660fd4b4fa10845359b087f87
+          created: 1783024950810
+          modified: 1783025067838
+          isPrivate: false
+          description: ""
+          sortKey: -1783024421010.625
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id_categoria": 2,
+              "nome": "Freelance Atualizado",
+              "ativo": 1
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiU2FtdWVsIEZpbmFuY2Vpcm8iLCJlbWFpbCI6InNhbXVlbHJhYmVsb2Rhc2lsdmFAZ21haWwuY29tIiwiY2FyZ28iOiJESVJFVE9SX0ZJTkFOQ0VJUk8iLCJpYXQiOjE3ODMwMjM3NzIsImV4cCI6MTc4MzA1MjU3Mn0.Pfc-pITXM_f7ryWt7t6c8jrNjPczKXeE4X2s6xL1cyk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Usuários
+    meta:
+      id: fld_c6d114e8185540909a7dd059afc44eac
+      created: 1783018078101
+      modified: 1783018078101
+      sortKey: -1783018078101
+      description: ""
+    children:
+      - url: http://localhost:8080/usuarios
+        name: Cadastro de Diretor Financeiro
+        meta:
+          id: req_18217c73c9b4430bb7b6f9964c466dd4
+          created: 1783018752221
+          modified: 1783019444504
+          isPrivate: false
+          description: ""
+          sortKey: -1783018752221
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nome": "Maria Financeiro",
+              "email": "maria@empresa.com",
+              "senha_usuario": "senha123456",
+              "cargo": "DIRETOR_FINANCEIRO"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/usuarios
+        name: Cadastro de CEO
+        meta:
+          id: req_0b20eb640ca048a09dbe19e90416f340
+          created: 1783019382217
+          modified: 1783022649908
+          isPrivate: false
+          description: ""
+          sortKey: -1783019382217
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nome": "Samuel CEO",
+              "email": "samuelrabelodasilva@gmail.com",
+              "senha_usuario": "senha123456",
+              "cargo": "CEO"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/usuarios
+        name: Bloqueio proposital segundo CEO
+        meta:
+          id: req_01edd998824e48df9028225f9c90aab2
+          created: 1783019476284
+          modified: 1783019515559
+          isPrivate: false
+          description: ""
+          sortKey: -1783019476284
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nome": "Outro CEO",
+              "email": "outro@empresa.com",
+              "senha_usuario": "senha123456",
+              "cargo": "CEO"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/usuarios
+        name: Erro proposital de Email-duplicado
+        meta:
+          id: req_28bbf730cf1e43e4b438a405029aa6f7
+          created: 1783019630488
+          modified: 1783019643906
+          isPrivate: false
+          description: ""
+          sortKey: -1783019429250.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nome": "Maria Duplicada",
+              "email": "maria@empresa.com",
+              "senha_usuario": "senha123456",
+              "cargo": "GERENTE"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/auth/login
+        name: Entrar com Diretor Financeiro
+        meta:
+          id: req_dea735f775ce401f9a7d8e95b3c8be88
+          created: 1783019781711
+          modified: 1783021536635
+          isPrivate: false
+          description: ""
+          sortKey: -1783019405733.75
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "email": "maria.nova@empresa.com",
+              "senha_usuario": "senha123456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/auth/login
+        name: Login com a Senha errada propositalmente
+        meta:
+          id: req_1edfaa04898a4d13a9ee6f7ec756e56a
+          created: 1783019901956
+          modified: 1783019917705
+          isPrivate: false
+          description: ""
+          sortKey: -1783019393975.375
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "email": "maria@empresa.com",
+              "senha_usuario": "senhaerrada"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/usuarios
+        name: "Listar usuários "
+        meta:
+          id: req_3aae3aaee7ec47dc898ecafa3aff71b9
+          created: 1783019964318
+          modified: 1783020342012
+          isPrivate: false
+          description: ""
+          sortKey: -1783019388096.1875
+        method: GET
+        body:
+          mimeType: multipart/form-data
+          params:
+            - name: ""
+              value: ""
+              description: ""
+              disabled: false
+        headers:
+          - name: Content-Type
+            value: multipart/form-data
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiTWFyaWEgRmluYW5jZWlybyIsImVtYWlsIjoibWFyaWFAZW1wcmVzYS5jb20iLCJjYXJnbyI6IkRJUkVUT1JfRklOQU5DRUlSTyIsImlhdCI6MTc4MzAxOTgxOSwiZXhwIjoxNzgzMDQ4NjE5fQ.BFhoagz_mQ806wkMM9Sofi-znrKAkGABXuSYk5yxBM8
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/usuarios/1
+        name: Listar usuário com ID
+        meta:
+          id: req_5e5df22d920b42d5b1f5b7a4534037e5
+          created: 1783020350584
+          modified: 1783020678255
+          isPrivate: false
+          description: ""
+          sortKey: -1783019385156.5938
+        method: GET
+        body:
+          mimeType: multipart/form-data
+          params:
+            - name: ""
+              value: ""
+              description: ""
+              disabled: false
+        headers:
+          - name: Content-Type
+            value: multipart/form-data
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiTWFyaWEgRmluYW5jZWlybyIsImVtYWlsIjoibWFyaWFAZW1wcmVzYS5jb20iLCJjYXJnbyI6IkRJUkVUT1JfRklOQU5DRUlSTyIsImlhdCI6MTc4MzAxOTgxOSwiZXhwIjoxNzgzMDQ4NjE5fQ.BFhoagz_mQ806wkMM9Sofi-znrKAkGABXuSYk5yxBM8
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/usuarios/1
+        name: Listar usuários sem Token
+        meta:
+          id: req_dea38cf88ce44a93829d1486e9dcd3b4
+          created: 1783020409732
+          modified: 1783020419953
+          isPrivate: false
+          description: ""
+          sortKey: -1783019383686.7969
+        method: GET
+        body:
+          mimeType: multipart/form-data
+          params:
+            - name: ""
+              value: ""
+              description: ""
+              disabled: false
+        headers:
+          - name: Content-Type
+            value: multipart/form-data
+        authentication:
+          type: bearer
+          token: ""
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/usuarios/1
+        name: Atualizar usuário
+        meta:
+          id: req_7531a5f58fbe41da881fb424709ea17d
+          created: 1783020691670
+          modified: 1783023569088
+          isPrivate: false
+          description: ""
+          sortKey: -1783019384421.6953
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nome": "Samuel Financeiro",
+              "email": "samuelrabelodasilva@gmail.com",
+            			"cargo": "DIRETOR_FINANCEIRO"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiTWFyaWEgRmluYW5jZWlybyIsImVtYWlsIjoibWFyaWFAZW1wcmVzYS5jb20iLCJjYXJnbyI6IkRJUkVUT1JfRklOQU5DRUlSTyIsImlhdCI6MTc4MzAxOTgxOSwiZXhwIjoxNzgzMDQ4NjE5fQ.BFhoagz_mQ806wkMM9Sofi-znrKAkGABXuSYk5yxBM8
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/usuarios/87
+        name: Atualizar usuário — ID inexistente
+        meta:
+          id: req_b45731a5b68a4ef6bd637a7b1b311fad
+          created: 1783020778245
+          modified: 1783020786093
+          isPrivate: false
+          description: ""
+          sortKey: -1783019384054.246
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nome": "Maria Atualizada",
+              "email": "maria.nova@empresa.com",
+              "cargo": "DIRETOR_FINANCEIRO"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiTWFyaWEgRmluYW5jZWlybyIsImVtYWlsIjoibWFyaWFAZW1wcmVzYS5jb20iLCJjYXJnbyI6IkRJUkVUT1JfRklOQU5DRUlSTyIsImlhdCI6MTc4MzAxOTgxOSwiZXhwIjoxNzgzMDQ4NjE5fQ.BFhoagz_mQ806wkMM9Sofi-znrKAkGABXuSYk5yxBM8
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/usuarios/6
+        name: Excluir usuário
+        meta:
+          id: req_ecc490ccc5554183a74366e8f4315308
+          created: 1783020827294
+          modified: 1783044821724
+          isPrivate: false
+          description: ""
+          sortKey: -1783019384789.1445
+        method: DELETE
+        body:
+          mimeType: multipart/form-data
+          params:
+            - name: ""
+              value: ""
+              description: ""
+              disabled: false
+        headers:
+          - name: Content-Type
+            value: multipart/form-data
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiTWFyaWEgRmluYW5jZWlybyIsImVtYWlsIjoibWFyaWFAZW1wcmVzYS5jb20iLCJjYXJnbyI6IkRJUkVUT1JfRklOQU5DRUlSTyIsImlhdCI6MTc4MzAxOTgxOSwiZXhwIjoxNzgzMDQ4NjE5fQ.BFhoagz_mQ806wkMM9Sofi-znrKAkGABXuSYk5yxBM8
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/usuarios/12
+        name: Excluir usuário — ID inexistente
+        meta:
+          id: req_e4de8600e84e45429cd308dc915abcc1
+          created: 1783020859636
+          modified: 1783020866606
+          isPrivate: false
+          description: ""
+          sortKey: -1783019384605.42
+        method: DELETE
+        body:
+          mimeType: multipart/form-data
+          params:
+            - name: ""
+              value: ""
+              description: ""
+              disabled: false
+        headers:
+          - name: Content-Type
+            value: multipart/form-data
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiTWFyaWEgRmluYW5jZWlybyIsImVtYWlsIjoibWFyaWFAZW1wcmVzYS5jb20iLCJjYXJnbyI6IkRJUkVUT1JfRklOQU5DRUlSTyIsImlhdCI6MTc4MzAxOTgxOSwiZXhwIjoxNzgzMDQ4NjE5fQ.BFhoagz_mQ806wkMM9Sofi-znrKAkGABXuSYk5yxBM8
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Senhas
+    meta:
+      id: fld_2e7ee30df08f49479fd6369fac5343d2
+      created: 1783020604286
+      modified: 1783020604286
+      sortKey: -1783020604286
+      description: ""
+    children:
+      - url: http://localhost:8080/senha/trocar
+        name: Trocar senha — usuário logado
+        meta:
+          id: req_10170a47431347e4ab5c0d40e7db911c
+          created: 1783021078478
+          modified: 1783021569645
+          isPrivate: false
+          description: ""
+          sortKey: -1783021078478
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "senha_atual": "senha123456",
+              "nova_senha": "novasenha789",
+              "confirmar_senha": "novasenha789"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiTWFyaWEgQXR1YWxpemFkYSIsImVtYWlsIjoibWFyaWEubm92YUBlbXByZXNhLmNvbSIsImNhcmdvIjoiRElSRVRPUl9GSU5BTkNFSVJPIiwiaWF0IjoxNzgzMDIxNTM4LCJleHAiOjE3ODMwNTAzMzh9.s2Q04R3U0-Zct8mF_lBKueOKzBCjrocCX82IFPzU9Yk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/senha/trocar
+        name: Trocar senha — senha atual errada
+        meta:
+          id: req_86b1cff62e944d93bbd2f2df435f255a
+          created: 1783021627888
+          modified: 1783021642724
+          isPrivate: false
+          description: ""
+          sortKey: -1783020277381
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "senha_atual": "senhaerrada",
+              "nova_senha": "outrasenha123",
+              "confirmar_senha": "outrasenha123"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiTWFyaWEgQXR1YWxpemFkYSIsImVtYWlsIjoibWFyaWEubm92YUBlbXByZXNhLmNvbSIsImNhcmdvIjoiRElSRVRPUl9GSU5BTkNFSVJPIiwiaWF0IjoxNzgzMDIxNTM4LCJleHAiOjE3ODMwNTAzMzh9.s2Q04R3U0-Zct8mF_lBKueOKzBCjrocCX82IFPzU9Yk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/senha/trocar
+        name: Trocar senha — confirmação diferente
+        meta:
+          id: req_9a46c3d052a4468bacf9ce1eb680b8be
+          created: 1783021673466
+          modified: 1783021682881
+          isPrivate: false
+          description: ""
+          sortKey: -1783019876832.5
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "senha_atual": "novasenha789",
+              "nova_senha": "outrasenha123",
+              "confirmar_senha": "senhadiferente"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiTWFyaWEgQXR1YWxpemFkYSIsImVtYWlsIjoibWFyaWEubm92YUBlbXByZXNhLmNvbSIsImNhcmdvIjoiRElSRVRPUl9GSU5BTkNFSVJPIiwiaWF0IjoxNzgzMDIxNTM4LCJleHAiOjE3ODMwNTAzMzh9.s2Q04R3U0-Zct8mF_lBKueOKzBCjrocCX82IFPzU9Yk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/senha/recuperar
+        name: Solicitar recuperação de senha por e-mail
+        meta:
+          id: req_382a5b4b244a479697f04c5aa88f0bd8
+          created: 1783021853752
+          modified: 1786818151620
+          isPrivate: false
+          description: ""
+          sortKey: -1783019676558.25
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "email": "samuelrabelodasilva@gmail.com"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiTWFyaWEgQXR1YWxpemFkYSIsImVtYWlsIjoibWFyaWEubm92YUBlbXByZXNhLmNvbSIsImNhcmdvIjoiRElSRVRPUl9GSU5BTkNFSVJPIiwiaWF0IjoxNzgzMDIxNTM4LCJleHAiOjE3ODMwNTAzMzh9.s2Q04R3U0-Zct8mF_lBKueOKzBCjrocCX82IFPzU9Yk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/senha/redefinir
+        name: Redefinir senha com token do e-mail
+        meta:
+          id: req_0f2578458b6d4827b2329cdfdd8935ba
+          created: 1783022937846
+          modified: 1783023742687
+          isPrivate: false
+          description: ""
+          sortKey: -1783019576421.125
+        method: POST
+        body:
+          mimeType: application/json
+          text: >-
+            {
+              "token": "ec87c685070e8c62ab52508a69736ef3515c4667681c2727a9425fab762cb83b",
+              "nova_senha": "Samuel8787",
+              "confirmar_senha": "Samuel8787"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiTWFyaWEgQXR1YWxpemFkYSIsImVtYWlsIjoibWFyaWEubm92YUBlbXByZXNhLmNvbSIsImNhcmdvIjoiRElSRVRPUl9GSU5BTkNFSVJPIiwiaWF0IjoxNzgzMDIxNTM4LCJleHAiOjE3ODMwNTAzMzh9.s2Q04R3U0-Zct8mF_lBKueOKzBCjrocCX82IFPzU9Yk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/senha/redefinir
+        name: Tentar usar o mesmo token de novo
+        meta:
+          id: req_6d0dc675d81f4be58db32bd219a9c4a0
+          created: 1783023090892
+          modified: 1783023130559
+          isPrivate: false
+          description: ""
+          sortKey: -1783019526352.5625
+        method: POST
+        body:
+          mimeType: application/json
+          text: >-
+            {
+              "token": "805d7ad5c7f1dfe6079fb241d79beddca2fd93ff99e52b5c4660084a71a7273e",
+              "nova_senha": "outrasenha456",
+              "confirmar_senha": "outrasenha456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiTWFyaWEgQXR1YWxpemFkYSIsImVtYWlsIjoibWFyaWEubm92YUBlbXByZXNhLmNvbSIsImNhcmdvIjoiRElSRVRPUl9GSU5BTkNFSVJPIiwiaWF0IjoxNzgzMDIxNTM4LCJleHAiOjE3ODMwNTAzMzh9.s2Q04R3U0-Zct8mF_lBKueOKzBCjrocCX82IFPzU9Yk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8080/auth/login
+        name: Fazer login com nova senha
+        meta:
+          id: req_2ea8a9badac04db0ac060e3572d5bac2
+          created: 1783023165002
+          modified: 1786818511633
+          isPrivate: false
+          description: ""
+          sortKey: -1783019501318.2812
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "email": "samuelrabelodasilva@gmail.com",
+              "senha_usuario": "Samuel8787"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJub21lIjoiTWFyaWEgQXR1YWxpemFkYSIsImVtYWlsIjoibWFyaWEubm92YUBlbXByZXNhLmNvbSIsImNhcmdvIjoiRElSRVRPUl9GSU5BTkNFSVJPIiwiaWF0IjoxNzgzMDIxNTM4LCJleHAiOjE3ODMwNTAzMzh9.s2Q04R3U0-Zct8mF_lBKueOKzBCjrocCX82IFPzU9Yk
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_a9b55e68df9fbf25493363b3565b182077714ddc
+    created: 1783018021535
+    modified: 1783018021535
+environments:
+  name: Base Environment
+  meta:
+    id: env_a9b55e68df9fbf25493363b3565b182077714ddc
+    created: 1783018021529
+    modified: 1783018021529
+    isPrivate: false
