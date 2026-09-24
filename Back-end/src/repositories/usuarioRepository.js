@@ -2,8 +2,8 @@ import { connection } from '../configs/Database.js';
 
 const usuarioRepository = {
     criar: async (usuario) => {
-        const sql = `INSERT INTO usuarios (nome, email, senha_usuario, cargo) VALUES (?, ?, ?, ?)`;
-        const values = [usuario.nome, usuario.email, usuario.senha_usuario, usuario.cargo];
+        const sql = `INSERT INTO usuarios (id_usuario, nome, email, senha_usuario, cargo) VALUES (?, ?, ?, ?, ?)`;
+        const values = [usuario.id_usuario, usuario.nome, usuario.email, usuario.senha_usuario, usuario.cargo];
         const [rows] = await connection.execute(sql, values);
         return rows;
     },

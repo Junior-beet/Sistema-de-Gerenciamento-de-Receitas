@@ -1,13 +1,19 @@
-import { APP_NAME } from '../../config/constants.jsx'
 import { auth } from '../../services/auth.jsx'
+import { navegar } from '../../services/navigation.jsx'
 
 function getRotas() {
   if (auth.estaLogado()) {
-    return [
-      { href: '/calculos', label: 'Calculos' },
+    const usuario = auth.sessaoLocal()
+    const rotas = [
+      { href: '/dashboard', label: 'Painel' },
       { href: '/saiba-mais', label: 'Saiba Mais' },
       { href: '#sair', label: 'Sair' },
     ]
+    if (usuario?.cargo === 'DIRETOR_FINANCEIRO') {
+      rotas.splice(1, 0, { href: '/calculos', label: 'Movimentações' })
+      rotas.splice(2, 0, { href: '/relatorios', label: 'Relatorios' })
+    }
+    return rotas
   }
   return [
     { href: '/login', label: 'Login' },
@@ -16,83 +22,49 @@ function getRotas() {
   ]
 }
 
-export function Header(rotaAtiva) {
+export function Header({ rotaAtiva }) {
   const rotas = getRotas()
-  const header = document.createElement('header')
-  header.className = 'app-header sticky-top'
 
-  const nav = document.createElement('nav')
-  nav.className = 'navbar navbar-expand-sm'
-  nav.style.color = 'white'
-
-  const container = document.createElement('div')
-  container.className = 'container'
-
-  const brand = document.createElement('a')
-  brand.className = 'navbar-brand'
-  brand.href = '/'
-  brand.style.cursor = 'pointer'
-  brand.style.color = 'white'
-
-  const logo = document.createElement('img')
-  logo.src = '/assets/letraLOGO.png'
-  logo.alt = 'Logo do SGR'
-  logo.style.cssText = 'width:72px;height:32px'
-
-  brand.appendChild(logo)
-  
-  brand.addEventListener('click', e => {
+  const aoClicar = rota => e => {
     e.preventDefault()
-    window.dispatchEvent(new CustomEvent('navegar', { detail: '/' }))
-  })
+    if (rota === '#sair') {
+      auth.logout()
+      navegar('/login')
+      return
+    }
+    navegar(rota)
+  }
 
-  container.appendChild(brand)
+  return (
+    <header className="app-header sticky-top">
+      <nav className="navbar navbar-expand-sm" style={{ color: 'white' }}>
+        <div className="container">
+          <a className="navbar-brand" href="/" style={{ cursor: 'pointer', color: 'white' }} onClick={e => { e.preventDefault(); navegar('/') }}>
+            <img src="/assets/letraLOGO.png" alt="Logo do SGR" style={{ width: 72, height: 32 }} />
+          </a>
 
-  const toggle = document.createElement('button')
-  toggle.className = 'navbar-toggler'
-  toggle.type = 'button'
-  toggle.dataset.bsToggle = 'collapse'
-  toggle.dataset.bsTarget = '#navbarNav'
-  toggle.setAttribute('aria-label', 'Menu de navegação')
-  toggle.innerHTML = '<span class="navbar-toggler-icon"></span>'
-  container.appendChild(toggle)
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Menu de navegação">
+            <span className="navbar-toggler-icon"></span>
+          </button>
 
-  const collapse = document.createElement('div')
-  collapse.className = 'collapse navbar-collapse'
-  collapse.id = 'navbarNav'
-
-  const ul = document.createElement('ul')
-  ul.className = 'navbar-nav ms-auto gap-1'
-
-  rotas.forEach(rota => {
-    const li = document.createElement('li')
-    li.className = 'nav-item'
-
-    const a = document.createElement('a')
-    a.className = `nav-link ${rota.href === rotaAtiva ? 'active' : ''}`
-    a.href = rota.href
-    a.textContent = rota.label
-    a.style.color = 'white'
-    a.style.setProperty('color', 'white', 'important')
-
-    a.addEventListener('click', e => {
-      e.preventDefault()
-      if (rota.href === '#sair') {
-        auth.logout()
-        window.dispatchEvent(new CustomEvent('navegar', { detail: '/login' }))
-        return
-      }
-      window.dispatchEvent(new CustomEvent('navegar', { detail: rota.href }))
-    })
-
-    li.appendChild(a)
-    ul.appendChild(li)
-  })
-
-  collapse.appendChild(ul)
-  container.appendChild(collapse)
-  nav.appendChild(container)
-  header.appendChild(nav)
-
-  return header
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav ms-auto gap-1">
+              {rotas.map(rota => (
+                <li className="nav-item" key={rota.href}>
+                  <a
+                    className={`nav-link ${rota.href === rotaAtiva ? 'active' : ''}`}
+                    href={rota.href}
+                    style={{ color: 'white' }}
+                    onClick={aoClicar(rota.href)}
+                  >
+                    {rota.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+  )
 }

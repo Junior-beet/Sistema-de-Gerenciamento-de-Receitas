@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export class Receita {
     #id_receita;
     #id_movimentacao;
@@ -8,7 +10,7 @@ export class Receita {
         this.id_movimentacao = pIdMovimentacao;
         this.origem = pOrigem;
         this.data_prevista = pDataPrevista;
-        this.#id_receita = pIdReceita;
+        this.#id_receita = pIdReceita || uuidv4();
     }
 
     get id_receita() { return this.#id_receita; }
@@ -16,7 +18,7 @@ export class Receita {
 
     get id_movimentacao() { return this.#id_movimentacao; }
     set id_movimentacao(value) {
-        if (!value || value <= 0) throw new Error('Movimentação inválida!');
+        if (!value) throw new Error('Movimentação inválida!');
         this.#id_movimentacao = value;
     }
 

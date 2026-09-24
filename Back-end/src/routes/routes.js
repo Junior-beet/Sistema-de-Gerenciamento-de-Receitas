@@ -7,6 +7,7 @@ import subcategoriaRoutes from './subcategoriaRoutes.js';
 import senhaRoutes from './senhaRoutes.js';
 import receitaRoutes from './receitaRoutes.js';
 import despesaRoutes from './despesaRoutes.js';
+import relatorioRoutes from './relatorioRoutes.js';
 
 const routes = Router();
 
@@ -17,5 +18,6 @@ routes.use('/categorias', categoriaRoutes);
 routes.use('/subcategorias', subcategoriaRoutes);
 routes.use('/receitas', receitaRoutes);
 routes.use('/despesas', despesaRoutes);
+routes.use('/relatorios', relatorioRoutes);
 
 export default routes;

@@ -56,7 +56,8 @@ a.btn,a.btn:hover,a.btn:focus,a.btn:active,a.btn:visited,
 #btnNovaReceita,#btnNovaReceita:hover,#btnNovaReceita:focus,#btnNovaReceita:active,
 #btnNovaDespesa,#btnNovaDespesa:hover,#btnNovaDespesa:focus,#btnNovaDespesa:active,
 .cat-link,.cat-link:hover,.cat-link:focus,.cat-link:active,
-.sub-link,.sub-link:hover,.sub-link:focus,.sub-link:active { text-decoration:none!important; }
+.sub-link,.sub-link:hover,.sub-link:focus,.sub-link:active,
+.dash-link,.dash-link:hover,.dash-link:focus,.dash-link:active { text-decoration:none!important; }
 a { color:var(--primary); transition:.2s; }
 a:hover { color:var(--primary-hover); }
 
@@ -74,7 +75,7 @@ small,.small { font-size:14px; }
 /* HEADER */
 
 .app-header {
-  background:#1765CC; box-shadow:0 4px 12px rgba(0,0,0,.15);
+  background:#1765CC; box-shadow:0 4px 12px rgba(255, 255, 255, 0.15);
   backdrop-filter:blur(12px); transition:.25s;
 }
 
@@ -103,7 +104,7 @@ small,.small { font-size:14px; }
 .brand-wordmark span:nth-child(3) { color:#34A853; }
 
 .app-header .nav-link {
-  color:var(--secondary)!important; font-weight:500;
+  color:#fff!important; font-weight:500;
   font-size:14px; padding:8px 16px; border-radius:999px;
   transition:.2s;
 }
@@ -116,6 +117,7 @@ small,.small { font-size:14px; }
 .app-header .nav-link.active { font-weight:600; }
 .app-header .navbar-toggler { border:0; padding:4px 8px; }
 .app-header .navbar-toggler:focus { box-shadow:none; }
+.app-header .navbar-toggler-icon { filter:brightness(0) invert(1); }
 
 /* HERO */
 
@@ -402,6 +404,29 @@ small,.small { font-size:14px; }
   border-top:1px solid var(--border-light);
   padding:3.5rem 0 0;
   color:var(--secondary);
+}
+
+.footer-section,
+.footer-section h6,
+.footer-section p,
+.footer-section li,
+.footer-section span,
+.footer-section a,
+.footer-section .footer-brand-name,
+.footer-section .footer-about,
+.footer-section .footer-bottom,
+.footer-section .footer-contact li,
+.footer-section .footer-links a,
+.footer-section .footer-team-toggle,
+.footer-section .footer-team-chevron,
+.footer-section .footer-team-nome {
+  color:#fff!important;
+}
+
+.footer-section .footer-links a:hover,
+.footer-section .footer-links a:focus-visible {
+  color:#fff!important;
+  text-decoration:underline;
 }
 
 .footer-section h6 {
@@ -714,6 +739,11 @@ small,.small { font-size:14px; }
 
 @keyframes spin { to { transform:rotate(360deg); } }
 
+@keyframes dashPulse {
+  0%,100% { opacity:1; }
+  50% { opacity:.4; }
+}
+
 .skeleton {
   background:linear-gradient(90deg,var(--border-light) 25%,var(--border) 50%,var(--border-light) 75%);
   background-size:200% 100%;
@@ -748,3 +778,16 @@ small,.small { font-size:14px; }
   outline:2px solid var(--primary);
   outline-offset:2px;
 }
+
+@media print {
+  .app-header, .footer-section, .toast-container, .relatorio-cabecalho, .filtros-movimentacoes { display:none!important; }
+  body { background:#fff!important; }
+  .container { max-width:none!important; width:100%!important; padding:0!important; }
+  .card, .value-card { border:1px solid #ddd!important; box-shadow:none!important; break-inside:avoid; }
+  .table { font-size:11px; }
+}
+
+.grafico-trilho { height:18px; border-radius:4px; overflow:hidden; background:var(--border-light); }
+.grafico-barra { height:100%; min-width:2px; border-radius:4px; }
+.grafico-entrada { background:var(--success); }
+.grafico-saida { background:var(--danger); }

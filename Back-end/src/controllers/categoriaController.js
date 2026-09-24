@@ -22,13 +22,7 @@ const categoriaController = {
 
     selecionar: async (req, res) => {
         try {
-            const id_usuario = Number(req.params.id_usuario);
-
-            if (!id_usuario || id_usuario <= 0) {
-                return res.status(400).json({ sucesso: false, mensagem: 'ID de usuário inválido' });
-            }
-
-            const result = await categoriaRepository.selecionar(id_usuario);
+            const result = await categoriaRepository.selecionar();
             res.status(200).json({ sucesso: true, dados: result });
         } catch (error) {
             console.log(error);
@@ -38,7 +32,7 @@ const categoriaController = {
 
     selecionarPorId: async (req, res) => {
         try {
-            const id_categoria = Number(req.params.id);
+            const id_categoria = req.params.id;
             const result = await categoriaRepository.selecionarPorId(id_categoria);
 
             if (!result) {
@@ -54,10 +48,10 @@ const categoriaController = {
 
     atualizar: async (req, res) => {
         try {
-            const id_categoria = Number(req.params.id);
+            const id_categoria = req.params.id;
             const { id_usuario, nome, tipo, cor, ordem } = req.body;
 
-            if (!id_categoria || id_categoria <= 0) {
+            if (!id_categoria) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
             }
 
@@ -82,9 +76,9 @@ const categoriaController = {
 
     deletar: async (req, res) => {
         try {
-            const id_categoria = Number(req.params.id);
+            const id_categoria = req.params.id;
 
-            if (!id_categoria || id_categoria <= 0) {
+            if (!id_categoria) {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
             }
 
@@ -92,10 +86,10 @@ const categoriaController = {
             if (!existe) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Categoria não encontrada' });
             }
-            
+
             await categoriaRepository.deletarSubcategorias(id_categoria);
 
-          
+
             const result = await categoriaRepository.deletar(id_categoria);
 
             res.status(200).json({ sucesso: true, mensagem: 'Categoria e subcategorias vinculadas deletadas com sucesso', dados: result });

@@ -1,9 +1,10 @@
 import { connection } from '../configs/Database.js';
+import { v4 as uuidv4 } from 'uuid';
 
 const tokenRecuperacaoRepository = {
     criar: async (id_usuario, token, expiracao) => {
-        const sql = `INSERT INTO tokens_recuperacao (id_usuario, token, expiracao) VALUES (?, ?, ?)`;
-        const [rows] = await connection.execute(sql, [id_usuario, token, expiracao]);
+        const sql = `INSERT INTO tokens_recuperacao (id, id_usuario, token, expiracao) VALUES (?, ?, ?, ?)`;
+        const [rows] = await connection.execute(sql, [uuidv4(), id_usuario, token, expiracao]);
         return rows;
     },
 

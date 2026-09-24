@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export class Categoria {
     #id_categoria;
     #id_usuario;
@@ -12,7 +14,7 @@ export class Categoria {
         this.tipo = pTipo;
         this.cor = pCor;
         this.ordem = pOrdem;
-        this.#id_categoria = pIdCategoria;
+        this.#id_categoria = pIdCategoria || uuidv4();
     }
 
     get id_categoria() { return this.#id_categoria; }
@@ -20,19 +22,20 @@ export class Categoria {
 
     get id_usuario() { return this.#id_usuario; }
     set id_usuario(value) {
-        this.#validarIdUsuario(value);
+        if (!value) throw new Error('Usuário inválido!');
         this.#id_usuario = value;
     }
 
     get nome() { return this.#nome; }
     set nome(value) {
-        this.#validarNome(value);
+        if (!value || value.trim().length < 2) throw new Error('Nome inválido, deve ter ao menos 2 caracteres!');
         this.#nome = value;
     }
 
     get tipo() { return this.#tipo; }
     set tipo(value) {
-        this.#validarTipo(value);
+        if (!value || !['RECEITA', 'DESPESA'].includes(value))
+            throw new Error('Tipo inválido! Use RECEITA ou DESPESA.');
         this.#tipo = value;
     }
 
@@ -41,19 +44,6 @@ export class Categoria {
 
     get ordem() { return this.#ordem; }
     set ordem(value) { this.#ordem = value ?? null; }
-
-    #validarIdUsuario(value) {
-        if (!value || value <= 0) throw new Error('Usuário inválido!');
-    }
-
-    #validarNome(value) {
-        if (!value || value.trim().length < 2) throw new Error('Nome inválido, deve ter ao menos 2 caracteres!');
-    }
-
-    #validarTipo(value) {
-        if (!value || !['RECEITA', 'DESPESA'].includes(value))
-            throw new Error('Tipo inválido! Use RECEITA ou DESPESA.');
-    }
 
     static criar(dados) {
         return new Categoria(dados.id_usuario, dados.nome, dados.tipo, dados.cor, dados.ordem);

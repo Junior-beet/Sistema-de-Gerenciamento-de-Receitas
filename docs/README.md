@@ -1,167 +1,269 @@
-# 📚 Projeto "Sistema de Gerencimento de Receitas"
+# RF-007, RF-008, RF-009, RF-010, RF-014 — Cálculos, Relatórios e Auditoria
 
-Bem-vindo à **Sistema de Gerencimento de Receitas**.
-Este repositório contém a documentação e implementação de um sistema de gerencimento de receitas desenvolvido pela equipe BrTech solutions
+Continuação da API do Sistema de Gerenciamento Financeiro. Adição do módulo de cálculos financeiros, relatórios mensais, auditoria de ações e exportação de dados.
 
-## 🎯 Objetivo
-
-Projeto acadêmico com o objetivo de apoiar o ensino de **back-end e front-end**, abordando conceitos como:
-
-* Arquitetura de sistemas
-* Modelagem de dados (DER)
-* Programação orientada a objetos
-* Desenvolvimento de interfaces
-* Boas práticas de organização de código
-
-## 🛠️ Tecnologias Utilizadas
-
-### 🌐 Front-end
-
-* HTML5
-* CSS3
-* JavaScript
-* React
-
-### ⚙️ Back-end
-
-* Node.js
-* Express
-
-### 🗄️ Banco de Dados
-
-* SQLServer
-
-## 📂 Documentação
-
-A documentação do projeto está organizada por público e finalidade:
-
-### 👨‍💻 Para Programadores
-
-Contém informações técnicas para desenvolvimento e manutenção do sistema:
-
-* 📄 [Guia do Programador](././01_Guia_do_Programador%20(1).md)
-* 🧩 [Diagrama de Classes](././02_Diagrama_de_Classes%20(1).md)
-* 🗄️ [Banco de Dados (DER)](./03_Banco_de_Dados_DER%20(1).md)
-
-### 👤 Para Clientes
-
-Documentação voltada à visão do sistema e sua utilização:
-
-* 📄 [Guia do Cliente](./clientes.md)
-* 🎨 [Design System](./design-system.md)
-
-### 🛠️ Para Administradores
-
-Informações sobre gerenciamento e operação do sistema:
-
-* 📄 [Guia do Administrador](./administradores.md)
-
-## 📌 Observações
-
-Este projeto tem fins educacionais e busca simular um ambiente real de desenvolvimento, incluindo documentação técnica e organização profissional.
-
-## 💰 Lógica inicial de saldo e estrutura de contas
-
-O sistema foi desenvolvido utilizando uma estrutura centralizada de movimentações financeiras, permitindo que todos os cálculos sejam realizados de forma automática, organizada e escalável.
-
-A base principal da lógica financeira está na tabela movimentacoes, responsável por armazenar todas as entradas e saídas do sistema.
-
-Cada movimentação contém informações essenciais como:
-
-* tipo da movimentação (RECEITA ou DESPESA);
-* valor;
-* conta vinculada;
-* categoria e subcategoria;
-* data do lançamento;
-* descrição;
-* forma de pagamento.
-
-A partir dessa estrutura, o sistema consegue calcular automaticamente:
-
-* saldo total;
-* total de receitas;
-* total de despesas;
-* gastos por categoria;
-* relatórios mensais;
-* movimentações por período;
-* dashboards financeiros.
-
-# Centralização das Regras Financeiras
-
-Toda a lógica de cálculo do sistema é baseada na tabela movimentacoes.
-Dessa forma, evita-se duplicação de informações e inconsistências nos valores armazenados.
-
-As tabelas receitas e despesas funcionam como complementos especializados, armazenando informações específicas de cada tipo de movimentação.
-
-# Receitas
-
-A tabela receitas armazena dados complementares como:
-
-* origem da receita;
-* data prevista de recebimento.
-* Despesas
-
-A tabela despesas armazena informações como:
-
-* data de vencimento;
-* data de pagamento;
-* status da despesa.
-
-# Sistema de Parcelamento
-
-O sistema também possui suporte para movimentações parceladas através da tabela parcelado.
-
-Essa estrutura permite:
-
-* geração automática de parcelas;
-* controle de quantidade total de parcelas;
-* acompanhamento de status de pagamento;
-* organização financeira mensal.
-
-# Organização por Categorias
-
-As tabelas categorias e subcategorias foram implementadas para melhorar a organização financeira e geração de relatórios.
-
-Com isso, o sistema consegue identificar:
-
-* categorias com maiores gastos;
-* principais fontes de receita;
-* distribuição financeira por área;
-* análises detalhadas de movimentações.
-* Controle de Acesso (RBAC)
-
-# Implementação no Backend
-
-O backend será responsável por toda a lógica de negócio do sistema financeiro, incluindo autenticação, controle de acesso, cálculos automáticos e gerenciamento das movimentações.
-
-A aplicação será organizada em camadas para facilitar manutenção e escalabilidade:
-
-```txt id="4mw1py"
-controllers/
-services/
-repositories/
-models/
-routes/
-middlewares/
+**Novas dependências:**
+```bash
+npm install pdfkit json2csv
 ```
 
-* **Controllers:** recebem as requisições e retornam as respostas da API;
-* **Services:** concentram as regras de negócio e cálculos financeiros;
-* **Repositories:** realizam a comunicação com o banco de dados;
-* **Models:** representam as entidades do sistema;
-* **Routes:** definem os endpoints da API;
-* **Middlewares:** realizam autenticação, validações e controle de acesso.
+---
 
-O sistema utilizará autenticação com JWT e criptografia de senhas com bcrypt.
+## Arquivos adicionados
+src/
+├── controllers/
+│ └── relatorioController.js ← novo
+├── repositories/
+│ └── relatorioRepository.js ← novo
+├── routes/
+│ └── relatorioRoutes.js ← novo
+└── middlewares/
+└── auditoria.middleware.js ← novo
 
-Os cálculos financeiros serão feitos dinamicamente utilizando a tabela `movimentacoes` como base principal, permitindo gerar:
-
-* saldo total;
-* receitas;
-* despesas;
-* relatórios;
-* dashboards financeiros.
-
-O backend também será responsável pelo gerenciamento de parcelamentos, filtros e geração de relatórios financeiros em formato JSON para o frontend.
+logs/
+└── auditoria.log ← criado automaticamente na primeira requisição
 
 
+---
+
+## Alterações em arquivos existentes
+
+**`routes/routes.js`** — adicionar:
+```javascript
+import relatorioRoutes from './relatorioRoutes.js';
+
+routes.use('/relatorios', relatorioRoutes);
+```
+
+**`routes/usuarioRoutes.js`** — adicionar auditoria nas rotas de escrita:
+```javascript
+import auditoriaMiddleware from '../middlewares/auditoria.middleware.js';
+
+usuarioRoutes.post('/', auditoriaMiddleware('CADASTRO_USUARIO'), usuarioController.criar);
+usuarioRoutes.put('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), auditoriaMiddleware('ATUALIZACAO_USUARIO'), usuarioController.atualizar);
+usuarioRoutes.delete('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), auditoriaMiddleware('EXCLUSAO_USUARIO'), usuarioController.deletar);
+```
+
+---
+
+## Decisões técnicas
+
+- **RF-007:** saldo calculado na hora via SQL — sem salvar no banco, sempre atualizado
+- **RF-008:** lucro = total receitas menos total despesas do período informado
+- **RF-009:** relatório mensal completo com resumo, movimentações, saldo histórico e resultado
+- **RF-010:** log salvo em `logs/auditoria.log` — pasta criada automaticamente se não existir
+- **RF-014:** PDF gerado com pdfkit e deletado do servidor após download — CSV enviado direto na resposta
+
+---
+
+## Novas rotas
+
+| Método | Rota | Descrição | RF |
+|--------|------|-----------|-----|
+| GET | `/relatorios/saldo` | Saldo de todas as contas | RF-007 |
+| GET | `/relatorios/saldo/:id_conta` | Saldo de uma conta específica | RF-007 |
+| GET | `/relatorios/lucro` | Lucro por período | RF-008 |
+| GET | `/relatorios/mensal` | Relatório mensal completo | RF-009 |
+| GET | `/relatorios/exportar/pdf` | Exporta relatório em PDF | RF-014 |
+| GET | `/relatorios/exportar/csv` | Exporta relatório em CSV | RF-014 |
+
+Todas as rotas exigem token JWT e registram log de auditoria automaticamente.
+
+---
+
+## Endpoints
+
+### GET `/relatorios/saldo`
+
+Retorna saldo de todas as contas — total de receitas, despesas e saldo calculado.
+
+```json
+// 200 - Sucesso
+{
+  "sucesso": true,
+  "dados": [
+    {
+      "id_conta": "uuid",
+      "numero": "001",
+      "tipo": "Corrente",
+      "descricao": "Conta principal",
+      "total_receitas": 15000.00,
+      "total_despesas": 8500.00,
+      "saldo": 6500.00
+    }
+  ]
+}
+```
+
+---
+
+### GET `/relatorios/saldo/:id_conta`
+
+Retorna saldo de uma conta específica.
+
+```json
+// 200 - Sucesso
+{
+  "sucesso": true,
+  "dados": {
+    "id_conta": "uuid",
+    "numero": "001",
+    "total_receitas": 15000.00,
+    "total_despesas": 8500.00,
+    "saldo": 6500.00
+  }
+}
+
+// 404 - Não encontrada
+{ "sucesso": false, "mensagem": "Conta não encontrada" }
+```
+
+---
+
+### GET `/relatorios/lucro?data_inicio=YYYY-MM-DD&data_fim=YYYY-MM-DD`
+
+Calcula lucro ou prejuízo em um período.
+
+| Parâmetro | Obrigatório | Descrição |
+|-----------|-------------|-----------|
+| data_inicio | ✅ | Data inicial `YYYY-MM-DD` |
+| data_fim | ✅ | Data final `YYYY-MM-DD` |
+
+```json
+// 200 - Lucro
+{
+  "sucesso": true,
+  "dados": {
+    "total_receitas": 15000.00,
+    "total_despesas": 8500.00,
+    "lucro": 6500.00,
+    "resultado": "LUCRO"
+  }
+}
+
+// 200 - Prejuízo
+{
+  "sucesso": true,
+  "dados": {
+    "total_receitas": 5000.00,
+    "total_despesas": 8500.00,
+    "lucro": -3500.00,
+    "resultado": "PREJUIZO"
+  }
+}
+
+// 400 - Parâmetros faltando
+{ "sucesso": false, "mensagem": "Informe data_inicio e data_fim" }
+```
+
+---
+
+### GET `/relatorios/mensal?ano=YYYY&mes=M`
+
+Relatório financeiro completo de um mês.
+
+| Parâmetro | Obrigatório | Descrição |
+|-----------|-------------|-----------|
+| ano | ✅ | Ex: `2026` |
+| mes | ✅ | Ex: `7` |
+
+```json
+// 200 - Sucesso
+{
+  "sucesso": true,
+  "dados": {
+    "periodo": {
+      "ano": 2026,
+      "mes": 7,
+      "data_inicio": "2026-07-01",
+      "data_fim": "2026-07-31"
+    },
+    "resumo": {
+      "total_receitas": 15000.00,
+      "total_despesas": 8500.00,
+      "lucro": 6500.00
+    },
+    "saldo_geral": 6500.00,
+    "resultado": "LUCRO",
+    "movimentacoes": [
+      {
+        "id_movimentacao": "uuid",
+        "tipo": "RECEITA",
+        "valor": "15000.00",
+        "data_lancamento": "2026-07-01",
+        "descricao": "Venda de produtos julho",
+        "categoria": "Vendas",
+        "subcategoria": null,
+        "forma_pagamento": "PIX"
+      }
+    ]
+  }
+}
+
+// 400 - Parâmetros faltando
+{ "sucesso": false, "mensagem": "Informe ano e mes" }
+```
+
+---
+
+### GET `/relatorios/exportar/pdf?ano=YYYY&mes=M`
+
+Gera e faz download do relatório mensal em PDF.
+
+**Resposta:** download do arquivo `relatorio_2026_07.pdf`
+
+O PDF contém resumo financeiro do mês e lista completa de movimentações. O arquivo é deletado do servidor após o download.
+
+---
+
+### GET `/relatorios/exportar/csv?ano=YYYY&mes=M`
+
+Exporta movimentações do mês em CSV com as colunas: tipo, valor, data, descrição, categoria, subcategoria e forma de pagamento.
+
+**Resposta:** download do arquivo `relatorio_2026_07.csv`
+
+---
+
+## RF-010 — Auditoria
+
+O `auditoriaMiddleware` é aplicado em todas as rotas do sistema e registra cada ação em `logs/auditoria.log`.
+
+**Formato do log:**
+[2026-07-10T19:00:00.000Z] | USUARIO: Miguel Vallim (DIRETOR_FINANCEIRO) | ACAO: CONSULTA_RELATORIO_MENSAL | METODO: GET | ROTA: /relatorios/mensal?ano=2026&mes=7 | IP: ::1
+
+
+**Ações registradas:**
+
+| Ação | Rota |
+|------|------|
+| CADASTRO_USUARIO | POST /usuarios |
+| ATUALIZACAO_USUARIO | PUT /usuarios/:id |
+| EXCLUSAO_USUARIO | DELETE /usuarios/:id |
+| CONSULTA_SALDO_TODAS_CONTAS | GET /relatorios/saldo |
+| CONSULTA_SALDO_CONTA | GET /relatorios/saldo/:id_conta |
+| CONSULTA_LUCRO | GET /relatorios/lucro |
+| CONSULTA_RELATORIO_MENSAL | GET /relatorios/mensal |
+| EXPORTACAO_PDF | GET /relatorios/exportar/pdf |
+| EXPORTACAO_CSV | GET /relatorios/exportar/csv |
+
+---
+
+## Códigos de Status HTTP
+
+| Código | Quando ocorre |
+|--------|---------------|
+| 200 | Consulta ou exportação bem-sucedida |
+| 400 | Parâmetros obrigatórios faltando |
+| 404 | Conta não encontrada |
+| 500 | Erro no servidor ao calcular ou exportar |
+
+---
+
+## Observações Técnicas
+
+- **Saldo sempre atualizado:** calculado via SQL com `SUM + CASE WHEN` — não armazenado no banco.
+- **Soft delete respeitado:** todas as queries filtram por `ativo = 1` — movimentações deletadas não entram nos cálculos.
+- **Saldo histórico vs saldo do mês:** o relatório mensal separa o lucro do mês do saldo geral histórico de todas as movimentações.
+- **PDF temporário:** salvo na pasta `relatorios/` e deletado do servidor após o download.
+- **CSV direto:** enviado na resposta sem salvar arquivo no servidor.
+- **Log de auditoria:** aplicado após o `authMiddleware`, sempre tem acesso ao nome e cargo do usuário logado em `req.usuario`.
