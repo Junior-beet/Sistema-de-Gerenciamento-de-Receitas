@@ -14,7 +14,7 @@ const relatorioController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID da conta é obrigatório' });
             }
 
-            const result = await relatorioRepository.saldoPorConta(id_conta);
+            const result = await relatorioRepository.saldoPorConta(id_conta, req.usuario.id_usuario);
 
             if (!result) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Conta não encontrada' });
@@ -29,7 +29,7 @@ const relatorioController = {
 
     saldoTodasContas: async (req, res) => {
         try {
-            const result = await relatorioRepository.saldoTodasContas();
+            const result = await relatorioRepository.saldoTodasContas(req.usuario.id_usuario);
             res.status(200).json({ sucesso: true, dados: result });
         } catch (error) {
             console.log(error);
@@ -46,7 +46,7 @@ const relatorioController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'Informe data_inicio e data_fim' });
             }
 
-            const result = await relatorioRepository.lucroPorPeriodo(data_inicio, data_fim);
+            const result = await relatorioRepository.lucroPorPeriodo(data_inicio, data_fim, req.usuario.id_usuario);
 
             res.status(200).json({
                 sucesso: true,
@@ -70,7 +70,7 @@ const relatorioController = {
             }
 
             // Number() → converte string para número
-            const result = await relatorioRepository.relatorioMensal(Number(ano), Number(mes));
+            const result = await relatorioRepository.relatorioMensal(Number(ano), Number(mes), req.usuario.id_usuario);
 
             res.status(200).json({ sucesso: true, dados: result });
         } catch (error) {
@@ -87,7 +87,7 @@ const relatorioController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'Informe ano e mes' });
             }
 
-            const dados = await relatorioRepository.relatorioMensal(Number(ano), Number(mes));
+            const dados = await relatorioRepository.relatorioMensal(Number(ano), Number(mes), req.usuario.id_usuario);
 
             // PDFDocument → cria um documento PDF em memória
             const doc = new PDFDocument({ margin: 50 });
@@ -165,7 +165,7 @@ const relatorioController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'Informe ano e mes' });
             }
 
-            const dados = await relatorioRepository.relatorioMensal(Number(ano), Number(mes));
+            const dados = await relatorioRepository.relatorioMensal(Number(ano), Number(mes), req.usuario.id_usuario);
 
             // Define quais campos do JSON vão virar colunas no CSV
             const campos = ['tipo', 'valor', 'data_lancamento', 'descricao', 'categoria', 'subcategoria', 'forma_pagamento'];

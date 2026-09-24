@@ -10,6 +10,8 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 app.use('/', routes);
 
-app.listen(process.env.SERVER_PORT, () => {
-    console.log(`Servidor rodando em: http://localhost:${process.env.SERVER_PORT}`);
+const port = Number(process.env.SERVER_PORT) || 8080;
+
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Servidor rodando em: http://localhost:${port}`);
 });

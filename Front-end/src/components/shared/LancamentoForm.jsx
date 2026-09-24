@@ -57,7 +57,7 @@ export function LancamentoForm({ tipo }) {
   async function carregarOpcoes() {
     try {
       const [contasResp, categoriasResp] = await Promise.all([
-        api.get('/relatorios/saldo'),
+        api.get('/contas'),
         api.get('/categorias'),
       ])
       const listaContas = contasResp.dados || []

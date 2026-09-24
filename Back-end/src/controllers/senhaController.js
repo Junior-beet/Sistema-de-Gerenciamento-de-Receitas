@@ -71,7 +71,8 @@ const senhaController = {
 
             await tokenRecuperacaoRepository.criar(usuario.id_usuario, token, expiracaoFormatada);
 
-            const link = `${process.env.FRONTEND_URL}/redefinir-senha?token=${token}`;
+            const linkWeb = `${process.env.FRONTEND_URL}/redefinir-senha?token=${token}`;
+            const linkMobile = `sgr://redefinir-senha?token=${token}`;
 
             await transporter.sendMail({
                 from: `"Sistema Financeiro" <${process.env.EMAIL_USER}>`,
@@ -81,9 +82,12 @@ const senhaController = {
                     <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto;">
                         <h2 style="color: #1E3A5F;">Recuperação de Senha</h2>
                         <p>Olá, <strong>${usuario.nome}</strong>!</p>
-                        <p>Recebemos uma solicitação para redefinir sua senha. Clique no botão abaixo para continuar:</p>
-                        <a href="${link}" style="display: inline-block; padding: 12px 24px; background-color: #1E3A5F; color: #fff; text-decoration: none; border-radius: 6px; margin: 16px 0;">
-                            Redefinir minha senha
+                        <p>Recebemos uma solicitação para redefinir sua senha. Escolha uma das opções abaixo:</p>
+                        <a href="${linkMobile}" style="display: inline-block; padding: 12px 24px; background-color: #1E3A5F; color: #fff; text-decoration: none; border-radius: 6px; margin: 16px 8px 16px 0;">
+                            Abrir no aplicativo
+                        </a>
+                        <a href="${linkWeb}" style="display: inline-block; padding: 12px 24px; background-color: #64748B; color: #fff; text-decoration: none; border-radius: 6px; margin: 16px 0;">
+                            Abrir no navegador
                         </a>
                         <p style="color: #888; font-size: 13px;">Este link expira em <strong>15 minutos</strong>.</p>
                         <p style="color: #888; font-size: 13px;">Se você não solicitou a recuperação, ignore este e-mail.</p>

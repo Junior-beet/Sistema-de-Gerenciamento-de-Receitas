@@ -4,13 +4,13 @@ import categoriaRepository from '../repositories/categoriaRepository.js';
 const categoriaController = {
     criar: async (req, res) => {
         try {
-            const { id_usuario, nome, tipo, cor, ordem } = req.body;
+            const { nome, tipo, cor, ordem } = req.body;
 
-            if (!id_usuario || !nome || !tipo) {
-                return res.status(400).json({ sucesso: false, mensagem: 'Preencha todos os campos obrigatórios: id_usuario, nome e tipo' });
+            if (!nome || !tipo) {
+                return res.status(400).json({ sucesso: false, mensagem: 'Preencha os campos obrigatórios: nome e tipo' });
             }
 
-            const categoria = Categoria.criar({ id_usuario, nome, tipo, cor, ordem });
+            const categoria = Categoria.criar({ id_usuario: req.usuario.id_usuario, nome, tipo, cor, ordem });
             const result = await categoriaRepository.criar(categoria);
 
             res.status(201).json({ sucesso: true, mensagem: 'Categoria criada com sucesso', dados: result });
@@ -22,7 +22,7 @@ const categoriaController = {
 
     selecionar: async (req, res) => {
         try {
-            const result = await categoriaRepository.selecionar();
+            const result = await categoriaRepository.selecionarPorUsuario(req.usuario.id_usuario);
             res.status(200).json({ sucesso: true, dados: result });
         } catch (error) {
             console.log(error);
@@ -32,8 +32,10 @@ const categoriaController = {
 
     selecionarPorId: async (req, res) => {
         try {
-            const id_categoria = req.params.id;
-            const result = await categoriaRepository.selecionarPorId(id_categoria);
+            const result = await categoriaRepository.selecionarPorIdEUsuario(
+                req.params.id,
+                req.usuario.id_usuario,
+            );
 
             if (!result) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Categoria não encontrada' });
@@ -49,22 +51,24 @@ const categoriaController = {
     atualizar: async (req, res) => {
         try {
             const id_categoria = req.params.id;
-            const { id_usuario, nome, tipo, cor, ordem } = req.body;
+            const { nome, tipo, cor, ordem } = req.body;
 
-            if (!id_categoria) {
-                return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
+            if (!nome || !tipo) {
+                return res.status(400).json({ sucesso: false, mensagem: 'Preencha os campos obrigatórios: nome e tipo' });
             }
 
-            if (!id_usuario || !nome || !tipo) {
-                return res.status(400).json({ sucesso: false, mensagem: 'Preencha todos os campos obrigatórios: id_usuario, nome e tipo' });
-            }
-
-            const existe = await categoriaRepository.selecionarPorId(id_categoria);
+            const existe = await categoriaRepository.selecionarPorIdEUsuario(
+                id_categoria,
+                req.usuario.id_usuario,
+            );
             if (!existe) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Categoria não encontrada' });
             }
 
-            const categoria = Categoria.editar({ id_usuario, nome, tipo, cor, ordem }, id_categoria);
+            const categoria = Categoria.editar(
+                { id_usuario: req.usuario.id_usuario, nome, tipo, cor, ordem },
+                id_categoria,
+            );
             const result = await categoriaRepository.atualizar(categoria);
 
             res.status(200).json({ sucesso: true, mensagem: 'Categoria atualizada com sucesso', dados: result });
@@ -77,27 +81,24 @@ const categoriaController = {
     deletar: async (req, res) => {
         try {
             const id_categoria = req.params.id;
+            const existe = await categoriaRepository.selecionarPorIdEUsuario(
+                id_categoria,
+                req.usuario.id_usuario,
+            );
 
-            if (!id_categoria) {
-                return res.status(400).json({ sucesso: false, mensagem: 'ID inválido' });
-            }
-
-            const existe = await categoriaRepository.selecionarPorId(id_categoria);
             if (!existe) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Categoria não encontrada' });
             }
 
             await categoriaRepository.deletarSubcategorias(id_categoria);
-
-
-            const result = await categoriaRepository.deletar(id_categoria);
+            const result = await categoriaRepository.deletar(id_categoria, req.usuario.id_usuario);
 
             res.status(200).json({ sucesso: true, mensagem: 'Categoria e subcategorias vinculadas deletadas com sucesso', dados: result });
         } catch (error) {
             console.log(error);
             res.status(500).json({ sucesso: false, mensagem: 'Erro ao deletar categoria', errorMessage: error.message });
         }
-    }
+    },
 };
 
 export default categoriaController;
