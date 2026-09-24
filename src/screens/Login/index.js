@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,11 +9,26 @@ const API_URL = "http://10.0.2.2:8080";
 export default function LoginScreen() {
     const navigation = useNavigation();
     const timeoutRef = useRef(null);
+=======
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useAuth } from '../../context/AuthContext';
+import { apiRequest } from '../../services/api';
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export default function LoginScreen() {
+    const { signIn } = useAuth();
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
 
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [loading, setLoading] = useState(false);
     const [erro, setErro] = useState(null);
+<<<<<<< HEAD
     const [sucesso, setSucesso] = useState(null);
 
     // Limpa o timer se a tela for desmontada antes do redirecionamento
@@ -30,12 +46,23 @@ export default function LoginScreen() {
 
         if (!emailLimpo || !senha) {
             setErro('Preencha e-mail e senha.');
+=======
+
+    async function handleLogin() {
+        setErro(null);
+
+        const emailLimpo = email.trim();
+
+        if (!EMAIL_REGEX.test(emailLimpo) || !senha) {
+            setErro('Informe um e-mail e uma senha válidos.');
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
             return;
         }
 
         setLoading(true);
 
         try {
+<<<<<<< HEAD
             const response = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -56,6 +83,22 @@ export default function LoginScreen() {
 
         } catch (error) {
             setErro('Não foi possível conectar ao servidor.');
+=======
+            const data = await apiRequest('/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: emailLimpo, senha_usuario: senha }),
+            });
+
+            if (!data?.token || !data?.usuario) {
+                throw new Error('A resposta do servidor não contém uma sessão válida.');
+            }
+
+            signIn({ token: data.token, usuario: data.usuario });
+            router.replace('/home');
+        } catch (error) {
+            setErro(error.message || 'Não foi possível realizar o login.');
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
         } finally {
             setLoading(false);
         }
@@ -74,12 +117,15 @@ export default function LoginScreen() {
                     </View>
                 )}
 
+<<<<<<< HEAD
                 {sucesso && (
                     <View style={styles.alertSucesso}>
                         <Text style={styles.alertSucessoText}>{sucesso}</Text>
                     </View>
                 )}
 
+=======
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>E-mail</Text>
                     <TextInput
@@ -91,6 +137,10 @@ export default function LoginScreen() {
                         autoCorrect={false}
                         value={email}
                         onChangeText={setEmail}
+<<<<<<< HEAD
+=======
+                        maxLength={150}
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                     />
                 </View>
 
@@ -126,7 +176,11 @@ export default function LoginScreen() {
 
                 <TouchableOpacity
                     style={styles.btnOutline}
+<<<<<<< HEAD
                     onPress={() => navigation.navigate('CadastroScreen')}
+=======
+                    onPress={() => router.push('/cadastro')}
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                     activeOpacity={0.7}
                 >
                     <Text style={styles.btnOutlineText}>Cadastre-se</Text>
@@ -134,7 +188,11 @@ export default function LoginScreen() {
 
                 <TouchableOpacity
                     style={styles.linkButton}
+<<<<<<< HEAD
                     onPress={() => navigation.navigate('EsqueciSenhaScreen')}
+=======
+                    onPress={() => router.push('/esqueci-senha')}
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                     activeOpacity={0.7}
                 >
                     <Text style={styles.linkText}>Esqueci minha senha</Text>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -9,6 +10,19 @@ const FORMAS_PAGAMENTO = ['PIX', 'Dinheiro', 'Cartão de Crédito', 'Cartão de 
  
 const REGEX_DATA = /^\d{4}-\d{2}-\d{2}$/;
  
+=======
+import { router } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useAuth } from '../../context/AuthContext';
+import { apiRequest } from '../../services/api';
+import { converterValor, isDataValida, VALOR_MAXIMO } from '../../utils/validacoes';
+ 
+const FORMAS_PAGAMENTO = ['PIX', 'Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Boleto', 'Transferência Bancária'];
+ 
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
 function dataDeHoje() {
     const agora = new Date();
     const local = new Date(agora.getTime() - agora.getTimezoneOffset() * 60000);
@@ -16,10 +30,19 @@ function dataDeHoje() {
 }
  
 export default function ReceitasScreen() {
+<<<<<<< HEAD
     const navigation = useNavigation();
     const route = useRoute();
     const { token } = route.params;
  
+=======
+    const { session, signOut } = useAuth();
+    const token = session?.token;
+    const requisicaoSubcategoriaRef = useRef(0);
+
+    const [contas, setContas] = useState([]);
+    const [idConta, setIdConta] = useState('');
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
     const [categorias, setCategorias] = useState([]);
     const [subcategorias, setSubcategorias] = useState([]);
     const [idCategoria, setIdCategoria] = useState('');
@@ -37,6 +60,7 @@ export default function ReceitasScreen() {
     const [sucesso, setSucesso] = useState(null);
  
     useEffect(() => {
+<<<<<<< HEAD
         carregarCategorias();
     }, []);
  
@@ -55,6 +79,62 @@ export default function ReceitasScreen() {
     }
  
     async function aoMudarCategoria(id) {
+=======
+        if (!token) {
+            return undefined;
+        }
+
+        let ativo = true;
+
+        Promise.all([
+            apiRequest('/contas', {
+                headers: { Authorization: `Bearer ${token}` },
+            }),
+            apiRequest('/categorias', {
+                headers: { Authorization: `Bearer ${token}` },
+            }),
+        ])
+            .then(([contasData, categoriasData]) => {
+                if (!ativo) {
+                    return;
+                }
+
+                const listaContas = Array.isArray(contasData.dados) ? contasData.dados : [];
+                const listaCategorias = Array.isArray(categoriasData.dados) ? categoriasData.dados : [];
+
+                setContas(listaContas);
+                setCategorias(listaCategorias.filter((categoria) => categoria.tipo === 'RECEITA'));
+
+                if (listaContas.length > 0) {
+                    setIdConta((contaAtual) => contaAtual || listaContas[0].id_conta);
+                }
+            })
+            .catch((error) => {
+                if (!ativo) {
+                    return;
+                }
+                if (error.status === 401 || error.status === 403) {
+                    signOut();
+                    router.replace('/');
+                    return;
+                }
+                setErro(error.message || 'Erro ao carregar contas e categorias.');
+            })
+            .finally(() => {
+                if (ativo) {
+                    setCarregando(false);
+                }
+            });
+
+        return () => {
+            ativo = false;
+            requisicaoSubcategoriaRef.current += 1;
+        };
+    }, [signOut, token]);
+ 
+    async function aoMudarCategoria(id) {
+        const requisicaoId = ++requisicaoSubcategoriaRef.current;
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
         setIdCategoria(id);
         setIdSubcategoria('');
         setSubcategorias([]);
@@ -62,6 +142,7 @@ export default function ReceitasScreen() {
  
         setCarregandoSub(true);
         try {
+<<<<<<< HEAD
             const response = await fetch(`${API_URL}/subcategorias/categoria/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -71,6 +152,29 @@ export default function ReceitasScreen() {
             setSubcategorias([]);
         } finally {
             setCarregandoSub(false);
+=======
+            const data = await apiRequest(`/subcategorias/categoria/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (requisicaoId === requisicaoSubcategoriaRef.current) {
+                setSubcategorias(Array.isArray(data.dados) ? data.dados : []);
+            }
+        } catch (error) {
+            if (requisicaoId !== requisicaoSubcategoriaRef.current) {
+                return;
+            }
+            if (error.status === 401 || error.status === 403) {
+                signOut();
+                router.replace('/');
+                return;
+            }
+            setSubcategorias([]);
+            setErro(error.message || 'Erro ao carregar subcategorias.');
+        } finally {
+            if (requisicaoId === requisicaoSubcategoriaRef.current) {
+                setCarregandoSub(false);
+            }
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
         }
     }
  
@@ -78,6 +182,7 @@ export default function ReceitasScreen() {
         setErro(null);
         setSucesso(null);
  
+<<<<<<< HEAD
         const valorNumerico = Number(String(valor).replace(',', '.'));
  
         if (!idCategoria || !valorNumerico || valorNumerico <= 0 || !dataLancamento) {
@@ -87,12 +192,28 @@ export default function ReceitasScreen() {
  
         if (!REGEX_DATA.test(dataLancamento) || (dataPrevista && !REGEX_DATA.test(dataPrevista))) {
             setErro('Use o formato de data AAAA-MM-DD (ex: 2026-09-24).');
+=======
+        const valorNumerico = converterValor(valor);
+ 
+        if (!idConta || !idCategoria || !valorNumerico || valorNumerico <= 0 || !dataLancamento) {
+            setErro('Preencha os campos obrigatórios: conta, categoria, valor e data de lançamento.');
+            return;
+        }
+        if (valorNumerico > VALOR_MAXIMO) {
+            setErro('O valor informado excede o limite suportado pelo banco de dados.');
+            return;
+        }
+ 
+        if (!isDataValida(dataLancamento) || (dataPrevista && !isDataValida(dataPrevista))) {
+            setErro('Use uma data válida no formato AAAA-MM-DD (ex: 2026-09-24).');
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
             return;
         }
  
         setSalvando(true);
  
         try {
+<<<<<<< HEAD
             const response = await fetch(`${API_URL}/receitas`, {
                 method: 'POST',
                 headers: {
@@ -101,6 +222,16 @@ export default function ReceitasScreen() {
                 },
                 body: JSON.stringify({
                     id_conta: route.params.usuario?.id_conta || null,
+=======
+            await apiRequest('/receitas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    id_conta: idConta,
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                     id_categoria: idCategoria,
                     id_subcategoria: idSubcategoria || null,
                     valor: valorNumerico,
@@ -109,6 +240,7 @@ export default function ReceitasScreen() {
                     forma_pagamento: formaPagamento || null,
                     origem: origem.trim() || null,
                     data_prevista: dataPrevista || null,
+<<<<<<< HEAD
                 })
             });
  
@@ -119,6 +251,11 @@ export default function ReceitasScreen() {
                 return;
             }
  
+=======
+                }),
+            });
+
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
             setSucesso('Receita lançada com sucesso!');
             setIdCategoria('');
             setIdSubcategoria('');
@@ -130,8 +267,18 @@ export default function ReceitasScreen() {
             setDataPrevista('');
             setSubcategorias([]);
  
+<<<<<<< HEAD
         } catch {
             setErro('Não foi possível conectar ao servidor.');
+=======
+        } catch (error) {
+            if (error.status === 401 || error.status === 403) {
+                signOut();
+                router.replace('/');
+                return;
+            }
+            setErro(error.message || 'Erro ao salvar a receita.');
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
         } finally {
             setSalvando(false);
         }
@@ -146,7 +293,39 @@ export default function ReceitasScreen() {
  
                 {erro && <View style={styles.alertErro}><Text style={styles.alertErroText}>{erro}</Text></View>}
                 {sucesso && <View style={styles.alertSucesso}><Text style={styles.alertSucessoText}>{sucesso}</Text></View>}
+<<<<<<< HEAD
  
+=======
+
+                {/* Conta */}
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Conta <Text style={styles.required}>*</Text></Text>
+                    <View style={styles.selectBox}>
+                        {carregando ? (
+                            <Text style={styles.selectPlaceholder}>Carregando contas...</Text>
+                        ) : contas.length === 0 ? (
+                            <Text style={styles.selectPlaceholder}>Nenhuma conta cadastrada</Text>
+                        ) : (
+                            contas.map((conta) => {
+                                const descricaoConta = conta.descricao || conta.numero || conta.tipo || 'Conta';
+
+                                return (
+                                    <TouchableOpacity
+                                        key={conta.id_conta}
+                                        style={[styles.selectOption, idConta === conta.id_conta && styles.selectOptionAtivo]}
+                                        onPress={() => setIdConta(conta.id_conta)}
+                                    >
+                                        <Text style={[styles.selectOptionText, idConta === conta.id_conta && styles.selectOptionTextAtivo]}>
+                                            {descricaoConta}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })
+                        )}
+                    </View>
+                </View>
+
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                 {/* Categoria */}
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Categoria <Text style={styles.required}>*</Text></Text>
@@ -324,11 +503,29 @@ export default function ReceitasScreen() {
  
                 <TouchableOpacity
                     style={styles.btnOutlineSucesso}
+<<<<<<< HEAD
                     onPress={() => navigation.navigate('DespesasScreen', route.params)}
+=======
+                    onPress={() => router.replace('/despesas')}
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                     activeOpacity={0.8}
                 >
                     <Text style={styles.btnOutlineSucessoText}>Ir para Despesas →</Text>
                 </TouchableOpacity>
+<<<<<<< HEAD
+=======
+
+                <TouchableOpacity
+                    style={styles.btnSair}
+                    onPress={() => {
+                        signOut();
+                        router.replace('/');
+                    }}
+                    activeOpacity={0.7}
+                >
+                    <Text style={styles.btnSairText}>Sair da conta</Text>
+                </TouchableOpacity>
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
  
             </ScrollView>
         </SafeAreaView>
@@ -362,4 +559,9 @@ const styles = StyleSheet.create({
     dividerText: { marginHorizontal: 12, color: "#94A3B8", fontSize: 13 },
     btnOutlineSucesso: { height: 52, borderRadius: 8, borderWidth: 1, borderColor: "#16A34A", alignItems: "center", justifyContent: "center" },
     btnOutlineSucessoText: { color: "#16A34A", fontSize: 15, fontWeight: "600" },
+<<<<<<< HEAD
+=======
+    btnSair: { alignItems: 'center', paddingVertical: 14, marginTop: 8 },
+    btnSairText: { color: '#64748B', fontSize: 14, fontWeight: '600' },
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
 });

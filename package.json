@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
+<<<<<<< HEAD
     "@react-navigation/native": "^7.4.1",
     "@react-navigation/native-stack": "^7.19.2",
     "expo": "~57.0.25",
@@ -11,12 +12,43 @@
     "react-native": "0.86.3",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0"
+=======
+    "expo": "~57.0.25",
+    "expo-constants": "~57.0.19",
+    "expo-linking": "~57.0.11",
+    "expo-router": "~57.0.23",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0",
+    "react-native-web": "^0.21.2"
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
   },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
+<<<<<<< HEAD
     "web": "expo start --web"
   },
   "private": true
+=======
+    "web": "expo start --web",
+    "lint": "expo lint"
+  },
+  "private": true,
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~57.0.2"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "overrides": {
+    "decode-uri-component": "0.5.0",
+    "uuid": "11.1.1"
+  }
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
 }

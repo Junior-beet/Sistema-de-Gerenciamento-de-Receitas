@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,6 +8,18 @@ const API_URL = "http://10.0.2.2:8080";
 
 const CARGOS = [
     { label: 'Selecione seu cargo', value: '' },
+=======
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { apiRequest } from '../../services/api';
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const CARGOS = [
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
     { label: 'CEO', value: 'CEO' },
     { label: 'Departamento Financeiro', value: 'DIRETOR_FINANCEIRO' },
     { label: 'Gerente', value: 'GERENTE' },
@@ -19,15 +32,19 @@ function dicaSenha(senha) {
 }
 
 export default function CadastroScreen() {
+<<<<<<< HEAD
     const navigation = useNavigation();
     const timeoutRef = useRef(null);
 
+=======
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [cargo, setCargo] = useState('');
     const [loading, setLoading] = useState(false);
     const [erro, setErro] = useState(null);
+<<<<<<< HEAD
     const [sucesso, setSucesso] = useState(null);
 
     const dica = dicaSenha(senha);
@@ -42,12 +59,29 @@ export default function CadastroScreen() {
     async function handleCadastro() {
         setErro(null);
         setSucesso(null);
+=======
+
+    const dica = dicaSenha(senha);
+
+    async function handleCadastro() {
+        setErro(null);
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
 
         const nomeLimpo = nome.trim();
         const emailLimpo = email.trim();
 
+<<<<<<< HEAD
         if (!nomeLimpo || !emailLimpo) {
             setErro('Preencha nome e e-mail.');
+=======
+        if (nomeLimpo.length < 3) {
+            setErro('O nome deve ter ao menos 3 caracteres.');
+            return;
+        }
+
+        if (!EMAIL_REGEX.test(emailLimpo)) {
+            setErro('Informe um e-mail válido.');
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
             return;
         }
 
@@ -64,6 +98,7 @@ export default function CadastroScreen() {
         setLoading(true);
 
         try {
+<<<<<<< HEAD
             const response = await fetch(`${API_URL}/usuarios`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -82,6 +117,26 @@ export default function CadastroScreen() {
 
         } catch (error) {
             setErro('Não foi possível conectar ao servidor.');
+=======
+            const data = await apiRequest('/usuarios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nome: nomeLimpo,
+                    email: emailLimpo,
+                    senha_usuario: senha,
+                    cargo,
+                }),
+            });
+
+            if (!data?.sucesso) {
+                throw new Error(data?.mensagem || 'O servidor não confirmou o cadastro.');
+            }
+
+            router.replace('/login');
+        } catch (error) {
+            setErro(error.message || 'Erro ao cadastrar.');
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
         } finally {
             setLoading(false);
         }
@@ -94,6 +149,7 @@ export default function CadastroScreen() {
                 <Text style={styles.title}>Criar Conta</Text>
                 <Text style={styles.subtitle}>Preencha os dados para se registrar</Text>
 
+<<<<<<< HEAD
                 {erro && (
                     <View style={styles.alertErro}>
                         <Text style={styles.alertErroText}>{erro}</Text>
@@ -106,6 +162,8 @@ export default function CadastroScreen() {
                     </View>
                 )}
 
+=======
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Nome completo</Text>
                     <TextInput
@@ -114,6 +172,10 @@ export default function CadastroScreen() {
                         placeholderTextColor="#9CA3AF"
                         value={nome}
                         onChangeText={setNome}
+<<<<<<< HEAD
+=======
+                        maxLength={100}
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                     />
                 </View>
 
@@ -128,6 +190,10 @@ export default function CadastroScreen() {
                         autoCorrect={false}
                         value={email}
                         onChangeText={setEmail}
+<<<<<<< HEAD
+=======
+                        maxLength={150}
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                     />
                 </View>
 
@@ -140,6 +206,10 @@ export default function CadastroScreen() {
                         secureTextEntry
                         value={senha}
                         onChangeText={setSenha}
+<<<<<<< HEAD
+=======
+                        maxLength={255}
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                     />
                     {senha.length > 0 && (
                         <Text style={[styles.dicaSenha, { color: dica.cor }]}>{dica.texto}</Text>
@@ -149,7 +219,11 @@ export default function CadastroScreen() {
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Cargo</Text>
                     <View style={styles.cargoGroup}>
+<<<<<<< HEAD
                         {CARGOS.filter(c => c.value !== '').map((c) => (
+=======
+                        {CARGOS.map((c) => (
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                             <TouchableOpacity
                                 key={c.value}
                                 style={[
@@ -170,6 +244,15 @@ export default function CadastroScreen() {
                     </View>
                 </View>
 
+<<<<<<< HEAD
+=======
+                {erro && (
+                    <View style={styles.alertErro}>
+                        <Text style={styles.alertErroText}>{erro}</Text>
+                    </View>
+                )}
+
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                 <TouchableOpacity
                     style={styles.btnPrimary}
                     onPress={handleCadastro}
@@ -190,7 +273,11 @@ export default function CadastroScreen() {
 
                 <TouchableOpacity
                     style={styles.btnOutline}
+<<<<<<< HEAD
                     onPress={() => navigation.navigate('LoginScreen')}
+=======
+                    onPress={() => router.replace('/')}
+>>>>>>> 51e090d (Atualizações no back end e adição do mobile)
                     activeOpacity={0.7}
                 >
                     <Text style={styles.btnOutlineText}>Já possui conta? Faça login</Text>
