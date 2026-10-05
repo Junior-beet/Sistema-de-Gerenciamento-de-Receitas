@@ -48,22 +48,35 @@ const receitaRepository = {
         return rows;
     },
 
-    selecionarPorId: async (id_receita, id_usuario) => {
+    selecionarPorId: async (id_receita) => {
         const sql = `
-            SELECT m.*, r.id_receita, r.origem, r.data_prevista
+            SELECT
+                m.*,
+                r.id_receita,
+                r.origem,
+                r.data_prevista,
+                cat.nome AS categoria,
+                sub.nome AS subcategoria
             FROM movimentacoes m
             INNER JOIN receitas r ON m.id_movimentacao = r.id_movimentacao
-            INNER JOIN contas c ON m.id_conta = c.id_conta
-            WHERE r.id_receita = ? AND c.id_usuario = ? AND m.tipo = 'RECEITA' AND m.ativo = 1
+            LEFT JOIN categorias cat ON m.id_categoria = cat.id_categoria
+            LEFT JOIN subcategorias sub ON m.id_subcategoria = sub.id_subcategoria
+            WHERE r.id_receita = ? AND m.tipo = 'RECEITA' AND m.ativo = 1
         `;
-        const [rows] = await connection.execute(sql, [id_receita, id_usuario]);
+        const [rows] = await connection.execute(sql, [id_receita]);
         return rows[0] || null;
     },
 
     atualizar: async (receita, executor = connection) => {
-        const sql = 'UPDATE receitas SET origem = ?, data_prevista = ? WHERE id_movimentacao = ?';
-        const values = [receita.origem, receita.data_prevista, receita.id_movimentacao];
+        const sql = 'UPDATE receitas SET origem = ?, data_prevista = ? WHERE id_receita = ?';
+        const values = [receita.origem, receita.data_prevista, receita.id_receita];
         const [rows] = await executor.execute(sql, values);
+        return rows;
+    },
+
+    deletar: async (id_receita, executor = connection) => {
+        const sql = 'DELETE FROM receitas WHERE id_receita = ?';
+        const [rows] = await executor.execute(sql, [id_receita]);
         return rows;
     },
 };

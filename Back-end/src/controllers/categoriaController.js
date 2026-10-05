@@ -22,7 +22,7 @@ const categoriaController = {
 
     selecionar: async (req, res) => {
         try {
-            const result = await categoriaRepository.selecionarPorUsuario(req.usuario.id_usuario);
+            const result = await categoriaRepository.selecionarTodas();
             res.status(200).json({ sucesso: true, dados: result });
         } catch (error) {
             console.log(error);
@@ -32,10 +32,7 @@ const categoriaController = {
 
     selecionarPorId: async (req, res) => {
         try {
-            const result = await categoriaRepository.selecionarPorIdEUsuario(
-                req.params.id,
-                req.usuario.id_usuario,
-            );
+            const result = await categoriaRepository.selecionarPorId(req.params.id);
 
             if (!result) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Categoria não encontrada' });
@@ -57,16 +54,13 @@ const categoriaController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'Preencha os campos obrigatórios: nome e tipo' });
             }
 
-            const existe = await categoriaRepository.selecionarPorIdEUsuario(
-                id_categoria,
-                req.usuario.id_usuario,
-            );
+            const existe = await categoriaRepository.selecionarPorId(id_categoria);
             if (!existe) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Categoria não encontrada' });
             }
 
             const categoria = Categoria.editar(
-                { id_usuario: req.usuario.id_usuario, nome, tipo, cor, ordem },
+                { id_usuario: existe.id_usuario, nome, tipo, cor, ordem },
                 id_categoria,
             );
             const result = await categoriaRepository.atualizar(categoria);
@@ -81,17 +75,22 @@ const categoriaController = {
     deletar: async (req, res) => {
         try {
             const id_categoria = req.params.id;
-            const existe = await categoriaRepository.selecionarPorIdEUsuario(
-                id_categoria,
-                req.usuario.id_usuario,
-            );
+            const existe = await categoriaRepository.selecionarPorId(id_categoria);
 
             if (!existe) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Categoria não encontrada' });
             }
 
-            await categoriaRepository.deletarSubcategorias(id_categoria);
-            const result = await categoriaRepository.deletar(id_categoria, req.usuario.id_usuario);
+            const movimentacoesVinculadas = await categoriaRepository.contarMovimentacoes(id_categoria);
+            if (movimentacoesVinculadas > 0) {
+                return res.status(409).json({
+                    sucesso: false,
+                    mensagem: `Esta categoria possui ${movimentacoesVinculadas} lançamento(s) vinculado(s) e não pode ser excluída.`,
+                });
+            }
+
+            await categoriaRepository.desativarSubcategorias(id_categoria);
+            const result = await categoriaRepository.deletar(id_categoria);
 
             res.status(200).json({ sucesso: true, mensagem: 'Categoria e subcategorias vinculadas deletadas com sucesso', dados: result });
         } catch (error) {

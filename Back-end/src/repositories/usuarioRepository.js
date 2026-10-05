@@ -1,15 +1,15 @@
 import { connection } from '../configs/Database.js';
 
 const usuarioRepository = {
-    criar: async (usuario) => {
+    criar: async (usuario, executor = connection) => {
         const sql = `INSERT INTO usuarios (id_usuario, nome, email, senha_usuario, cargo) VALUES (?, ?, ?, ?, ?)`;
         const values = [usuario.id_usuario, usuario.nome, usuario.email, usuario.senha_usuario, usuario.cargo];
-        const [rows] = await connection.execute(sql, values);
+        const [rows] = await executor.execute(sql, values);
         return rows;
     },
 
     selecionar: async () => {
-        const sql = `SELECT id_usuario, nome, email, cargo, data_criacao FROM usuarios`;
+        const sql = `SELECT id_usuario, nome, email, cargo, data_criacao FROM usuarios ORDER BY data_criacao`;
         const [rows] = await connection.execute(sql);
         return rows;
     },
@@ -38,6 +38,18 @@ const usuarioRepository = {
         return rows[0] || null;
     },
 
+    selecionarOutroUsuario: async (id_usuario_excluido) => {
+        const sql = `
+            SELECT id_usuario, nome, cargo
+            FROM usuarios
+            WHERE id_usuario <> ?
+            ORDER BY data_criacao ASC
+            LIMIT 1
+        `;
+        const [rows] = await connection.execute(sql, [id_usuario_excluido]);
+        return rows[0] || null;
+    },
+
     atualizar: async (usuario) => {
         const sql = `UPDATE usuarios SET nome = ?, email = ?, cargo = ? WHERE id_usuario = ?`;
         const values = [usuario.nome, usuario.email, usuario.cargo, usuario.id_usuario];
@@ -51,17 +63,17 @@ const usuarioRepository = {
         return rows;
     },
 
-    deletarTokens: async (id_usuario) => {
+    deletarTokens: async (id_usuario, executor = connection) => {
         const sql = `DELETE FROM tokens_recuperacao WHERE id_usuario = ?`;
-        const [rows] = await connection.execute(sql, [id_usuario]);
+        const [rows] = await executor.execute(sql, [id_usuario]);
         return rows;
     },
 
-    deletar: async (id_usuario) => {
+    deletar: async (id_usuario, executor = connection) => {
         const sql = `DELETE FROM usuarios WHERE id_usuario = ?`;
-        const [rows] = await connection.execute(sql, [id_usuario]);
+        const [rows] = await executor.execute(sql, [id_usuario]);
         return rows;
-    }
+    },
 };
 
 export default usuarioRepository;

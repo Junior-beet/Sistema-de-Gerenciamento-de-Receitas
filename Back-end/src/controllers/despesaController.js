@@ -31,10 +31,10 @@ const despesaController = {
             }
 
             const validacao = await validarLancamento({
-                id_usuario: req.usuario.id_usuario,
                 id_categoria,
                 id_subcategoria,
                 id_tipo: 'DESPESA',
+                id_usuario: req.usuario.id_usuario,
             });
             if (!validacao.valido) {
                 return res.status(validacao.status).json({ sucesso: false, mensagem: validacao.mensagem });
@@ -116,7 +116,7 @@ const despesaController = {
 
     selecionarPorId: async (req, res) => {
         try {
-            const result = await despesaRepository.selecionarPorId(req.params.id, req.usuario.id_usuario);
+            const result = await despesaRepository.selecionarPorId(req.params.id);
             if (!result) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Despesa não encontrada' });
             }
@@ -141,16 +141,16 @@ const despesaController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'Informe datas válidas no formato AAAA-MM-DD.' });
             }
 
-            const despesaExiste = await despesaRepository.selecionarPorId(id, req.usuario.id_usuario);
+            const despesaExiste = await despesaRepository.selecionarPorId(id);
             if (!despesaExiste) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Despesa não encontrada' });
             }
 
             const validacao = await validarLancamento({
-                id_usuario: req.usuario.id_usuario,
                 id_categoria,
                 id_subcategoria,
                 id_tipo: 'DESPESA',
+                id_usuario: req.usuario.id_usuario,
             });
             if (!validacao.valido) {
                 return res.status(validacao.status).json({ sucesso: false, mensagem: validacao.mensagem });
@@ -184,13 +184,30 @@ const despesaController = {
 
     deletar: async (req, res) => {
         try {
-            const despesaExiste = await despesaRepository.selecionarPorId(req.params.id, req.usuario.id_usuario);
+            const despesaExiste = await despesaRepository.selecionarPorId(req.params.id);
             if (!despesaExiste) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Despesa não encontrada' });
             }
 
-            await movimentacaoRepository.deletar(despesaExiste.id_movimentacao);
-            res.status(200).json({ sucesso: true, mensagem: 'Despesa removida com sucesso' });
+            const db = await connection.getConnection();
+
+            try {
+                await db.beginTransaction();
+
+                // A linha de despesas e as parcelas referenciam movimentacoes, entao
+                // precisam sair antes dela para nao deixar registros orfaos.
+                await despesaRepository.deletar(despesaExiste.id_despesa, db);
+                await parceladoRepository.excluirPorMovimentacao(despesaExiste.id_movimentacao, db);
+                await movimentacaoRepository.deletar(despesaExiste.id_movimentacao, db);
+
+                await db.commit();
+                res.status(200).json({ sucesso: true, mensagem: 'Despesa removida com sucesso' });
+            } catch (error) {
+                await db.rollback();
+                throw error;
+            } finally {
+                db.release();
+            }
         } catch (error) {
             console.log(error);
             res.status(500).json({ sucesso: false, mensagem: 'Erro ao remover despesa', errorMessage: error.message });

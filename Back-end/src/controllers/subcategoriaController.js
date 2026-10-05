@@ -11,10 +11,7 @@ const subcategoriaController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'Preencha os campos obrigatórios: id_categoria e nome' });
             }
 
-            const categoriaExiste = await categoriaRepository.selecionarPorIdEUsuario(
-                id_categoria,
-                req.usuario.id_usuario,
-            );
+            const categoriaExiste = await categoriaRepository.selecionarPorId(id_categoria);
             if (!categoriaExiste) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Categoria pai não encontrada' });
             }
@@ -32,10 +29,7 @@ const subcategoriaController = {
     selecionarPorCategoria: async (req, res) => {
         try {
             const id_categoria = req.params.id_categoria;
-            const categoriaExiste = await categoriaRepository.selecionarPorIdEUsuario(
-                id_categoria,
-                req.usuario.id_usuario,
-            );
+            const categoriaExiste = await categoriaRepository.selecionarPorId(id_categoria);
 
             if (!categoriaExiste) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Categoria não encontrada' });
@@ -51,10 +45,7 @@ const subcategoriaController = {
 
     selecionarPorId: async (req, res) => {
         try {
-            const result = await subcategoriaRepository.selecionarPorIdEUsuario(
-                req.params.id,
-                req.usuario.id_usuario,
-            );
+            const result = await subcategoriaRepository.selecionarPorId(req.params.id);
 
             if (!result) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Subcategoria não encontrada' });
@@ -76,24 +67,18 @@ const subcategoriaController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'Preencha os campos obrigatórios: id_categoria e nome' });
             }
 
-            const subcategoriaExiste = await subcategoriaRepository.selecionarPorIdEUsuario(
-                id_subcategoria,
-                req.usuario.id_usuario,
-            );
+            const subcategoriaExiste = await subcategoriaRepository.selecionarPorId(id_subcategoria);
             if (!subcategoriaExiste) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Subcategoria não encontrada' });
             }
 
-            const categoriaExiste = await categoriaRepository.selecionarPorIdEUsuario(
-                id_categoria,
-                req.usuario.id_usuario,
-            );
+            const categoriaExiste = await categoriaRepository.selecionarPorId(id_categoria);
             if (!categoriaExiste) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Categoria pai não encontrada' });
             }
 
             const subcategoria = Subcategoria.editar({ id_categoria, nome, ativo }, id_subcategoria);
-            const result = await subcategoriaRepository.atualizar(subcategoria, req.usuario.id_usuario);
+            const result = await subcategoriaRepository.atualizar(subcategoria);
 
             res.status(200).json({ sucesso: true, mensagem: 'Subcategoria atualizada com sucesso', dados: result });
         } catch (error) {
@@ -105,16 +90,21 @@ const subcategoriaController = {
     deletar: async (req, res) => {
         try {
             const id_subcategoria = req.params.id;
-            const existe = await subcategoriaRepository.selecionarPorIdEUsuario(
-                id_subcategoria,
-                req.usuario.id_usuario,
-            );
+            const existe = await subcategoriaRepository.selecionarPorId(id_subcategoria);
 
             if (!existe) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Subcategoria não encontrada' });
             }
 
-            const result = await subcategoriaRepository.deletar(id_subcategoria, req.usuario.id_usuario);
+            const movimentacoesVinculadas = await subcategoriaRepository.contarMovimentacoes(id_subcategoria);
+            if (movimentacoesVinculadas > 0) {
+                return res.status(409).json({
+                    sucesso: false,
+                    mensagem: `Esta subcategoria possui ${movimentacoesVinculadas} lançamento(s) vinculado(s) e não pode ser excluída.`,
+                });
+            }
+
+            const result = await subcategoriaRepository.deletar(id_subcategoria);
             res.status(200).json({ sucesso: true, mensagem: 'Subcategoria desativada com sucesso', dados: result });
         } catch (error) {
             console.log(error);

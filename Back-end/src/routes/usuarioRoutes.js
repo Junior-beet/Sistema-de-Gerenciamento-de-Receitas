@@ -9,7 +9,7 @@ const usuarioRoutes = Router();
 usuarioRoutes.post('/', auditoriaMiddleware('CADASTRO_USUARIO'), usuarioController.criar);
 usuarioRoutes.get('/', authMiddleware, usuarioController.selecionar);
 usuarioRoutes.get('/:id', authMiddleware, usuarioController.selecionarPorId);
-usuarioRoutes.put('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), auditoriaMiddleware('ATUALIZACAO_USUARIO'), usuarioController.atualizar);
-usuarioRoutes.delete('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), auditoriaMiddleware('EXCLUSAO_USUARIO'), usuarioController.deletar);
+usuarioRoutes.put('/:id', authMiddleware, cargoMiddleware('CEO'), auditoriaMiddleware('ATUALIZACAO_USUARIO'), usuarioController.atualizar);
+usuarioRoutes.delete('/:id', authMiddleware, cargoMiddleware('CEO'), auditoriaMiddleware('EXCLUSAO_USUARIO'), usuarioController.deletar);
 
 export default usuarioRoutes;

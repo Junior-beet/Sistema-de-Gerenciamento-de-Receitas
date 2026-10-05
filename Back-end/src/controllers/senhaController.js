@@ -108,7 +108,7 @@ const senhaController = {
             res.status(200).json({ sucesso: true, mensagem: 'Se este e-mail estiver cadastrado, você receberá as instruções em breve' });
         } catch (error) {
             console.log(error);
-            res.status(500).json({ sucesso: false, mensagem: 'Erro ao solicitar recuperação de senha', errorMessage: error.message });
+            res.status(500).json({ sucesso: false, mensagem: 'Erro ao solicitar recuperação', errorMessage: error.message });
         }
     },
 

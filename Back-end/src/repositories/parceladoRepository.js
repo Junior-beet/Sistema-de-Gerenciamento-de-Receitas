@@ -13,7 +13,13 @@ const parceladoRepository = {
         const sql = `SELECT * FROM parcelado WHERE id_movimentacao = ?`;
         const [rows] = await connection.execute(sql, [id_movimentacao]);
         return rows;
-    }
+    },
+
+    excluirPorMovimentacao: async (id_movimentacao, executor = connection) => {
+        const sql = `DELETE FROM parcelado WHERE id_movimentacao = ?`;
+        const [rows] = await executor.execute(sql, [id_movimentacao]);
+        return rows;
+    },
 };
 
 export default parceladoRepository;

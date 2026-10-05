@@ -3,29 +3,29 @@ import contaRepository from '../repositories/contaRepository.js';
 import subcategoriaRepository from '../repositories/subcategoriaRepository.js';
 
 export async function validarLancamento({
-    id_usuario,
     id_categoria,
     id_subcategoria,
     id_tipo,
+    id_usuario,
 }) {
     const [conta, categoria] = await Promise.all([
-        contaRepository.selecionarContaEmpresa(),
-        categoriaRepository.selecionarPorIdEUsuario(id_categoria, id_usuario),
+        contaRepository.selecionarContaEmpresa(id_usuario),
+        categoriaRepository.selecionarPorId(id_categoria),
     ]);
 
     if (!conta) {
         return {
             valido: false,
             status: 400,
-            mensagem: 'Nenhuma conta empresarial cadastrada.',
+            mensagem: 'Nenhuma conta empresarial cadastrada para este usuário.',
         };
     }
 
     if (!categoria) {
         return {
             valido: false,
-            status: 403,
-            mensagem: 'A categoria selecionada não pertence ao usuário autenticado.',
+            status: 404,
+            mensagem: 'A categoria selecionada não existe.',
         };
     }
 
@@ -38,15 +38,20 @@ export async function validarLancamento({
     }
 
     if (id_subcategoria) {
-        const subcategoria = await subcategoriaRepository.selecionarPorIdEUsuario(
-            id_subcategoria,
-            id_usuario,
-        );
+        const subcategoria = await subcategoriaRepository.selecionarPorId(id_subcategoria);
 
-        if (!subcategoria || subcategoria.id_categoria !== id_categoria) {
+        if (!subcategoria) {
             return {
                 valido: false,
-                status: 403,
+                status: 404,
+                mensagem: 'A subcategoria selecionada não existe.',
+            };
+        }
+
+        if (String(subcategoria.id_categoria) !== String(id_categoria)) {
+            return {
+                valido: false,
+                status: 400,
                 mensagem: 'A subcategoria selecionada não pertence à categoria informada.',
             };
         }

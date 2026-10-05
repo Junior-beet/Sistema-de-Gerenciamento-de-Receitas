@@ -8,8 +8,8 @@ const categoriaRoutes = Router();
 categoriaRoutes.get('/', authMiddleware, categoriaController.selecionar);
 categoriaRoutes.get('/:id', authMiddleware, categoriaController.selecionarPorId);
 
-categoriaRoutes.post('/', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), categoriaController.criar);
-categoriaRoutes.put('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), categoriaController.atualizar);
-categoriaRoutes.delete('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), categoriaController.deletar);
+categoriaRoutes.post('/', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO', 'CEO'), categoriaController.criar);
+categoriaRoutes.put('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO', 'CEO'), categoriaController.atualizar);
+categoriaRoutes.delete('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO', 'CEO'), categoriaController.deletar);
 
 export default categoriaRoutes;

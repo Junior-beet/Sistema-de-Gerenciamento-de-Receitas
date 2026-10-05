@@ -3,7 +3,7 @@ import { connection } from '../configs/Database.js';
 const movimentacaoRepository = {
     criar: async (movimentacao, executor = connection) => {
         const sql = `INSERT INTO movimentacoes (id_movimentacao, id_conta, id_categoria, id_subcategoria, tipo, valor, data_lancamento, descricao, forma_pagamento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        const values = [movimentacao.id_movimentacao, movimentacao.id_conta, movimentacao.id_categoria, movimentacao.id_subcategoria, movimentacao.tipo, movimentacao.valor, movimentacao.data_lancamento, movimentacao.descricao,movimentacao.forma_pagamento];
+        const values = [movimentacao.id_movimentacao, movimentacao.id_conta, movimentacao.id_categoria, movimentacao.id_subcategoria, movimentacao.tipo, movimentacao.valor, movimentacao.data_lancamento, movimentacao.descricao, movimentacao.forma_pagamento];
         const [rows] = await executor.execute(sql, values);
         return { insertId: movimentacao.id_movimentacao };
     },
@@ -27,11 +27,11 @@ const movimentacaoRepository = {
         return rows;
     },
 
-    deletar: async (id_movimentacao) => {
+    deletar: async (id_movimentacao, executor = connection) => {
         const sql = `UPDATE movimentacoes SET ativo = 0 WHERE id_movimentacao = ?`;
-        const [rows] = await connection.execute(sql, [id_movimentacao]);
+        const [rows] = await executor.execute(sql, [id_movimentacao]);
         return rows;
-    }
+    },
 };
 
 export default movimentacaoRepository;

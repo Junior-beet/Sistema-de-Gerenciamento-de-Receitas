@@ -14,7 +14,7 @@ const relatorioController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'ID da conta é obrigatório' });
             }
 
-            const result = await relatorioRepository.saldoPorConta(id_conta, req.usuario.id_usuario);
+            const result = await relatorioRepository.saldoPorConta(id_conta);
 
             if (!result) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Conta não encontrada' });
@@ -29,7 +29,7 @@ const relatorioController = {
 
     saldoTodasContas: async (req, res) => {
         try {
-            const result = await relatorioRepository.saldoTodasContas(req.usuario.id_usuario);
+            const result = await relatorioRepository.saldoTodasContas();
             res.status(200).json({ sucesso: true, dados: result });
         } catch (error) {
             console.log(error);
@@ -39,14 +39,14 @@ const relatorioController = {
 
     lucroPorPeriodo: async (req, res) => {
         try {
-            // req.query → parâmetros passados na URL depois do ?
+            // req.query são parâmetros passados na URL depois do ?
             const { data_inicio, data_fim } = req.query;
 
             if (!data_inicio || !data_fim) {
                 return res.status(400).json({ sucesso: false, mensagem: 'Informe data_inicio e data_fim' });
             }
 
-            const result = await relatorioRepository.lucroPorPeriodo(data_inicio, data_fim, req.usuario.id_usuario);
+            const result = await relatorioRepository.lucroPorPeriodo(data_inicio, data_fim);
 
             res.status(200).json({
                 sucesso: true,
@@ -69,8 +69,8 @@ const relatorioController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'Informe ano e mes' });
             }
 
-            // Number() → converte string para número
-            const result = await relatorioRepository.relatorioMensal(Number(ano), Number(mes), req.usuario.id_usuario);
+            // Number() converte string para número
+            const result = await relatorioRepository.relatorioMensal(Number(ano), Number(mes));
 
             res.status(200).json({ sucesso: true, dados: result });
         } catch (error) {
@@ -87,9 +87,9 @@ const relatorioController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'Informe ano e mes' });
             }
 
-            const dados = await relatorioRepository.relatorioMensal(Number(ano), Number(mes), req.usuario.id_usuario);
+            const dados = await relatorioRepository.relatorioMensal(Number(ano), Number(mes));
 
-            // PDFDocument → cria um documento PDF em memória
+            // PDFDocument cria um documento PDF em memória
             const doc = new PDFDocument({ margin: 50 });
 
             const nomeArquivo = `relatorio_${ano}_${String(mes).padStart(2, '0')}.pdf`;
@@ -102,7 +102,7 @@ const relatorioController = {
             // cria um "canal" de escrita para o arquivo
             const stream = fs.createWriteStream(caminhoArquivo);
 
-            // doc.pipe(stream) → conecta o PDF ao arquivo — tudo que for adicionado ao doc vai para o arquivo
+            // doc.pipe(stream) conecta o PDF ao arquivo — tudo que for adicionado ao doc vai para o arquivo
             doc.pipe(stream);
 
             // Construção do PDF, cada método encadeia o conteúdo
@@ -136,16 +136,16 @@ const relatorioController = {
                 });
             }
 
-            // doc.end() → finaliza o documento e fecha o stream
+            // doc.end() finaliza o documento e fecha o stream
             doc.end();
 
-            // stream.on('finish') → evento disparado quando o arquivo termina de ser escrito no disco
+            // stream.on('finish') evento disparado quando o arquivo termina de ser escrito no disco
             // Só depois disso podemos enviar o arquivo para o usuário
             stream.on('finish', () => {
-                // res.download() → força o navegador a baixar o arquivo em vez de abrir
+                // res.download() força o navegador a baixar o arquivo em vez de abrir
                 res.download(caminhoArquivo, nomeArquivo, (err) => {
                     if (err) console.log('Erro ao enviar PDF:', err);
-                    // fs.unlinkSync → deleta o arquivo do servidor depois de enviar
+                    // fs.unlinkSync deleta o arquivo do servidor depois de enviar
                     // Evita acumular arquivos temporários
                     fs.unlinkSync(caminhoArquivo);
                 });
@@ -165,7 +165,7 @@ const relatorioController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'Informe ano e mes' });
             }
 
-            const dados = await relatorioRepository.relatorioMensal(Number(ano), Number(mes), req.usuario.id_usuario);
+            const dados = await relatorioRepository.relatorioMensal(Number(ano), Number(mes));
 
             // Define quais campos do JSON vão virar colunas no CSV
             const campos = ['tipo', 'valor', 'data_lancamento', 'descricao', 'categoria', 'subcategoria', 'forma_pagamento'];
@@ -177,7 +177,7 @@ const relatorioController = {
             // Define o tipo do conteúdo como CSV para o navegador entender
             res.header('Content-Type', 'text/csv');
 
-            // res.attachment() → diz ao navegador para baixar o arquivo com esse nome
+            // res.attachment() diz ao navegador para baixar o arquivo com esse nome
             res.attachment(`relatorio_${ano}_${String(mes).padStart(2, '0')}.csv`);
 
             // Envia o CSV diretamente na resposta sem salvar arquivo no servidor
