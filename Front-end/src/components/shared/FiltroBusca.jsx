@@ -7,6 +7,8 @@ export function FiltroBusca({ onFiltrar, categorias = [], mostrarBusca = true })
   const [dataInicio, setDataInicio] = useState('')
   const [dataFim, setDataFim] = useState('')
 
+  const periodoInvalido = !!dataInicio && !!dataFim && dataInicio > dataFim
+
   const emitir = valores => onFiltrar({ busca, tipo, categoria, dataInicio, dataFim, ...valores })
 
   const handleBusca = (e) => {
@@ -19,6 +21,17 @@ export function FiltroBusca({ onFiltrar, categorias = [], mostrarBusca = true })
     const valor = e.target.value
     setTipo(valor)
     emitir({ tipo: valor })
+  }
+
+  // Ao escolher só a data inicial, filtra aquele dia; para ver "a partir de", limpe a data final
+  const handleDataInicio = (e) => {
+    const valor = e.target.value
+    // acompanha a data final enquanto ela for igual à inicial (filtro de um único dia)
+    const acompanhar = !dataFim || dataFim === dataInicio
+    const novoFim = acompanhar ? valor : dataFim
+    setDataInicio(valor)
+    setDataFim(novoFim)
+    emitir({ dataInicio: valor, dataFim: novoFim })
   }
 
   const limpar = () => {
@@ -65,12 +78,15 @@ export function FiltroBusca({ onFiltrar, categorias = [], mostrarBusca = true })
           </div>
           <div className="col-6 col-lg-2">
             <label className="form-label small fw-medium">Data inicial</label>
-            <input type="date" className="form-control" value={dataInicio} onChange={e => { setDataInicio(e.target.value); emitir({ dataInicio: e.target.value }) }} />
+            <input type="date" className={`form-control ${periodoInvalido ? 'is-invalid' : ''}`} value={dataInicio} max={dataFim || undefined} onChange={handleDataInicio} />
           </div>
           <div className="col-6 col-lg-2">
             <label className="form-label small fw-medium">Data final</label>
-            <input type="date" className="form-control" value={dataFim} onChange={e => { setDataFim(e.target.value); emitir({ dataFim: e.target.value }) }} />
+            <input type="date" className={`form-control ${periodoInvalido ? 'is-invalid' : ''}`} value={dataFim} min={dataInicio || undefined} onChange={e => { setDataFim(e.target.value); emitir({ dataFim: e.target.value }) }} />
           </div>
+          {periodoInvalido && (
+            <div className="col-12 text-danger small">A data inicial não pode ser maior que a data final.</div>
+          )}
           <div className="col-12 d-flex justify-content-end">
             <button type="button" className="btn btn-outline-secondary btn-sm" onClick={limpar}>Limpar filtros</button>
           </div>

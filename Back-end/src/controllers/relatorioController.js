@@ -4,6 +4,13 @@ import { Parser } from 'json2csv'; // biblioteca para converter JSON em CSV
 import fs from 'fs';
 import path from 'path';
 
+function formatarDataBR(data) {
+    if (!data) return '—';
+    const valor = data instanceof Date ? data.toISOString() : String(data);
+    const [ano, mes, dia] = valor.slice(0, 10).split('-');
+    return `${dia}/${mes}/${ano}`;
+}
+
 const relatorioController = {
 
     saldoPorConta: async (req, res) => {
@@ -128,7 +135,7 @@ const relatorioController = {
                 dados.movimentacoes.forEach((mov, i) => {
                     doc.fontSize(11).font('Helvetica-Bold').text(`${i + 1}. ${mov.tipo} — R$ ${Number(mov.valor).toFixed(2)}`);
                     doc.fontSize(10).font('Helvetica');
-                    doc.text(`   Data: ${new Date(mov.data_lancamento).toLocaleDateString('pt-BR')}`);
+                    doc.text(`   Data: ${formatarDataBR(mov.data_lancamento)}`);
                     doc.text(`   Descrição: ${mov.descricao || '—'}`);
                     doc.text(`   Categoria: ${mov.categoria || '—'}`);
                     doc.text(`   Forma de Pagamento: ${mov.forma_pagamento || '—'}`);

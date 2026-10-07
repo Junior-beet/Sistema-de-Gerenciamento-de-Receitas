@@ -13,7 +13,7 @@ function formatarMoeda(valor) {
 
 function formatarData(data) {
   if (!data) return '-'
-  const d = new Date(data)
+  const d = new Date(`${String(data).slice(0, 10)}T12:00:00`)
   if (isNaN(d.getTime())) return '-'
   return d.toLocaleDateString('pt-BR')
 }
@@ -164,7 +164,11 @@ export function CategoriasPage() {
     return tipoDaAba && tipoDoFiltro && categoria && inicio && fim && (!filtros.busca || texto.includes(filtros.busca.toLowerCase()))
   })
 
-  const mensagemVazia = tabAtiva === 'todas'
+  const filtroAtivo = filtros.busca || filtros.tipo !== 'TODOS' || filtros.categoria !== 'TODAS' || filtros.dataInicio || filtros.dataFim
+
+  const mensagemVazia = filtroAtivo && lancamentos.length > 0
+    ? 'Nenhum lançamento encontrado para os filtros aplicados'
+    : tabAtiva === 'todas'
     ? 'Nenhum lançamento cadastrado'
     : tabAtiva === 'RECEITA'
       ? 'Nenhuma receita lançada'

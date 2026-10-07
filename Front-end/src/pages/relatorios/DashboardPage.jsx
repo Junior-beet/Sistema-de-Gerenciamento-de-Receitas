@@ -44,7 +44,7 @@ function formatarMoeda(valor) {
 
 function formatarData(data) {
   if (!data) return '-'
-  const d = new Date(data)
+  const d = new Date(`${String(data).slice(0, 10)}T12:00:00`)
   if (isNaN(d.getTime())) return '-'
   return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' })
 }
@@ -267,27 +267,18 @@ function DashboardConteudo({ usuario }) {
     setFiltro(novoFiltro)
   }
 
-  const receitasFiltradas = (dados?.receitas || []).filter(r => {
-    const buscaMatch = !filtro.busca || (r.descricao || '').toLowerCase().includes(filtro.busca.toLowerCase()) || (r.origem || '').toLowerCase().includes(filtro.busca.toLowerCase())
-    const tipoMatch = filtro.tipo === 'TODOS' || filtro.tipo === 'RECEITA'
-    const dataStr = String(r.data_lancamento || '').slice(0, 10)
-    const dataMov = dataStr ? new Date(dataStr + 'T00:00:00') : null
-    const dataInicio = filtro.dataInicio ? new Date(filtro.dataInicio + 'T00:00:00') : null
-    const dataFim = filtro.dataFim ? new Date(filtro.dataFim + 'T23:59:59') : null
-    const categoriaMatch = filtro.categoria === 'TODAS' || String(r.id_categoria) === String(filtro.categoria)
-    return buscaMatch && tipoMatch && categoriaMatch && (!dataInicio || (dataMov && dataMov >= dataInicio)) && (!dataFim || (dataMov && dataMov <= dataFim))
-  })
+  const passaNoFiltro = (item, tipo) => {
+    const busca = filtro.busca.toLowerCase()
+    const buscaMatch = !busca || (item.descricao || '').toLowerCase().includes(busca) || (item.origem || '').toLowerCase().includes(busca)
+    const tipoMatch = filtro.tipo === 'TODOS' || filtro.tipo === tipo
+    const categoriaMatch = filtro.categoria === 'TODAS' || String(item.id_categoria) === String(filtro.categoria)
+    const data = String(item.data_lancamento || '').slice(0, 10)
+    const dataMatch = (!filtro.dataInicio || (data && data >= filtro.dataInicio)) && (!filtro.dataFim || (data && data <= filtro.dataFim))
+    return buscaMatch && tipoMatch && categoriaMatch && dataMatch
+  }
 
-  const despesasFiltradas = (dados?.despesas || []).filter(d => {
-    const buscaMatch = !filtro.busca || (d.descricao || '').toLowerCase().includes(filtro.busca.toLowerCase()) || (d.origem || '').toLowerCase().includes(filtro.busca.toLowerCase())
-    const tipoMatch = filtro.tipo === 'TODOS' || filtro.tipo === 'DESPESA'
-    const dataStr = String(d.data_lancamento || '').slice(0, 10)
-    const dataMov = dataStr ? new Date(dataStr + 'T00:00:00') : null
-    const dataInicio = filtro.dataInicio ? new Date(filtro.dataInicio + 'T00:00:00') : null
-    const dataFim = filtro.dataFim ? new Date(filtro.dataFim + 'T23:59:59') : null
-    const categoriaMatch = filtro.categoria === 'TODAS' || String(d.id_categoria) === String(filtro.categoria)
-    return buscaMatch && tipoMatch && categoriaMatch && (!dataInicio || (dataMov && dataMov >= dataInicio)) && (!dataFim || (dataMov && dataMov <= dataFim))
-  })
+  const receitasFiltradas = (dados?.receitas || []).filter(r => passaNoFiltro(r, 'RECEITA'))
+  const despesasFiltradas = (dados?.despesas || []).filter(d => passaNoFiltro(d, 'DESPESA'))
 
   const totalReceitas = receitasFiltradas.reduce((s, r) => s + (Number(r.valor) || 0), 0)
   const totalDespesas = despesasFiltradas.reduce((s, d) => s + (Number(d.valor) || 0), 0)

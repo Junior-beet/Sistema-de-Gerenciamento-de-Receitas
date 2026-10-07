@@ -12,6 +12,8 @@ class Database {
             password: process.env.DB_PASSWORD,
             database: process.env.DB_DATABASE,
             port: process.env.DB_PORT,
+            // colunas DATE voltam como 'YYYY-MM-DD' (sem conversao de fuso, que deslocava o dia)
+            dateStrings: ['DATE'],
             waitForConnections: true,
             connectionLimit: 100,
             queueLimit: 0
