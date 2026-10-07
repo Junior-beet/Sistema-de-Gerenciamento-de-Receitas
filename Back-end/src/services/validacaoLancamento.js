@@ -9,7 +9,7 @@ export async function validarLancamento({
     id_usuario,
 }) {
     const [conta, categoria] = await Promise.all([
-        contaRepository.selecionarContaEmpresa(id_usuario),
+        contaRepository.selecionarContaEmpresa(),
         categoriaRepository.selecionarPorId(id_categoria),
     ]);
 
@@ -17,7 +17,7 @@ export async function validarLancamento({
         return {
             valido: false,
             status: 400,
-            mensagem: 'Nenhuma conta empresarial cadastrada para este usuário.',
+            mensagem: 'Nenhuma conta empresarial cadastrada no sistema.',
         };
     }
 

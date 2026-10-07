@@ -29,15 +29,14 @@ const contaRepository = {
         return rows[0] || null;
     },
 
-    selecionarContaEmpresa: async (id_usuario) => {
+    selecionarContaEmpresa: async () => {
         const sql = `
             SELECT id_conta, id_usuario, numero, tipo, descricao, ativo
             FROM contas
-            WHERE ativo = 1 AND id_usuario = ?
-            ORDER BY tipo = 'Empresarial' DESC, id_conta ASC
+            WHERE ativo = 1 AND tipo = 'Empresarial'
             LIMIT 1
         `;
-        const [rows] = await connection.execute(sql, [id_usuario]);
+        const [rows] = await connection.execute(sql);
         return rows[0] || null;
     },
 
