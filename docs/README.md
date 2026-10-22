@@ -43,6 +43,17 @@ Projeto desenvolvido por estudantes do **Curso Técnico em Desenvolvimento de Si
 - Nicollas Bryan de Araújo
 - Samuel Rabelo da Silva
 
+# 📁 Documentação do Projeto
+
+Para conferir mais detalhes sobre a arquitetura, design e estrutura do sistema, acesse os documentos abaixo:
+
+- 📖 [Guia do Programador](./01_Guia_do_Programador%20(1).md) — Orientações técnicas e rotinas para desenvolvedores.
+- 📐 [Diagrama de Classes](./02_Diagrama_de_Classes.md) — Estrutura de classes e modelagem do sistema.
+- 🗄️ [Diagrama Entidade-Relacionamento (DER)](./03_Banco_de_Dados_DER%20(2)%20(4).md) — Modelagem do banco de dados.
+- 🎨 [Design System](./design-system.md) — Diretrizes visuais, paleta de cores e componentes de interface.
+- 👨‍💼 [Documentação de Administradores](./administradores.md) — Especificações e permissões para usuários administradores.
+- 👤 [Documentação de Clientes](./clientes.md) — Funcionalidades e fluxos voltados aos clientes.
+
 ### 📚 Contexto acadêmico
 
 O projeto faz parte de uma atividade acadêmica voltada ao desenvolvimento de uma solução de gerenciamento financeiro. Seu desenvolvimento envolve organização de requisitos, implementação das funcionalidades e validação do funcionamento do sistema.
