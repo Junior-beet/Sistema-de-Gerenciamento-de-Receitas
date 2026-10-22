@@ -11,10 +11,10 @@ import { isDataValida } from '../utils/validacaoData.js';
 const despesaController = {
     criar: async (req, res) => {
         try {
-            const { id_conta, id_categoria, id_subcategoria, valor, data_lancamento, descricao, forma_pagamento, data_vencimento, data_pagamento, status, parcelado, total_parcelas } = req.body;
+            const { id_categoria, id_subcategoria, valor, data_lancamento, descricao, forma_pagamento, data_vencimento, data_pagamento, status, parcelado, total_parcelas } = req.body;
 
-            if (!id_conta || !id_categoria || !valor || !data_lancamento) {
-                return res.status(400).json({ sucesso: false, mensagem: 'Preencha todos os campos obrigatórios: id_conta, id_categoria, valor e data_lancamento' });
+            if (!id_categoria || !valor || !data_lancamento) {
+                return res.status(400).json({ sucesso: false, mensagem: 'Não é possível lançar: preencha todos os campos obrigatórios (categoria, valor e data de lançamento).' });
             }
             if (!isDataValida(data_lancamento)
                 || (data_vencimento && !isDataValida(data_vencimento))
@@ -31,15 +31,15 @@ const despesaController = {
             }
 
             const validacao = await validarLancamento({
-                id_usuario: req.usuario.id_usuario,
-                id_conta,
                 id_categoria,
                 id_subcategoria,
                 id_tipo: 'DESPESA',
+                id_usuario: req.usuario.id_usuario,
             });
             if (!validacao.valido) {
                 return res.status(validacao.status).json({ sucesso: false, mensagem: validacao.mensagem });
             }
+            const id_conta = validacao.conta.id_conta;
 
             const db = await connection.getConnection();
 
@@ -79,7 +79,7 @@ const despesaController = {
                     mensagem: parcelado
                         ? `Despesa parcelada em ${quantidadeParcelas}x criada com sucesso`
                         : 'Despesa criada com sucesso',
-                    dados: { ids_movimentacoes },
+                    dados: { ids_movimentacoes: idsMovimentacoes },
                 });
             } catch (error) {
                 await db.rollback();
@@ -116,7 +116,7 @@ const despesaController = {
 
     selecionarPorId: async (req, res) => {
         try {
-            const result = await despesaRepository.selecionarPorId(req.params.id, req.usuario.id_usuario);
+            const result = await despesaRepository.selecionarPorId(req.params.id);
             if (!result) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Despesa não encontrada' });
             }
@@ -129,11 +129,11 @@ const despesaController = {
 
     atualizar: async (req, res) => {
         try {
-            const { id_despesa } = req.params;
-            const { id_conta, id_categoria, id_subcategoria, valor, data_lancamento, descricao, forma_pagamento, data_vencimento, data_pagamento, status } = req.body;
+            const { id } = req.params;
+            const { id_categoria, id_subcategoria, valor, data_lancamento, descricao, forma_pagamento, data_vencimento, data_pagamento, status } = req.body;
 
-            if (!id_conta || !id_categoria || !valor || !data_lancamento) {
-                return res.status(400).json({ sucesso: false, mensagem: 'Preencha todos os campos obrigatórios: id_conta, id_categoria, valor e data_lancamento' });
+            if (!id_categoria || !valor || !data_lancamento) {
+                return res.status(400).json({ sucesso: false, mensagem: 'Não é possível lançar: preencha todos os campos obrigatórios (categoria, valor e data de lançamento).' });
             }
             if (!isDataValida(data_lancamento)
                 || (data_vencimento && !isDataValida(data_vencimento))
@@ -141,21 +141,21 @@ const despesaController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'Informe datas válidas no formato AAAA-MM-DD.' });
             }
 
-            const despesaExiste = await despesaRepository.selecionarPorId(id_despesa, req.usuario.id_usuario);
+            const despesaExiste = await despesaRepository.selecionarPorId(id);
             if (!despesaExiste) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Despesa não encontrada' });
             }
 
             const validacao = await validarLancamento({
-                id_usuario: req.usuario.id_usuario,
-                id_conta,
                 id_categoria,
                 id_subcategoria,
                 id_tipo: 'DESPESA',
+                id_usuario: req.usuario.id_usuario,
             });
             if (!validacao.valido) {
                 return res.status(validacao.status).json({ sucesso: false, mensagem: validacao.mensagem });
             }
+            const id_conta = validacao.conta.id_conta;
 
             const db = await connection.getConnection();
 
@@ -165,7 +165,7 @@ const despesaController = {
                 const movimentacao = Movimentacao.editar({ id_conta, id_categoria, id_subcategoria, tipo: 'DESPESA', valor, data_lancamento, descricao, forma_pagamento }, despesaExiste.id_movimentacao);
                 await movimentacaoRepository.atualizar(movimentacao, db);
 
-                const despesa = Despesa.editar({ id_movimentacao: despesaExiste.id_movimentacao, data_vencimento, data_pagamento, status }, id_despesa);
+                const despesa = Despesa.editar({ id_movimentacao: despesaExiste.id_movimentacao, data_vencimento, data_pagamento, status }, id);
                 await despesaRepository.atualizar(despesa, db);
 
                 await db.commit();
@@ -184,13 +184,30 @@ const despesaController = {
 
     deletar: async (req, res) => {
         try {
-            const despesaExiste = await despesaRepository.selecionarPorId(req.params.id, req.usuario.id_usuario);
+            const despesaExiste = await despesaRepository.selecionarPorId(req.params.id);
             if (!despesaExiste) {
                 return res.status(404).json({ sucesso: false, mensagem: 'Despesa não encontrada' });
             }
 
-            await movimentacaoRepository.deletar(despesaExiste.id_movimentacao);
-            res.status(200).json({ sucesso: true, mensagem: 'Despesa removida com sucesso' });
+            const db = await connection.getConnection();
+
+            try {
+                await db.beginTransaction();
+
+                // A linha de despesas e as parcelas referenciam movimentacoes, entao
+                // precisam sair antes dela para nao deixar registros orfaos.
+                await despesaRepository.deletar(despesaExiste.id_despesa, db);
+                await parceladoRepository.excluirPorMovimentacao(despesaExiste.id_movimentacao, db);
+                await movimentacaoRepository.deletar(despesaExiste.id_movimentacao, db);
+
+                await db.commit();
+                res.status(200).json({ sucesso: true, mensagem: 'Despesa removida com sucesso' });
+            } catch (error) {
+                await db.rollback();
+                throw error;
+            } finally {
+                db.release();
+            }
         } catch (error) {
             console.log(error);
             res.status(500).json({ sucesso: false, mensagem: 'Erro ao remover despesa', errorMessage: error.message });

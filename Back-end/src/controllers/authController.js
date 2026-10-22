@@ -11,7 +11,6 @@ const authController = {
                 return res.status(400).json({ sucesso: false, mensagem: 'Preencha todos os campos obrigatórios: email e senha_usuario' });
             }
 
-            const sql = `SELECT * FROM usuarios WHERE email = ?`;
             const usuario = await usuarioRepository.selecionarPorEmailComSenha(email);
 
             if (!usuario) {

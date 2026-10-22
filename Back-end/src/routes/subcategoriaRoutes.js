@@ -8,8 +8,8 @@ const subcategoriaRoutes = Router();
 subcategoriaRoutes.get('/categoria/:id_categoria', authMiddleware, subcategoriaController.selecionarPorCategoria);
 subcategoriaRoutes.get('/:id', authMiddleware, subcategoriaController.selecionarPorId);
 
-subcategoriaRoutes.post('/', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), subcategoriaController.criar);
-subcategoriaRoutes.put('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), subcategoriaController.atualizar);
-subcategoriaRoutes.delete('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO'), subcategoriaController.deletar);
+subcategoriaRoutes.post('/', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO', 'CEO'), subcategoriaController.criar);
+subcategoriaRoutes.put('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO', 'CEO'), subcategoriaController.atualizar);
+subcategoriaRoutes.delete('/:id', authMiddleware, cargoMiddleware('DIRETOR_FINANCEIRO', 'CEO'), subcategoriaController.deletar);
 
 export default subcategoriaRoutes;

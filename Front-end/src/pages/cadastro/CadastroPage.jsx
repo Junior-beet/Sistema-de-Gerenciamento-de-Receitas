@@ -2,18 +2,9 @@ import { useState } from 'react'
 import { Header } from '../../components/layout/Header.jsx'
 import { mostrarToast } from '../../components/shared/Toast.jsx'
 import { CARGOS } from '../../config/constants.jsx'
+import { SenhaInput, validarSenhaForte } from '../../components/shared/SenhaInput.jsx'
 import { auth } from '../../services/auth.jsx'
 import { navegar } from '../../services/navigation.jsx'
-
-function dicaSenha(senha) {
-  if (senha.length > 0 && senha.length < 8) {
-    return { texto: 'A senha deve ter ao menos 8 caracteres', cor: 'var(--color-danger)' }
-  }
-  if (senha.length >= 8) {
-    return { texto: 'Senha válida', cor: 'var(--color-success)' }
-  }
-  return { texto: 'Use ao menos 8 caracteres', cor: 'var(--color-text-muted)' }
-}
 
 export function CadastroPage() {
   const [nome, setNome] = useState('')
@@ -23,13 +14,11 @@ export function CadastroPage() {
   const [alert, setAlert] = useState(null)
   const [carregando, setCarregando] = useState(false)
 
-  const dica = dicaSenha(senha)
-
   const aoEnviar = async e => {
     e.preventDefault()
 
-    if (senha.length < 8) {
-      setAlert({ tipo: 'erro', mensagem: 'A senha deve ter ao menos 8 caracteres.' })
+    if (!validarSenhaForte(senha)) {
+      setAlert({ tipo: 'erro', mensagem: 'A senha deve cumprir todos os requisitos listados.' })
       return
     }
 
@@ -93,19 +82,13 @@ export function CadastroPage() {
             </div>
             <div className="mb-3">
               <label htmlFor="cadSenha" className="form-label">Senha</label>
-              <input
-                type="password"
-                className="form-control"
+              <SenhaInput
                 id="cadSenha"
                 placeholder="Crie uma senha segura"
-                required
-                minLength="8"
                 value={senha}
                 onChange={e => setSenha(e.target.value)}
+                mostrarRequisitos
               />
-              <div className="form-text" style={{ fontSize: 12, marginTop: 4, color: dica.cor }}>
-                {dica.texto}
-              </div>
             </div>
             <div className="mb-4">
               <label htmlFor="cadCargo" className="form-label">Cargo</label>

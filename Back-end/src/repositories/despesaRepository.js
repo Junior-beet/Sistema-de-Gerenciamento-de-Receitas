@@ -50,22 +50,36 @@ const despesaRepository = {
         return rows;
     },
 
-    selecionarPorId: async (id_despesa, id_usuario) => {
+    selecionarPorId: async (id_despesa) => {
         const sql = `
-            SELECT m.*, d.id_despesa, d.data_vencimento, d.data_pagamento, d.status
+            SELECT
+                m.*,
+                d.id_despesa,
+                d.data_vencimento,
+                d.data_pagamento,
+                d.status,
+                cat.nome AS categoria,
+                sub.nome AS subcategoria
             FROM movimentacoes m
             INNER JOIN despesas d ON m.id_movimentacao = d.id_movimentacao
-            INNER JOIN contas c ON m.id_conta = c.id_conta
-            WHERE d.id_despesa = ? AND c.id_usuario = ? AND m.tipo = 'DESPESA' AND m.ativo = 1
+            LEFT JOIN categorias cat ON m.id_categoria = cat.id_categoria
+            LEFT JOIN subcategorias sub ON m.id_subcategoria = sub.id_subcategoria
+            WHERE d.id_despesa = ? AND m.tipo = 'DESPESA' AND m.ativo = 1
         `;
-        const [rows] = await connection.execute(sql, [id_despesa, id_usuario]);
+        const [rows] = await connection.execute(sql, [id_despesa]);
         return rows[0] || null;
     },
 
     atualizar: async (despesa, executor = connection) => {
-        const sql = 'UPDATE despesas SET data_vencimento = ?, data_pagamento = ?, status = ? WHERE id_movimentacao = ?';
-        const values = [despesa.data_vencimento, despesa.data_pagamento, despesa.status, despesa.id_movimentacao];
+        const sql = 'UPDATE despesas SET data_vencimento = ?, data_pagamento = ?, status = ? WHERE id_despesa = ?';
+        const values = [despesa.data_vencimento, despesa.data_pagamento, despesa.status, despesa.id_despesa];
         const [rows] = await executor.execute(sql, values);
+        return rows;
+    },
+
+    deletar: async (id_despesa, executor = connection) => {
+        const sql = 'DELETE FROM despesas WHERE id_despesa = ?';
+        const [rows] = await executor.execute(sql, [id_despesa]);
         return rows;
     },
 };

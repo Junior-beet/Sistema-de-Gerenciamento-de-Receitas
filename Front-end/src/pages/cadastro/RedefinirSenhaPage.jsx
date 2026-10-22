@@ -1,18 +1,9 @@
 import { useState } from 'react'
 import { Header } from '../../components/layout/Header.jsx'
 import { mostrarToast } from '../../components/shared/Toast.jsx'
+import { SenhaInput, validarSenhaForte } from '../../components/shared/SenhaInput.jsx'
 import { auth } from '../../services/auth.jsx'
 import { navegar } from '../../services/navigation.jsx'
-
-function dicaSenha(senha) {
-  if (senha.length > 0 && senha.length < 8) {
-    return { texto: 'A senha deve ter ao menos 8 caracteres', cor: 'var(--color-danger)' }
-  }
-  if (senha.length >= 8) {
-    return { texto: 'Senha válida', cor: 'var(--color-success)' }
-  }
-  return { texto: 'Use ao menos 8 caracteres', cor: 'var(--color-text-muted)' }
-}
 
 export function RedefinirSenhaPage() {
   const params = new URLSearchParams(location.search)
@@ -23,13 +14,11 @@ export function RedefinirSenhaPage() {
   const [alert, setAlert] = useState(null)
   const [carregando, setCarregando] = useState(false)
 
-  const dica = dicaSenha(novaSenha)
-
   const aoEnviar = async e => {
     e.preventDefault()
 
-    if (novaSenha.length < 8) {
-      setAlert({ tipo: 'erro', mensagem: 'A nova senha deve ter ao menos 8 caracteres.' })
+    if (!validarSenhaForte(novaSenha)) {
+      setAlert({ tipo: 'erro', mensagem: 'A nova senha deve cumprir todos os requisitos listados.' })
       return
     }
 
@@ -63,30 +52,20 @@ export function RedefinirSenhaPage() {
       <form noValidate onSubmit={aoEnviar}>
         <div className="mb-3">
           <label htmlFor="novaSenha" className="form-label">Nova Senha</label>
-          <input
-            type="password"
-            className="form-control"
+          <SenhaInput
             id="novaSenha"
             placeholder="Mínimo 8 caracteres"
-            required
-            minLength="8"
             value={novaSenha}
             onChange={e => setNovaSenha(e.target.value)}
             disabled={carregando}
+            mostrarRequisitos
           />
-          <div className="form-text" style={{ fontSize: 12, marginTop: 4, color: dica.cor }}>
-            {dica.texto}
-          </div>
         </div>
         <div className="mb-4">
           <label htmlFor="confirmSenha" className="form-label">Confirmar Senha</label>
-          <input
-            type="password"
-            className="form-control"
+          <SenhaInput
             id="confirmSenha"
             placeholder="Repita a senha"
-            required
-            minLength="8"
             value={confirmarSenha}
             onChange={e => setConfirmarSenha(e.target.value)}
             disabled={carregando}

@@ -24,7 +24,8 @@ async function request(endpoint, options = {}) {
         window.dispatchEvent(new CustomEvent('navegar', { detail: '/login' }))
       }
     }
-    throw new Error(data?.mensagem || `Erro ${res.status}`)
+    const mensagem = data?.mensagem || `Erro ${res.status}`
+    throw new Error(data?.errorMessage ? `${mensagem} [${data.errorMessage}]` : mensagem)
   }
 
   return data

@@ -11,6 +11,8 @@ import { SubcategoriasPage } from './pages/categorias/SubcategoriasPage.jsx'
 import { SubcategoriaFormPage } from './pages/categorias/SubcategoriaFormPage.jsx'
 import { ReceitaFormPage } from './pages/movimentacoes/ReceitaFormPage.jsx'
 import { DespesaFormPage } from './pages/movimentacoes/DespesaFormPage.jsx'
+import { EditarReceitaPage } from './pages/movimentacoes/EditarReceitaPage.jsx'
+import { EditarDespesaPage } from './pages/movimentacoes/EditarDespesaPage.jsx'
 import { DashboardPage } from './pages/relatorios/DashboardPage.jsx'
 import { RelatoriosPage } from './pages/relatorios/RelatoriosPage.jsx'
 import { ToastHost } from './components/shared/Toast.jsx'
@@ -33,6 +35,8 @@ const rotas = {
   '/subcategorias/editar': SubcategoriaFormPage,
   '/receitas/nova': ReceitaFormPage,
   '/despesas/nova': DespesaFormPage,
+  '/receitas/editar': EditarReceitaPage,
+  '/despesas/editar': EditarDespesaPage,
   '/dashboard': DashboardPage,
   '/relatorios': RelatoriosPage,
 }
@@ -50,6 +54,8 @@ function matchRota(caminhoBase) {
   if (/^\/calculos\/editar\/[^/]+$/.test(caminhoBase)) return rotas['/calculos/editar']
   if (/^\/calculos\/[^/]+\/subcategorias$/.test(caminhoBase)) return rotas['/calculos/subcategorias']
   if (/^\/subcategorias\/editar\/[^/]+$/.test(caminhoBase)) return rotas['/subcategorias/editar']
+  if (/^\/receitas\/editar\/[^/]+$/.test(caminhoBase)) return rotas['/receitas/editar']
+  if (/^\/despesas\/editar\/[^/]+$/.test(caminhoBase)) return rotas['/despesas/editar']
   return null
 }
 

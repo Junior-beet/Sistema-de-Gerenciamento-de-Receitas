@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Header } from '../../components/layout/Header.jsx'
 import { Footer } from '../../components/layout/Footer.jsx'
 import { mostrarToast } from '../../components/shared/Toast.jsx'
+import { SenhaInput } from '../../components/shared/SenhaInput.jsx'
 import { auth } from '../../services/auth.jsx'
 import { navegar } from '../../services/navigation.jsx'
 
@@ -63,13 +64,9 @@ export function LoginPage() {
             </div>
             <div className="mb-4">
               <label htmlFor="loginSenha" className="form-label">Senha</label>
-              <input
-                type="password"
-                className="form-control"
+              <SenhaInput
                 id="loginSenha"
                 placeholder="Sua senha"
-                required
-                minLength="8"
                 value={senha}
                 onChange={e => setSenha(e.target.value)}
               />

@@ -99,12 +99,13 @@ export function CategoriaFormPage() {
       if (isEdit) {
         await api.put(`/categorias/${idRota}`, payload)
         mostrarToast('sucesso', `${entidade} atualizada com sucesso!`)
+        setTimeout(() => navegar('/calculos'), 800)
       } else {
-        await api.post('/categorias', payload)
+        const resp = await api.post('/categorias', payload)
         mostrarToast('sucesso', `${entidade} cadastrada com sucesso!`)
+        const idCriado = resp.dados?.id_categoria
+        setTimeout(() => idCriado ? navegar(`/calculos/${idCriado}/subcategorias`) : navegar('/calculos'), 800)
       }
-
-      setTimeout(() => navegar('/calculos'), 800)
     } catch (err) {
       setAlert({ tipo: 'erro', mensagem: err.message || 'Erro ao salvar' })
       mostrarToast('erro', err.message || 'Erro ao salvar')

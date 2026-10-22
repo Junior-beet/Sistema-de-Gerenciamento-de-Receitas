@@ -3,22 +3,29 @@ import contaRepository from '../repositories/contaRepository.js';
 import subcategoriaRepository from '../repositories/subcategoriaRepository.js';
 
 export async function validarLancamento({
-    id_usuario,
-    id_conta,
     id_categoria,
     id_subcategoria,
     id_tipo,
+    id_usuario,
 }) {
     const [conta, categoria] = await Promise.all([
-        contaRepository.selecionarPorIdEUsuario(id_conta, id_usuario),
-        categoriaRepository.selecionarPorIdEUsuario(id_categoria, id_usuario),
+        contaRepository.selecionarContaEmpresa(),
+        categoriaRepository.selecionarPorId(id_categoria),
     ]);
 
-    if (!conta || !categoria) {
+    if (!conta) {
         return {
             valido: false,
-            status: 403,
-            mensagem: 'A conta ou categoria selecionada não pertence ao usuário autenticado.',
+            status: 400,
+            mensagem: 'Nenhuma conta empresarial cadastrada no sistema.',
+        };
+    }
+
+    if (!categoria) {
+        return {
+            valido: false,
+            status: 404,
+            mensagem: 'A categoria selecionada não existe.',
         };
     }
 
@@ -31,15 +38,20 @@ export async function validarLancamento({
     }
 
     if (id_subcategoria) {
-        const subcategoria = await subcategoriaRepository.selecionarPorIdEUsuario(
-            id_subcategoria,
-            id_usuario,
-        );
+        const subcategoria = await subcategoriaRepository.selecionarPorId(id_subcategoria);
 
-        if (!subcategoria || subcategoria.id_categoria !== id_categoria) {
+        if (!subcategoria) {
             return {
                 valido: false,
-                status: 403,
+                status: 404,
+                mensagem: 'A subcategoria selecionada não existe.',
+            };
+        }
+
+        if (String(subcategoria.id_categoria) !== String(id_categoria)) {
+            return {
+                valido: false,
+                status: 400,
                 mensagem: 'A subcategoria selecionada não pertence à categoria informada.',
             };
         }

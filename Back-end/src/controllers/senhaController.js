@@ -72,25 +72,35 @@ const senhaController = {
             await tokenRecuperacaoRepository.criar(usuario.id_usuario, token, expiracaoFormatada);
 
             const linkWeb = `${process.env.FRONTEND_URL}/redefinir-senha?token=${token}`;
-            const linkMobile = `sgr://redefinir-senha?token=${token}`;
 
             await transporter.sendMail({
-                from: `"Sistema Financeiro" <${process.env.EMAIL_USER}>`,
+                from: {
+                    name: 'Sistema Financeiro',
+                    address: process.env.EMAIL_USER,
+                },
                 to: email,
                 subject: 'Recuperação de senha',
                 html: `
-                    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto;">
-                        <h2 style="color: #1E3A5F;">Recuperação de Senha</h2>
-                        <p>Olá, <strong>${usuario.nome}</strong>!</p>
-                        <p>Recebemos uma solicitação para redefinir sua senha. Escolha uma das opções abaixo:</p>
-                        <a href="${linkMobile}" style="display: inline-block; padding: 12px 24px; background-color: #1E3A5F; color: #fff; text-decoration: none; border-radius: 6px; margin: 16px 8px 16px 0;">
-                            Abrir no aplicativo
-                        </a>
-                        <a href="${linkWeb}" style="display: inline-block; padding: 12px 24px; background-color: #64748B; color: #fff; text-decoration: none; border-radius: 6px; margin: 16px 0;">
-                            Abrir no navegador
-                        </a>
-                        <p style="color: #888; font-size: 13px;">Este link expira em <strong>15 minutos</strong>.</p>
-                        <p style="color: #888; font-size: 13px;">Se você não solicitou a recuperação, ignore este e-mail.</p>
+                    <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; border: 1px solid #E2E8F0; border-radius: 8px; overflow: hidden;">
+                        <div style="background: #1E3A5F; padding: 24px; text-align: center;">
+                            <img src="${process.env.FRONTEND_URL}/assets/logo-sgr.svg" alt="Logo SGR" style="height: 42px;" />
+                        </div>
+                        <div style="padding: 28px 24px;">
+                            <h2 style="color: #1E3A5F; margin: 0 0 16px;">Recuperação de Senha</h2>
+                            <p style="color: #334155; line-height: 1.5;">Olá, <strong>${usuario.nome}</strong>!</p>
+                            <p style="color: #334155; line-height: 1.5;">Recebemos uma solicitação para redefinir sua senha de acesso ao <strong>Sistema de Gerenciamento de Receitas</strong>.</p>
+                            <p style="color: #334155; line-height: 1.5;">Clique no botão abaixo para prosseguir:</p>
+                            <p style="text-align: center; margin: 28px 0;">
+                                <a href="${linkWeb}" style="display: inline-block; padding: 14px 28px; background-color: #1E3A5F; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 600;">
+                                    Redefinir Senha
+                                </a>
+                            </p>
+                            <p style="color: #64748B; font-size: 13px; line-height: 1.5;">Este link expira em <strong>15 minutos</strong>.</p>
+                            <p style="color: #64748B; font-size: 13px; line-height: 1.5;">Se você não solicitou a recuperação de senha, por favor ignore este e-mail. Seu cadastro permanecerá seguro.</p>
+                        </div>
+                        <div style="background: #F8FAFC; padding: 16px 24px; text-align: center; color: #94A3B8; font-size: 12px;">
+                            © ${new Date().getFullYear()} Sistema Financeiro - Todos os direitos reservados.
+                        </div>
                     </div>
                 `
             });
@@ -98,7 +108,7 @@ const senhaController = {
             res.status(200).json({ sucesso: true, mensagem: 'Se este e-mail estiver cadastrado, você receberá as instruções em breve' });
         } catch (error) {
             console.log(error);
-            res.status(500).json({ sucesso: false, mensagem: 'Erro ao solicitar recuperação de senha', errorMessage: error.message });
+            res.status(500).json({ sucesso: false, mensagem: 'Erro ao solicitar recuperação', errorMessage: error.message });
         }
     },
 

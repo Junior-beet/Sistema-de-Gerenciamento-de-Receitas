@@ -19,16 +19,15 @@ function dataDeHoje() {
   return local.toISOString().split('T')[0]
 }
 
-export function LancamentoForm({ tipo }) {
+export function LancamentoForm({ tipo, id }) {
   const isReceita = tipo === 'RECEITA'
   const label = isReceita ? 'Receita' : 'Despesa'
   const usuario = auth.sessaoLocal()
+  const editando = !!id
 
-  const [contas, setContas] = useState([])
   const [categorias, setCategorias] = useState([])
   const [subcategorias, setSubcategorias] = useState([])
 
-  const [idConta, setIdConta] = useState('')
   const [idCategoria, setIdCategoria] = useState('')
   const [idSubcategoria, setIdSubcategoria] = useState('')
   const [valor, setValor] = useState('')
@@ -52,19 +51,37 @@ export function LancamentoForm({ tipo }) {
       return
     }
     carregarOpcoes()
+    if (id) carregarLancamento()
   }, [])
+
+  async function carregarLancamento() {
+    try {
+      const endpoint = isReceita ? `/receitas/${id}` : `/despesas/${id}`
+      const data = await api.get(endpoint)
+      const item = data.dados
+      setIdCategoria(item.id_categoria)
+      setIdSubcategoria(item.id_subcategoria || '')
+      setValor(item.valor)
+      setDataLancamento(item.data_lancamento ? item.data_lancamento.slice(0, 10) : '')
+      setFormaPagamento(item.forma_pagamento || '')
+      setDescricao(item.descricao || '')
+      setOrigem(item.origem || '')
+      setDataPrevista(item.data_prevista ? item.data_prevista.slice(0, 10) : '')
+      setDataVencimento(item.data_vencimento ? item.data_vencimento.slice(0, 10) : '')
+
+      // carrega subcategorias da categoria
+      if (item.id_categoria) {
+        const sub = await api.get(`/subcategorias/categoria/${item.id_categoria}`)
+        setSubcategorias(sub.dados || [])
+      }
+    } catch (err) {
+      setAlert({ tipo: 'erro', mensagem: 'Erro ao carregar lançamento: ' + err.message })
+    }
+  }
 
   async function carregarOpcoes() {
     try {
-      const [contasResp, categoriasResp] = await Promise.all([
-        api.get('/contas'),
-        api.get('/categorias'),
-      ])
-      const listaContas = contasResp.dados || []
-      setContas(listaContas)
-      if (listaContas.length > 0) {
-        setIdConta(listaContas[0].id_conta)
-      }
+      const categoriasResp = await api.get('/categorias')
       setCategorias((categoriasResp.dados || []).filter(c => c.tipo === tipo))
     } catch (err) {
       setAlert({ tipo: 'erro', mensagem: 'Erro ao carregar opções: ' + err.message })
@@ -97,8 +114,8 @@ export function LancamentoForm({ tipo }) {
 
     const valorNumerico = Number(String(valor).replace(',', '.'))
 
-    if (!idConta || !idCategoria || !valorNumerico || valorNumerico <= 0 || !dataLancamento) {
-      setAlert({ tipo: 'erro', mensagem: 'Preencha os campos obrigatórios: categoria, valor e data de lançamento' })
+    if (!idCategoria || !valorNumerico || valorNumerico <= 0 || !dataLancamento) {
+      setAlert({ tipo: 'erro', mensagem: 'Não é possível lançar: preencha todos os campos obrigatórios destacados (categoria, valor e data de lançamento).' })
       return
     }
 
@@ -112,7 +129,6 @@ export function LancamentoForm({ tipo }) {
     setAlert(null)
 
     const payload = {
-      id_conta: idConta,
       id_categoria: idCategoria,
       id_subcategoria: idSubcategoria || null,
       valor: valorNumerico,
@@ -131,12 +147,18 @@ export function LancamentoForm({ tipo }) {
     }
 
     try {
-      if (isReceita) {
-        await api.post('/receitas', payload)
-        mostrarToast('sucesso', 'Receita lançada com sucesso!')
+      if (editando) {
+        const endpoint = isReceita ? `/receitas/${id}` : `/despesas/${id}`
+        await api.put(endpoint, payload)
+        mostrarToast('sucesso', `${label} atualizada com sucesso!`)
       } else {
-        await api.post('/despesas', payload)
-        mostrarToast('sucesso', 'Despesa lançada com sucesso!')
+        if (isReceita) {
+          await api.post('/receitas', payload)
+          mostrarToast('sucesso', 'Receita lançada com sucesso!')
+        } else {
+          await api.post('/despesas', payload)
+          mostrarToast('sucesso', 'Despesa lançada com sucesso!')
+        }
       }
       setTimeout(() => navegar('/calculos'), 800)
     } catch (err) {
@@ -147,13 +169,12 @@ export function LancamentoForm({ tipo }) {
     }
   }
 
-  const semContas = !carregando && contas.length === 0
   const semCategorias = !carregando && categorias.length === 0
 
   return (
     <>
-      <h1 className="auth-title">Nova {label}</h1>
-      <p className="auth-subtitle">Registre {isReceita ? 'uma entrada' : 'uma saída'} no seu fluxo financeiro</p>
+      <h1 className="auth-title">{editando ? `Editar ${label}` : `Nova ${label}`}</h1>
+      <p className="auth-subtitle">{editando ? 'Atualize os dados' : `Registre ${isReceita ? 'uma entrada' : 'uma saída'} no seu fluxo financeiro`}</p>
 
       {alert && (
         <div className={`alert ${alert.tipo === 'erro' ? 'alert-danger' : 'alert-success'}`}>
@@ -161,20 +182,19 @@ export function LancamentoForm({ tipo }) {
         </div>
       )}
 
-      {(semContas || semCategorias) && (
+      {semCategorias && (
         <div className="alert alert-warning">
-          {semContas && <div>Nenhuma conta cadastrada.</div>}
-          {semCategorias && (
-            <div>
-              Nenhuma categoria de {label.toLowerCase()} cadastrada.{' '}
+          <div>
+            Nenhuma categoria de {label.toLowerCase()} cadastrada.{' '}
+            {auth.sessaoLocal()?.cargo === 'DIRETOR_FINANCEIRO' && (
               <a
                 href={`/calculos/nova?tipo=${tipo}`}
                 onClick={e => { e.preventDefault(); navegar(`/calculos/nova?tipo=${tipo}`) }}
               >
                 Criar categoria
               </a>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
 
@@ -214,6 +234,17 @@ export function LancamentoForm({ tipo }) {
               <option value={s.id_subcategoria} key={s.id_subcategoria}>{s.nome}</option>
             ))}
           </select>
+          {idCategoria && subcategorias.length === 0 && !carregandoSubcategorias && (
+            <div className="mt-2">
+              <a
+                href={`/subcategorias/nova?categoria=${idCategoria}`}
+                className="btn btn-outline-primary btn-sm"
+                onClick={e => { e.preventDefault(); navegar(`/subcategorias/nova?categoria=${idCategoria}`) }}
+              >
+                + Adicionar subcategoria
+              </a>
+            </div>
+          )}
         </div>
 
         <div className="row">
@@ -353,9 +384,9 @@ export function LancamentoForm({ tipo }) {
         <button
           type="submit"
           className={`btn btn-lg w-100 ${isReceita ? 'btn-success' : 'btn-danger'}`}
-          disabled={carregando || salvando || semContas || semCategorias}
+          disabled={carregando || salvando || semCategorias}
         >
-          {salvando ? 'Salvando...' : `Lançar ${label}`}
+          {salvando ? 'Salvando...' : editando ? `Salvar alterações` : `Lançar ${label}`}
         </button>
       </form>
 

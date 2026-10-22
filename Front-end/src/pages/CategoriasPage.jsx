@@ -23,7 +23,7 @@ function nomeLancamento(item, tipo) {
   return tipo === 'RECEITA' ? 'Receita' : 'Despesa'
 }
 
-function LancamentoCard({ item, onExcluir }) {
+function LancamentoCard({ item, onExcluir, podeExcluir }) {
   const isReceita = item.tipo === 'RECEITA'
   const cor = isReceita ? 'var(--color-success)' : 'var(--color-danger)'
 
@@ -46,19 +46,30 @@ function LancamentoCard({ item, onExcluir }) {
           <div className="small text-secondary-soft d-flex flex-column gap-1">
             <span>Categoria: {item.categoriaNome}</span>
             <span>Data: {formatarData(item.data_lancamento)}</span>
+            {item.data_vencimento && <span>Vencimento: {formatarData(item.data_vencimento)}</span>}
             {item.forma_pagamento && <span>Pagamento: {item.forma_pagamento}</span>}
           </div>
 
-          <div className="d-flex gap-1 mt-3">
-            <button
-              type="button"
-              className="btn btn-outline-danger btn-sm"
-              onClick={() => onExcluir(item)}
-            >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 4h8M5 4v8M10 4v8M7 4V2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
-              Excluir
-            </button>
-          </div>
+          {podeExcluir && (
+            <div className="d-flex gap-1 mt-3">
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm"
+                onClick={() => (item.tipo === 'RECEITA' ? navegar(`/receitas/editar/${item.id}`) : navegar(`/despesas/editar/${item.id}`))}
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11l3-3 4 4-3 3H2v-4zM12 2l2 2-4 4-2-2 4-4z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                Editar
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-danger btn-sm"
+                onClick={() => onExcluir(item)}
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 4h8M5 4v8M10 4v8M7 4V2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+                Excluir
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -154,18 +165,22 @@ export function CategoriasPage() {
             <p className="text-secondary-soft mb-0">Acompanhe seus lançamentos de receitas e despesas, {userName}.</p>
           </div>
           <div className="d-flex gap-2 flex-wrap">
-            <button type="button" className="btn btn-success" onClick={() => navegar('/receitas/nova')}>
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ marginRight: 6 }}><path d="M9 1v16M1 9h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-              Nova Receita
-            </button>
-            <button type="button" className="btn btn-danger" onClick={() => navegar('/despesas/nova')}>
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ marginRight: 6 }}><path d="M9 1v16M1 9h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-              Nova Despesa
-            </button>
-            <button type="button" className="btn btn-outline-secondary" onClick={() => navegar('/calculos/nova')}>
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ marginRight: 6 }}><path d="M9 1v16M1 9h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-              Nova Categoria
-            </button>
+            {usuario?.cargo === 'DIRETOR_FINANCEIRO' && (
+              <>
+                <button type="button" className="btn btn-success" onClick={() => navegar('/receitas/nova')}>
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ marginRight: 6 }}><path d="M9 1v16M1 9h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+                  Nova Receita
+                </button>
+                <button type="button" className="btn btn-danger" onClick={() => navegar('/despesas/nova')}>
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ marginRight: 6 }}><path d="M9 1v16M1 9h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+                  Nova Despesa
+                </button>
+                <button type="button" className="btn btn-outline-secondary" onClick={() => navegar('/calculos/nova')}>
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ marginRight: 6 }}><path d="M9 1v16M1 9h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+                  Nova Categoria
+                </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -204,13 +219,17 @@ export function CategoriasPage() {
               <path d="M14 22h20M14 30h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
             <p className="text-secondary-soft mb-3">{mensagemVazia}</p>
-            <button type="button" className="btn btn-outline-success btn-sm" onClick={() => navegar('/receitas/nova')}>Adicionar receita</button>
-            <button type="button" className="btn btn-outline-danger btn-sm ms-2" onClick={() => navegar('/despesas/nova')}>Adicionar despesa</button>
+            {usuario?.cargo === 'DIRETOR_FINANCEIRO' && (
+              <>
+                <button type="button" className="btn btn-outline-success btn-sm" onClick={() => navegar('/receitas/nova')}>Adicionar receita</button>
+                <button type="button" className="btn btn-outline-danger btn-sm ms-2" onClick={() => navegar('/despesas/nova')}>Adicionar despesa</button>
+              </>
+            )}
           </div>
         ) : (
           <div className="row g-3">
             {filtrados.map(item => (
-              <LancamentoCard key={`${item.tipo}-${item.id}`} item={item} onExcluir={excluir} />
+              <LancamentoCard key={`${item.tipo}-${item.id}`} item={item} onExcluir={excluir} podeExcluir={usuario?.cargo === 'DIRETOR_FINANCEIRO'} />
             ))}
           </div>
         )}

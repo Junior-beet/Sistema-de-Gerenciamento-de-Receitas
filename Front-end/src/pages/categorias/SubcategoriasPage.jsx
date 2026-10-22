@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Header } from '../../components/layout/Header.jsx'
 import { Footer } from '../../components/layout/Footer.jsx'
 
@@ -94,7 +95,7 @@ export function SubcategoriasPage() {
               {categoria ? `Gerencie as subcategorias de "${categoria.nome}"` : erroCategoria || 'Carregando...'}
             </p>
           </div>
-          {categoria && (
+          {categoria && usuario?.cargo === 'DIRETOR_FINANCEIRO' && (
             <button type="button" className="btn btn-primary" onClick={() => navegar(`/subcategorias/nova?categoria=${categoriaId}`)}>
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ marginRight: 6 }}><path d="M9 1v16M1 9h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
               Nova Subcategoria
@@ -119,7 +120,9 @@ export function SubcategoriasPage() {
               <path d="M14 22h20M14 30h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
             <p className="text-secondary-soft mb-3">Nenhuma subcategoria cadastrada</p>
-            <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => navegar(`/subcategorias/nova?categoria=${categoriaId}`)}>Adicionar primeira subcategoria</button>
+            {usuario?.cargo === 'DIRETOR_FINANCEIRO' && (
+              <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => navegar(`/subcategorias/nova?categoria=${categoriaId}`)}>Adicionar primeira subcategoria</button>
+            )}
           </div>
         ) : (
           <div className="row g-3">
@@ -130,14 +133,16 @@ export function SubcategoriasPage() {
                     <div>
                       <h6 className="card-title mb-0 fw-semibold">{sub.nome}</h6>
                     </div>
-                    <div className="d-flex gap-1">
-                      <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => navegar(`/subcategorias/editar/${sub.id_subcategoria}`)}>
-                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11l3-3 4 4-3 3H2v-4zM12 2l2 2-4 4-2-2 4-4z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                      </button>
-                      <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => excluir(sub)}>
-                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 4h8M5 4v8M10 4v8M7 4V2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
-                      </button>
-                    </div>
+                    {usuario?.cargo === 'DIRETOR_FINANCEIRO' && (
+                      <div className="d-flex gap-1">
+                        <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => navegar(`/subcategorias/editar/${sub.id_subcategoria}`)}>
+                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11l3-3 4 4-3 3H2v-4zM12 2l2 2-4 4-2-2 4-4z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                        </button>
+                        <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => excluir(sub)}>
+                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 4h8M5 4v8M10 4v8M7 4V2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
