@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react'
 import { auth } from '../../services/auth.jsx'
 import { navegar } from '../../services/navigation.jsx'
+import { getTheme, toggleTheme } from '../../services/theme.jsx'
 
 function getRotas() {
   if (auth.estaLogado()) {
@@ -24,6 +26,13 @@ function getRotas() {
 
 export function Header({ rotaAtiva }) {
   const rotas = getRotas()
+  const [tema, setTema] = useState(() => (typeof document !== 'undefined' ? document.documentElement.getAttribute('data-bs-theme') : getTheme()) || 'light')
+
+  useEffect(() => {
+    const sync = e => setTema(e.detail || document.documentElement.getAttribute('data-bs-theme') || 'light')
+    window.addEventListener('tema-alterado', sync)
+    return () => window.removeEventListener('tema-alterado', sync)
+  }, [])
 
   const aoClicar = rota => e => {
     e.preventDefault()
@@ -48,7 +57,7 @@ export function Header({ rotaAtiva }) {
           </button>
 
           <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto gap-1">
+            <ul className="navbar-nav ms-auto gap-1 align-items-sm-center">
               {rotas.map(rota => (
                 <li className="nav-item" key={rota.href}>
                   <a
@@ -61,6 +70,18 @@ export function Header({ rotaAtiva }) {
                   </a>
                 </li>
               ))}
+              <li className="nav-item">
+                <button
+                  type="button"
+                  className="nav-link btn btn-link"
+                  style={{ color: 'white', border: 'none', boxShadow: 'none', padding: '8px 12px' }}
+                  onClick={() => toggleTheme()}
+                  aria-label={tema === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
+                  title={tema === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
+                >
+                  {tema === 'dark' ? '☀️ Claro' : '🌙 Escuro'}
+                </button>
+              </li>
             </ul>
           </div>
         </div>

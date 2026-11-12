@@ -8,6 +8,7 @@ export const STORAGE_KEYS = {
   USUARIOS: 'sgr_usuarios',
   TOKEN: 'sgr_token',
   RESET_TOKEN: 'sgr_reset_token',
+  TEMA: 'sgr_tema',
 }
 
 export const APP_NAME = 'SGR'
